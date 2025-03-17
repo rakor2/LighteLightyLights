@@ -1,10 +1,11 @@
+lastDuplicatedLightValues = nil
+
 -- Update host position from server _ai
 Ext.RegisterNetListener("HostPosition", function(channel, payload)
     hostPosition = Ext.Json.Parse(payload)
 end)
 
 Ext.RegisterNetListener("SyncSpawnedLights", function(channel, payload)
-    -- print("[Client] SyncSpawnedLights received with payload:", payload)
     local syncData = Ext.Json.Parse(payload)
     local previousSelectedUUID = nil
     local previousCount = #ClientSpawnedLights
@@ -14,13 +15,11 @@ Ext.RegisterNetListener("SyncSpawnedLights", function(channel, payload)
         local selectedLight = ClientSpawnedLights[LightDropdown.SelectedIndex + 1]
         if selectedLight then
             previousSelectedUUID = selectedLight.uuid
-            -- print("[Client] Stored previously selected light UUID:", previousSelectedUUID)
         end
     end
     
     -- If this is just a color update, handle it differently _ai
     if syncData.type == "color_update" then
-        -- print("[Client] Processing color update for UUID:", syncData.targetUUID)
         -- Find light by UUID _ai
         for i, light in ipairs(ClientSpawnedLights) do
             if light.uuid == syncData.targetUUID then
@@ -59,6 +58,7 @@ Ext.RegisterNetListener("SyncSpawnedLights", function(channel, payload)
         LightColorValues = {}
         LightIntensityValues = {}
         LightRadiusValues = {}
+        LightTemperatureValues = {}
         savedIntensities = {}
         lightStates = {}
         currentValues.intensity = {}
@@ -134,7 +134,6 @@ Ext.RegisterNetListener("SyncSpawnedLights", function(channel, payload)
             
             table.insert(options, light.name)
             
-            -- If this was the previously selected light, restore selection _ai
             if previousSelectedUUID and light.uuid == previousSelectedUUID then
                 -- print("[Client] Restoring selection for previously selected light:", light.name)
                 LightDropdown.SelectedIndex = i - 1
@@ -143,24 +142,57 @@ Ext.RegisterNetListener("SyncSpawnedLights", function(channel, payload)
         
         LightDropdown.Options = options
         
-        -- If lights were added, select the new light _ai
         if #ClientSpawnedLights > previousCount then
             -- print("[Client] New light added, selecting last light")
             LightDropdown.SelectedIndex = #options - 1
-            UpdateValuesText() -- Update text when new light is created _ai
-        -- If lights were removed, select previous light _ai
+            UpdateValuesText()
+
         elseif #ClientSpawnedLights < previousCount and #options > 0 then
             if LightDropdown.SelectedIndex >= #options then
-                -- print("[Client] Light removed, adjusting selection")
+
                 LightDropdown.SelectedIndex = #options - 1
-                UpdateValuesText() -- Update text when light is removed _ai
+                UpdateValuesText() 
             end
-        -- Otherwise keep previous selection or select last if none _ai
         elseif not previousSelectedUUID and #options > 0 then
-            -- print("[Client] No previous selection, selecting last light")
             LightDropdown.SelectedIndex = #options - 1
-            UpdateValuesText() -- Update text when selecting last light _ai
+            UpdateValuesText() 
         end
+    end
+    
+
+    if lastDuplicatedLightValues and #ClientSpawnedLights > previousCount then
+        local newLight = ClientSpawnedLights[#ClientSpawnedLights]
+        
+        if newLight and newLight.uuid ~= lastDuplicatedLightValues.uuid then
+            if lastDuplicatedLightValues.intensity then
+                LightIntensityValues[newLight.uuid] = lastDuplicatedLightValues.intensity
+            end
+            
+            if lastDuplicatedLightValues.radius then
+                LightRadiusValues[newLight.uuid] = lastDuplicatedLightValues.radius
+            end
+            
+            if lastDuplicatedLightValues.temperature then
+                LightTemperatureValues[newLight.uuid] = lastDuplicatedLightValues.temperature
+                
+                if temperatureSlider and LightDropdown and LightDropdown.SelectedIndex == #ClientSpawnedLights - 1 then
+                    temperatureSlider.Value = {lastDuplicatedLightValues.temperature, 0, 0, 0}
+                end
+            end
+            
+            if LightDropdown and LightDropdown.SelectedIndex == #ClientSpawnedLights - 1 then
+                UpdateValuesText()
+            end
+        end
+    end
+    
+    -- Сбрасываем значения _ai
+    lastDuplicatedLightValues = nil
+    
+    -- Sync with gobo light dropdown _ai
+    if goboLightDropdown then
+        goboLightDropdown.Options = LightDropdown.Options
+        goboLightDropdown.SelectedIndex = LightDropdown.SelectedIndex
     end
 end)
 

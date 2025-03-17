@@ -5,8 +5,6 @@ goboLightDropdown = nil
 ltnCombo = nil
 currentIntensityTextWidget = nil
 currentDistanceTextWidget = nil
-local xd = false
-
 
 -- Function to get list of created lights _ai
 function GetLightOptions()
@@ -22,9 +20,12 @@ end
 -- Global ApplyStyle function _ai
 function ApplyStyle(window, styleNum)
     if not Styles[styleNum] then
-        for i = 1, 6 do
+        for i = 1, #StyleDefinitions do
+            local funcName = StyleDefinitions[i].funcName
+            local windowName = "MainWindow" .. (funcName == "Main" and "" or funcName:sub(5))
+            
             Styles[i] = {
-                func = Style["MainWindow" .. (i == 1 and "" or i)]["Main" .. (i == 1 and "" or i)]
+                func = Style[windowName][funcName]
             }
         end
     end
@@ -140,17 +141,18 @@ function MainTab2(mt2)
     styleCombo.OnChange = function(widget)
         StyleSettings.selectedStyle = widget.SelectedIndex + 1
         ApplyStyle(mw, StyleSettings.selectedStyle)
+        Settings.Save()
     end
 
     -- Apply initial style _ai
     ApplyStyle(mw, StyleSettings.selectedStyle)
 
         -- Add save button _ai
-    local saveButton = mt2:AddButton("Save settings")
-    saveButton.IDContext = "SaveSettingsButton"
-    saveButton.OnClick = function()
-        Settings.Save()
-    end
+    -- local saveButton = mt2:AddButton("Save settings")
+    -- saveButton.IDContext = "SaveSettingsButton"
+    -- saveButton.OnClick = function()
+    --     Settings.Save()
+    -- end
 
 end
 
@@ -206,8 +208,8 @@ function MainWindowTab(parent) -- local parent = mw
     lightTypeCombo.HeightLargest = true
     lightTypeCombo.Options = lightTypeNames 
     lightTypeCombo.SelectedIndex = 0
-    lightTypeCombo.OnChange = function(widget)
-        LightTypeChange(widget)
+    lightTypeCombo.OnChange = function(combo)
+        LightTypeChange(combo)
     end
 
     -- Add create button _ai
@@ -225,8 +227,8 @@ function MainWindowTab(parent) -- local parent = mw
     LightDropdown.HeightLargest = true
 
     -- Add handler for dropdown selection change _ai
-    LightDropdown.OnChange = function(widget)
-        LightDropdownChange(widget)
+    LightDropdown.OnChange = function(dropdown)
+        LightDropdownChange(dropdown)
     end
     
     -- Add rename input and button directly to mt _ai
@@ -299,20 +301,20 @@ function MainWindowTab(parent) -- local parent = mw
     local CollapsingHeaderOrbit
 
     posSourceCheckbox.IDContext = "PosSourceCheckbox"
-    posSourceCheckbox.OnChange = function(widget)
-        if widget.Checked then
+    posSourceCheckbox.OnChange = function(checkbox)
+        if checkbox.Checked then
             useOriginPoint.Checked = false
             tlDummyCheckbox.Checked = false
             ToggleOriginPoint(false)
             CollapsingHeaderOrbit.Label = "Character relative"
         end
-        PositionSourceChange(widget.Checked)
+        PositionSourceChange(checkbox.Checked)
     end
 
     useOriginPoint.IDContext = "UseOriginPointCheckbox"
     useOriginPoint.SameLine = true
-    useOriginPoint.OnChange = function(widget)
-        if widget.Checked then
+    useOriginPoint.OnChange = function(checkbox)
+        if checkbox.Checked then
             posSourceCheckbox.Checked = false
             tlDummyCheckbox.Checked = false
             PositionSourceChange(false)
@@ -322,20 +324,20 @@ function MainWindowTab(parent) -- local parent = mw
                 CollapsingHeaderOrbit.Label = "Character relative"
             end
         end
-        ToggleOriginPoint(widget.Checked)
+        ToggleOriginPoint(checkbox.Checked)
     end
 
 
     tlDummyCheckbox.IDContext = "CutsceneCheckbox"
     tlDummyCheckbox.Checked = false
     tlDummyCheckbox.SameLine = false
-    tlDummyCheckbox.OnChange = function(widget)
+    tlDummyCheckbox.OnChange = function(checkbox)
         if tlDummyCheckbox.Checked then
             useOriginPoint.Checked = false
             ToggleOriginPoint(false)
             posSourceCheckbox.Checked = false
         end
-        PositionSourceCutscene(widget.Checked)
+        PositionSourceCutscene(checkbox.Checked)
     end
     
     local Separator = parent:AddSeparatorText("Parameters")
@@ -350,52 +352,61 @@ function MainWindowTab(parent) -- local parent = mw
     colorPicker.PickerHueWheel = false
     colorPicker.InputRGB = true
     colorPicker.DisplayHex = true
-    colorPicker.OnChange = function(widget)
-        ColorPickerChange(widget)
+    colorPicker.OnChange = function(picker)
+        ColorPickerChange(picker)
     end
 
     -- Add temperature slider _ai
-    local temperatureSlider = collapsingHeader:AddSlider("Temperature", 1000, 1000, 40000, 1)
+    temperatureSlider = collapsingHeader:AddSlider("Temperature", 1000, 1000, 40000, 1)
     temperatureSlider.IDContext = "LightTemperatureSlider"
-    temperatureSlider.OnChange = function(widget)
-        TemperatureSliderChange(widget)
+    temperatureSlider.Logarithmic = true
+    temperatureSlider.OnChange = function(slider)
+        TemperatureSliderChange(slider)
     end
 
     intensitySlider = collapsingHeader:AddSlider("", 0, -2000, 2000, 0.001)
     intensitySlider.IDContext = "LightIntensitySlider"
+    intensitySlider.Logarithmic = true
+    intensitySlider.Value = {1,0,0,0}
     intensitySliderValue = intensitySlider
-    intensitySlider.OnChange = function(widget)
-        IntensitySliderChange(widget)
+    intensitySlider.OnChange = function(slider)
+        IntensitySliderChange(slider)
     end
 
     -- Add text widgets for displaying current values _ai
-    local currentIntensityText = collapsingHeader:AddText(string.format("Power: %.3f", 0.0))
-    currentIntensityTextWidget = currentIntensityText
+    -- local currentIntensityText = collapsingHeader:AddText(string.format("Power: %.3f", 0.0))
+    local currentIntensityText = collapsingHeader:AddText("Power")
+    -- currentIntensityTextWidget = currentIntensityText
     currentIntensityText.SameLine = true
 
     local resetIntensityButton = collapsingHeader:AddButton("r")
     resetIntensityButton.SameLine = true
     resetIntensityButton.IDContext = "ResetIntensityButton"
     resetIntensityButton.OnClick = function()
+        intensitySlider.Value = {1,0,0,0}
         ResetIntensityClick()
     end
 
     local radiusSlider = collapsingHeader:AddSlider("", 0, 0, 60, 0.001)
     radiusSlider.IDContext = "LightRadiusSlider"
     radiusSlider.Logarithmic = true
+    radiusSlider.Value = {1,0,0,0}
     radiusSliderValue = radiusSlider
-    radiusSlider.OnChange = function(widget)
-        RadiusSliderChange(widget)
+    radiusSlider.OnChange = function(slider)
+        RadiusSliderChange(slider)
     end
 
-    local currentDistanceText = collapsingHeader:AddText(string.format("Distance: %.3f", 0.0))
-    currentDistanceTextWidget = currentDistanceText
+
+    -- local currentDistanceText = collapsingHeader:AddText(string.format("Distance: %.3f", 0.0))
+    local currentDistanceText = collapsingHeader:AddText("Distance")
+    -- currentDistanceTextWidget = currentDistanceText
     currentDistanceText.SameLine = true
 
     local resetRadiusButton = collapsingHeader:AddButton("r")
     resetRadiusButton.IDContext = "ResetRadiusButton"
     resetRadiusButton.SameLine = true
     resetRadiusButton.OnClick = function()
+        radiusSlider.Value = {1,0,0,0}
         ResetRadiusClick()
     end
     
@@ -405,8 +416,8 @@ function MainWindowTab(parent) -- local parent = mw
 
     
     local CheckBoxCF = parent:AddCheckbox("Stick light to camera")
-    CheckBoxCF.OnChange = function(widget)
-        CameraStick(widget)
+    CheckBoxCF.OnChange = function(checkbox)
+        CameraStick(checkbox)
     end
 
     -- Add save/load position buttons _ai

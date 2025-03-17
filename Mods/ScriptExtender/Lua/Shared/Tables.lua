@@ -37,20 +37,10 @@ savedIntensities = {}
 -- Global styles table _ai
 Styles = {}
 
--- Style names for display only _ai
-StyleNames = {
-    "Eternal Midnight Whisper Echoing Through the Void",
-    "Velvet Glow of a Forgotten Amethyst Star",
-    "Arctic Breeze Dancing Over the Moonlit Waves",
-    "Mystical Essence of the Enchanted Forest's Breath",
-    "Golden Dreams of a Sunset Lost in Time",
-    "Lavender Twilight Kissed by the Reverberations of Forever"
-}
 
--- Style settings storage _ai
-StyleSettings = {
-    selectedStyle = 1
-}
+LightTemperatureValues = {}
+
+
 
 -- Hotkey settings storage _ai
 HotkeySettings = {

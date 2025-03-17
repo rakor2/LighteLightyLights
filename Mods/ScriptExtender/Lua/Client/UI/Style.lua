@@ -1,29 +1,52 @@
 Style = {}
 
--- Button size styles _ai
+-- Style definitions _ai
+StyleDefinitions = {
+    {
+        name = "Maleenka Pink",
+        funcName = "Main"
+    },
+    {
+        name = "Alithea Purple",
+        funcName = "Main8"
+    },
+    {
+        name = "ImGui Blue",
+        funcName = "Main7"
+    },
+    {
+        name = "Velvet Glow of a Forgotten Amethyst Star",
+        funcName = "Main2"
+    },
+    {
+        name = "Arctic Breeze Dancing Over the Moonlit Waves",
+        funcName = "Main3"
+    },
+    {
+        name = "Mystical Essence of the Enchanted Forest's Breath",
+        funcName = "Main4"
+    },
+    {
+        name = "Golden Dreams of a Sunset Lost in Time",
+        funcName = "Main5"
+    },
+    {
+        name = "Lavender Twilight Kissed by the Reverberations of Forever",
+        funcName = "Main6"
+    }
+}
 
+-- Style names for display only _ai
+StyleNames = {}
+for i, style in ipairs(StyleDefinitions) do
+    StyleNames[i] = style.name
+end
 
--- -- Function to adjust window transparency based on hover state _ai
--- function Style.SetWindowTransparency(mainWindow, isHovered)
---     local alpha = isHovered and 1.0 or 0.6  -- 1.0 when hovered, 0.6 when not
-    
---     -- Update all relevant colors with new alpha _ai
---     local colors = {
---         "WindowBg", "ChildBg", "PopupBg", "Border", "BorderShadow",
---         "TitleBg", "TitleBgActive", "TitleBgCollapsed", "MenuBarBg",
---         "FrameBg", "FrameBgHovered", "FrameBgActive", "Separator",
---         "SeparatorHovered", "SeparatorActive", "ResizeGrip", "ResizeGripHovered",
---         "ResizeGripActive", "Tab", "TabHovered", "TabActive"
---     }
-    
---     for _, colorName in ipairs(colors) do
---         local color = mainWindow:GetColor(colorName)
---         if color then
---             color[4] = alpha
---             mainWindow:SetColor(colorName, color)
---         end
---     end
--- end
+-- Style settings storage _ai
+StyleSettings = {
+    selectedStyle = 1
+}
+
 
 Ext.IMGUI.LoadFont("Font", "Mods/LighterLightyLights_6aa50183-bce4-576e-749f-3a2c60233b09/GUI/QuadraatOffcPro.ttf", 35.0)
 
@@ -75,6 +98,13 @@ function Style.ApplyCommonStyles(mainWindow)
     mainWindow:SetStyle("SeparatorTextPadding", 0, 1)
     mainWindow:SetStyle("SeparatorTextAlign", 0.022, 0.5)
     mainWindow:SetStyle("DisabledAlpha", 0.1)
+    mainWindow:SetStyle("WindowRounding", 2)
+    mainWindow:SetStyle("ChildRounding", 2)
+    mainWindow:SetStyle("PopupRounding", 2)
+    mainWindow:SetStyle("ScrollbarRounding", 2)
+    mainWindow:SetStyle("GrabRounding", 2)
+    mainWindow:SetStyle("TabRounding", 2)
+
 end
 
 
@@ -121,6 +151,7 @@ Style.MainWindow = {
         mainWindow:SetColor("TabActive", {0.34, 0.34, 0.34, 1.00})
 
         Style.ApplyCommonStyles(mainWindow)
+
     end
 }
 
@@ -345,6 +376,109 @@ Style.MainWindow6 = {
         Style.ApplyCommonStyles(mainWindow)
     end
 }
+
+
+Style.MainWindow7 = {
+    Main7 = function(mainWindow)
+
+        mainWindow:SetColor("Text", {1.00, 1.00, 1.00, 1.00})
+        mainWindow:SetColor("TextDisabled", {0.50, 0.50, 0.50, 1.00})
+        mainWindow:SetColor("WindowBg", {0.06, 0.06, 0.06, 0.94})
+        mainWindow:SetColor("ChildBg", {0.00, 0.00, 0.00, 0.00})
+        mainWindow:SetColor("PopupBg", {0.08, 0.08, 0.08, 0.94})
+        mainWindow:SetColor("Border", {0.43, 0.43, 0.50, 0.50})
+        mainWindow:SetColor("BorderShadow", {0.00, 0.00, 0.00, 0.00})
+        mainWindow:SetColor("FrameBg", {0.16, 0.29, 0.48, 0.54})
+        mainWindow:SetColor("FrameBgHovered", {0.26, 0.59, 0.98, 0.40})
+        mainWindow:SetColor("FrameBgActive", {0.26, 0.59, 0.98, 0.67})
+        mainWindow:SetColor("TitleBg", {0.04, 0.04, 0.04, 1.00})
+        mainWindow:SetColor("TitleBgActive", {0.16, 0.29, 0.48, 1.00})
+        mainWindow:SetColor("TitleBgCollapsed", {0.00, 0.00, 0.00, 0.51})
+        mainWindow:SetColor("MenuBarBg", {0.14, 0.14, 0.14, 1.00})
+        mainWindow:SetColor("ScrollbarBg", {0.02, 0.02, 0.02, 0.53})
+        mainWindow:SetColor("ScrollbarGrab", {0.31, 0.31, 0.31, 1.00})
+        mainWindow:SetColor("ScrollbarGrabHovered", {0.41, 0.41, 0.41, 1.00})
+        mainWindow:SetColor("ScrollbarGrabActive", {0.51, 0.51, 0.51, 1.00})
+        mainWindow:SetColor("CheckMark", {0.26, 0.59, 0.98, 1.00})
+        mainWindow:SetColor("SliderGrab", {0.24, 0.52, 0.88, 1.00})
+        mainWindow:SetColor("SliderGrabActive", {0.26, 0.59, 0.98, 1.00})
+        mainWindow:SetColor("Button", {0.26, 0.59, 0.98, 0.40})
+        mainWindow:SetColor("ButtonHovered", {0.26, 0.59, 0.98, 1.00})
+        mainWindow:SetColor("ButtonActive", {0.06, 0.53, 0.98, 1.00})
+        mainWindow:SetColor("Header", {0.26, 0.59, 0.98, 0.31})
+        mainWindow:SetColor("HeaderHovered", {0.26, 0.59, 0.98, 0.80})
+        mainWindow:SetColor("HeaderActive", {0.26, 0.59, 0.98, 1.00})
+        mainWindow:SetColor("Separator", {0.43, 0.43, 0.50, 0.50})
+        mainWindow:SetColor("SeparatorHovered", {0.10, 0.40, 0.75, 0.78})
+        mainWindow:SetColor("SeparatorActive", {0.10, 0.40, 0.75, 1.00})
+        mainWindow:SetColor("ResizeGrip", {0.26, 0.59, 0.98, 0.20})
+        mainWindow:SetColor("ResizeGripHovered", {0.26, 0.59, 0.98, 0.67})
+        mainWindow:SetColor("ResizeGripActive", {0.26, 0.59, 0.98, 0.95})
+        mainWindow:SetColor("Tab", {0.18, 0.35, 0.58, 0.86})
+        mainWindow:SetColor("TabHovered", {0.26, 0.59, 0.98, 0.80})
+        mainWindow:SetColor("TabActive", {0.20, 0.41, 0.68, 1.00})
+        mainWindow:SetColor("TabUnfocused", {0.07, 0.10, 0.15, 0.97})
+        mainWindow:SetColor("TabUnfocusedActive", {0.14, 0.26, 0.42, 1.00})
+        
+        Style.ApplyCommonStyles(mainWindow)
+        
+        mainWindow:SetStyle("WindowRounding", 0)
+        mainWindow:SetStyle("ChildRounding", 0)
+        mainWindow:SetStyle("FrameRounding", 0)
+        mainWindow:SetStyle("PopupRounding", 0)
+        mainWindow:SetStyle("ScrollbarRounding", 0)
+        mainWindow:SetStyle("GrabRounding", 0)
+        mainWindow:SetStyle("TabRounding", 0)
+        mainWindow:SetStyle("ButtonTextAlign", 0.5, 0.5)
+
+    end
+}
+
+Style.MainWindow8 = {
+    Main8 = function(mainWindow)
+
+        mainWindow:SetColor("Text", {0.94, 0.94, 0.94, 1.00})
+        mainWindow:SetColor("TextDisabled", {0.60, 0.60, 0.60, 1.00})
+        mainWindow:SetColor("WindowBg", {0.08, 0.08, 0.08, 1.00})
+        mainWindow:SetColor("ChildBg", {0.11, 0.11, 0.11, 1.00})
+        mainWindow:SetColor("PopupBg", {0.1, 0.1, 0.1, 1.00})
+        mainWindow:SetColor("Border", {0.07, 0.07, 0.07, 1.00})
+        mainWindow:SetColor("BorderShadow", {0.07, 0.07, 0.07, 1.00})
+        mainWindow:SetColor("FrameBg", {0.15, 0.15, 0.15, 1.00})
+        mainWindow:SetColor("FrameBgHovered", {0.27, 0.27, 0.27, 0.92})
+        mainWindow:SetColor("FrameBgActive", {0.39, 0.39, 0.39, 0.90})
+        mainWindow:SetColor("TitleBg", {0.12, 0.12, 0.12, 1.00})
+        mainWindow:SetColor("TitleBgActive", {0.09, 0.09, 0.09, 1.00})
+        mainWindow:SetColor("TitleBgCollapsed", {0.05, 0.05, 0.05, 1.00})
+        mainWindow:SetColor("MenuBarBg", {0.07, 0.07, 0.07, 1.00})
+        mainWindow:SetColor("ScrollbarBg", {0.23, 0.23, 0.23, 0.00})
+        mainWindow:SetColor("ScrollbarGrab", {0.23, 0.23, 0.23, 1.00})
+        mainWindow:SetColor("ScrollbarGrabHovered", {0.58, 0.58, 0.58, 1.00})
+        mainWindow:SetColor("ScrollbarGrabActive", {0.58, 0.58, 0.58, 1.00})
+        mainWindow:SetColor("CheckMark", {0.94, 0.94, 0.94, 1.00})
+        mainWindow:SetColor("SliderGrab", {0.2, 0.2, 0.2, 1.00})
+        mainWindow:SetColor("SliderGrabActive", {0.15, 0.15, 0.15, 1.00})
+        mainWindow:SetColor("Button", {0.15, 0.15, 0.15, 1.00})
+        mainWindow:SetColor("ButtonHovered", {0.25, 0.25, 0.25, 1.00})
+        mainWindow:SetColor("ButtonActive", {0.34, 0.34, 0.34, 1.00})
+        mainWindow:SetColor("Header", {0.08, 0.08, 0.08, 1.00})
+        mainWindow:SetColor("HeaderHovered", {0.2, 0.2, 0.2, 1.00})
+        mainWindow:SetColor("HeaderActive", {0.08, 0.08, 0.08, 1.00})
+        mainWindow:SetColor("Separator", {0.557, 0.118, 0.314, 1.00})
+        mainWindow:SetColor("SeparatorHovered", {0.557, 0.118, 0.314, 1.00})
+        mainWindow:SetColor("SeparatorActive", {0.557, 0.118, 0.314, 0.78})
+        mainWindow:SetColor("ResizeGrip", {0.13, 0.13, 0.13, 1.00})
+        mainWindow:SetColor("ResizeGripHovered", {0.557, 0.118, 0.314, 1.00})
+        mainWindow:SetColor("ResizeGripActive", {0.557, 0.118, 0.314, 0.95})
+        mainWindow:SetColor("Tab", {0.15, 0.15, 0.15, 1.00})
+        mainWindow:SetColor("TabHovered", {0.25, 0.25, 0.25, 1.00})
+        mainWindow:SetColor("TabActive", {0.34, 0.34, 0.34, 1.00})
+
+        Style.ApplyCommonStyles(mainWindow)
+
+    end
+}
+
 return Style
 
 

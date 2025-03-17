@@ -22,7 +22,7 @@ function RequestSpawnLight(lightType)
         if slot[2] ~= "nil" and not UsedLightSlots[lightType][i] then
             slotIndex = i
             slotGUID = slot[2]
-            print(string.format("[LLL][C] Selected slot %d with GUID: %s", i, slotGUID))
+            -- print(string.format("[LLL][C] Selected slot %d with GUID: %s", i, slotGUID))
             break
         end
     end
@@ -44,11 +44,11 @@ function RequestSpawnLight(lightType)
     Ext.Net.PostMessageToServer("SpawnLight", payload)
 end
 
-function LightDropdownChange(widget)
-    if widget.SelectedIndex >= 0 then
-        local selectedLight = ClientSpawnedLights[widget.SelectedIndex + 1]
+function LightDropdownChange(dropdown)
+    if dropdown.SelectedIndex >= 0 then
+        local selectedLight = ClientSpawnedLights[dropdown.SelectedIndex + 1]
         if selectedLight then
-            -- Handle color values _ai
+
             if LightColorValues[selectedLight.uuid] then
                 colorPicker.Color = {
                     LightColorValues[selectedLight.uuid].r,
@@ -60,27 +60,25 @@ function LightDropdownChange(widget)
                 colorPicker.Color = {1.0, 1.0, 1.0, 1.0}
             end
 
-            -- Handle intensity value _ai
             if LightIntensityValues[selectedLight.uuid] then
                 currentValues.intensity[selectedLight.uuid] = LightIntensityValues[selectedLight.uuid]
             else
                 currentValues.intensity[selectedLight.uuid] = 1.0
             end
 
-            -- Handle radius value _ai
             if LightRadiusValues[selectedLight.uuid] then
                 currentValues.radius[selectedLight.uuid] = LightRadiusValues[selectedLight.uuid]
             else
                 currentValues.radius[selectedLight.uuid] = 1.0
             end
 
-            UpdateValuesText() -- Update values text when light is selected _ai
+            UpdateValuesText()
         end
         
         UpdateCurrentOrbitValues()
-        Ext.Net.PostMessageToServer("LightSelected", tostring(widget.SelectedIndex + 1))
+        Ext.Net.PostMessageToServer("LightSelected", tostring(dropdown.SelectedIndex + 1))
     else
-        UpdateValuesText() -- Update values text when no light is selected _ai
+        UpdateValuesText()
     end
 end
 
@@ -173,8 +171,14 @@ function DuplicateLight()
     if not selectedLight then
         return
     end
-
-    -- Send request to server _ai
+    
+    lastDuplicatedLightValues = {
+        uuid = selectedLight.uuid,
+        intensity = LightIntensityValues[selectedLight.uuid],
+        radius = LightRadiusValues[selectedLight.uuid],
+        temperature = LightTemperatureValues[selectedLight.uuid]
+    }
+    
     local data = {
         index = LightDropdown.SelectedIndex + 1,
         uuid = selectedLight.uuid,
@@ -183,10 +187,11 @@ function DuplicateLight()
         values = {
             color = LightColorValues[selectedLight.uuid],
             intensity = LightIntensityValues[selectedLight.uuid],
-            radius = LightRadiusValues[selectedLight.uuid]
+            radius = LightRadiusValues[selectedLight.uuid],
+            temperature = LightTemperatureValues[selectedLight.uuid]
         }
     }
-    UpdateValuesText()
+    
     Ext.Net.PostMessageToServer("DuplicateLight", Ext.Json.Stringify(data))
 end
 

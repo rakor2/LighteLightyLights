@@ -26,23 +26,51 @@ cameraSubscriptionId = nil
 
 -- Function to update values text _ai
 function UpdateValuesText()
-    if not LightDropdown or not currentIntensityTextWidget or not currentDistanceTextWidget then return end
+    if not LightDropdown or not currentIntensityTextWidget or not currentDistanceTextWidget then 
+        return 
+    end
     
     if LightDropdown.SelectedIndex >= 0 then
         local selectedLight = ClientSpawnedLights[LightDropdown.SelectedIndex + 1]
         if selectedLight then
-            local intensity = LightIntensityValues[selectedLight.uuid] or 1
-            local distance = LightRadiusValues[selectedLight.uuid] or 1
-            currentIntensityTextWidget.Label = string.format("Power: %.3f", intensity)
-            currentDistanceTextWidget.Label = string.format("Distance: %.3f", distance)
-            radiusSliderValue.Value = {distance, 0, 0, 0}
-            intensitySliderValue.Value = {intensity, 0, 0,0}
-            print("lol", intensity, distance)
+
+            local intensity = LightIntensityValues[selectedLight.uuid]
+            local distance = LightRadiusValues[selectedLight.uuid]
+            local temperature = LightTemperatureValues[selectedLight.uuid]
+            
+            if intensity then
+                -- currentIntensityTextWidget.Label = string.format("Power: %.3f", intensity)
+                intensitySliderValue.Value = {intensity, 0, 0, 0}
+
+            else
+                -- currentIntensityTextWidget.Label = string.format("Power: %.3f", 1.0)
+                intensitySliderValue.Value = {1.0, 0, 0, 0}
+                LightIntensityValues[selectedLight.uuid] = 1.0
+            end
+            
+            if distance then
+
+                -- currentDistanceTextWidget.Label = string.format("Distance: %.3f", distance)
+                radiusSliderValue.Value = {distance, 0, 0, 0}
+            else
+
+                -- currentDistanceTextWidget.Label = string.format("Distance: %.3f", 1.0)
+                radiusSliderValue.Value = {1.0, 0, 0, 0}
+                LightRadiusValues[selectedLight.uuid] = 1.0
+            end
+            
+            if temperature then
+
+                temperatureSlider.Value = {temperature, 0, 0, 0}
+            else 
+
+                temperatureSlider.Value = {5600, 0, 0, 0}
+                LightTemperatureValues[selectedLight.uuid] = 5600
+            end
         end
     else
-        -- Reset text if no light selected _ai
-        currentIntensityTextWidget.Label = string.format("Power: %.3f", 0.0)
-        currentDistanceTextWidget.Label = string.format("Distance: %.3f", 0.0)
+        -- currentIntensityTextWidget.Label = string.format("Power: %.3f", 0.0)
+        -- currentDistanceTextWidget.Label = string.format("Distance: %.3f", 0.0)
     end
 end
 
@@ -227,8 +255,8 @@ function startButtonCooldown(buttonType)
 end
 
 -- Stick to camera thing
-function CameraStick(widget)
-    if widget.Checked then
+function CameraStick(checkbox)
+    if checkbox.Checked then
         cameraFollowSubscriptionId = Ext.Events.Tick:Subscribe(function()
             if not LightDropdown or LightDropdown.SelectedIndex < 0 then return end
             local selectedLight = ClientSpawnedLights[LightDropdown.SelectedIndex + 1]   
@@ -273,9 +301,9 @@ end
 
 -- UI Event Handlers _ai
 
-function LightTypeChange(widget)
+function LightTypeChange(combo)
     -- Light type combo box change handler _ai
-    local selectedType = lightTypes[widget.SelectedIndex + 1]
+    local selectedType = lightTypes[combo.SelectedIndex + 1]
     if selectedType then
         -- print("[Client] Light type selected:", selectedType)
     end
@@ -336,19 +364,19 @@ function DeleteAllClick(deleteAllButton, confirmButton)
     end)
 end
 
-function ColorPickerChange(widget)
+function ColorPickerChange(picker)
     if LightDropdown and LightDropdown.SelectedIndex >= 0 then
         local light = ClientSpawnedLights[LightDropdown.SelectedIndex + 1]
         if light then
             -- Save color picker values for this light _ai
             LightColorValues[light.uuid] = {
-                r = widget.Color[1],
-                g = widget.Color[2],
-                b = widget.Color[3]
+                r = picker.Color[1],
+                g = picker.Color[2],
+                b = picker.Color[3]
             }
             
             -- Get color values directly from widget _ai
-            local color = widget.Color
+            local color = picker.Color
             if color then
                 UpdateLightColor(color)
             end
@@ -356,29 +384,21 @@ function ColorPickerChange(widget)
     end
 end
 
-function IntensitySliderChange(widget)
-    local currentValue = tonumber(widget.Value[1])
+
+function IntensitySliderChange(slider)
+    local currentValue = tonumber(slider.Value[1])
+    
     if currentValue and currentValue ~= 0 and LightDropdown.SelectedIndex >= 0 then
         local light = ClientSpawnedLights[LightDropdown.SelectedIndex + 1]
         if light then
             local vfxEntity = vfxEntClient[LightDropdown.SelectedIndex + 1]
             if vfxEntity then
-                -- Calculate new intensity value _ai
-                -- local currentIntensity = LightIntensityValues[light.uuid] or 1.0
-                -- local newIntensity = currentIntensity + (currentValue * 0.00001)
+
+                LightIntensityValues[light.uuid] = currentValue
                 
-                -- Save the intensity value _ai
-                LightIntensityValues[light.uuid] = newIntensity
-
-
-                newIntensity = currentValue
-
-
-                -- Update VFX _ai
-                UpdateVFXIntensity(vfxEntity, newIntensity)
-                UpdateValuesText() -- Update values text _ai
+                UpdateVFXIntensity(vfxEntity, currentValue)
+                UpdateValuesText()
             end
-            -- widget.Value = {0, 0, 0, 0}
         end
     end
 end
@@ -390,34 +410,26 @@ function ResetIntensityClick()
         if light and vfxEntity then
             currentValues.intensity[light.uuid] = 1.0
             UpdateVFXIntensity(vfxEntity, currentValues.intensity[light.uuid])
-            LightIntensityValues[light.uuid] = 1.0 -- Update stored intensity value _ai
-            UpdateValuesText() -- Update values text _ai
+            LightIntensityValues[light.uuid] = 1.0
+            UpdateValuesText()
         end
     end
 end
 
-function RadiusSliderChange(widget)
-    local currentValue = tonumber(widget.Value[1])
+function RadiusSliderChange(slider)
+    local currentValue = tonumber(slider.Value[1])
+    
     if currentValue and currentValue ~= 0 and LightDropdown.SelectedIndex >= 0 then
         local light = ClientSpawnedLights[LightDropdown.SelectedIndex + 1]
         if light then
             local vfxEntity = vfxEntClient[LightDropdown.SelectedIndex + 1]
             if vfxEntity then
-                -- Calculate new radius value _ai
-                -- local currentRadius = LightRadiusValues[light.uuid] or 1.0
-                -- local newRadius = currentRadius + (currentValue * 0.00001)
-                
-                -- -- Save the radius value _ai
-                LightRadiusValues[light.uuid] = newRadius
-                
 
-                newRadius = currentValue
-
-                -- Update VFX _ai
-                UpdateVFXRadius(vfxEntity, newRadius)
-                UpdateValuesText() -- Update values text _ai
+                LightRadiusValues[light.uuid] = currentValue
+                
+                UpdateVFXRadius(vfxEntity, currentValue)
+                UpdateValuesText()
             end
-            -- widget.Value = {0, 0, 0, 0}
         end
     end
 end
@@ -435,26 +447,26 @@ function ResetRadiusClick()
     end
 end
 
-function TemperatureSliderChange(widget)
+function TemperatureSliderChange(slider)
     if LightDropdown and LightDropdown.SelectedIndex >= 0 then
         local light = ClientSpawnedLights[LightDropdown.SelectedIndex + 1]
         if light then
-            local temperature = widget.Value[1]
+            local temperature = slider.Value[1]
+            
+            LightTemperatureValues[light.uuid] = temperature
+            
             local color = KelvinToRGB(temperature)
             
-            -- Save color values for this light _ai
             LightColorValues[light.uuid] = {
                 r = color[1],
                 g = color[2],
                 b = color[3]
             }
             
-            -- Update color picker to match temperature _ai
             if colorPicker then
                 colorPicker.Color = color
             end
             
-            -- Update light color _ai
             UpdateLightColor(color)
         end
     end
@@ -1423,6 +1435,11 @@ function ResetGoboRotation(goboLightDropdown, axis)
         Ext.Net.PostMessageToServer("ResetGoboRotation", Ext.Json.Stringify(data))
     end
 end
+
+LightIntensityValues = LightIntensityValues or {}
+LightRadiusValues = LightRadiusValues or {}
+LightColorValues = LightColorValues or {}
+LightTemperatureValues = LightTemperatureValues or {}
 
 
 
