@@ -157,6 +157,7 @@ function ReplaceLight()
                     radius = oldRadius
                 }
             }
+            UpdateValuesText()
             Ext.Net.PostMessageToServer("ReplaceLight", Ext.Json.Stringify(data))
         end
     end
@@ -185,7 +186,7 @@ function DuplicateLight()
             radius = LightRadiusValues[selectedLight.uuid]
         }
     }
-    
+    UpdateValuesText()
     Ext.Net.PostMessageToServer("DuplicateLight", Ext.Json.Stringify(data))
 end
 

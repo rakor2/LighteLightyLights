@@ -103,7 +103,8 @@ end
 
 function GetPlayerDummyPosition()
     local ent = FindTLPreviewDummyPlayer()
-    dummyPos = ent.Transform.Transform.Translate
+    if not ent then return end
+    local dummyPos = ent.Transform.Transform.Translate
     x = dummyPos[1]
     y = dummyPos[2]
     z = dummyPos[3]

@@ -152,16 +152,6 @@ function MainTab2(mt2)
         Settings.Save()
     end
 
-    local tbdText = mt2:AddText("TBD:")
-    local tbdText2 = mt2:AddText([[
-    Sun and Moon controls (I'm coding it by myself with no AI, so don't expect in near future)
-    Fix toggle all markers
-    Gobo rotation 
-    Create particle effects
-    More gobo masks
-    Undo/redo
-    Absolute value sliders as option]])
-
 end
 
 function MainWindow(mw)
@@ -170,6 +160,7 @@ function MainWindow(mw)
     ViewportSize = Ext.IMGUI.GetViewportSize()
     mw:SetPos({ViewportSize[1]/6, ViewportSize[2]/10})
     mw:SetSize({622, 1000})
+    -- mw.AlwaysAutoResize = true
 
     mw.Visible = true
     mw.Closeable = true
@@ -298,10 +289,13 @@ function MainWindowTab(parent) -- local parent = mw
         ReplaceLight()
     end
 
+    local separatorPosSource = parent:AddSeparatorText("Character's position source")
+    
+
     -- Add position source checkbox _ai
     local posSourceCheckbox = parent:AddCheckbox("Use client-side position")
     local useOriginPoint = parent:AddCheckbox("Use origin point")
-    local tlDummyCheckbox = parent:AddCheckbox("Use cutscene player position")
+    local tlDummyCheckbox = parent:AddCheckbox("Use cutscene position")
     local CollapsingHeaderOrbit
 
     posSourceCheckbox.IDContext = "PosSourceCheckbox"
@@ -367,8 +361,9 @@ function MainWindowTab(parent) -- local parent = mw
         TemperatureSliderChange(widget)
     end
 
-    local intensitySlider = collapsingHeader:AddSlider("", 0, -2000, 2000, 0.001)
+    intensitySlider = collapsingHeader:AddSlider("", 0, -2000, 2000, 0.001)
     intensitySlider.IDContext = "LightIntensitySlider"
+    intensitySliderValue = intensitySlider
     intensitySlider.OnChange = function(widget)
         IntensitySliderChange(widget)
     end
@@ -385,8 +380,10 @@ function MainWindowTab(parent) -- local parent = mw
         ResetIntensityClick()
     end
 
-    local radiusSlider = collapsingHeader:AddSlider("", 0, -2000, 2000, 0.001)
+    local radiusSlider = collapsingHeader:AddSlider("", 0, 0, 60, 0.001)
     radiusSlider.IDContext = "LightRadiusSlider"
+    radiusSlider.Logarithmic = true
+    radiusSliderValue = radiusSlider
     radiusSlider.OnChange = function(widget)
         RadiusSliderChange(widget)
     end
@@ -1038,7 +1035,7 @@ function AnLWindowTab(parent)
         LTNFavButtonClick("right", ltnFavCombo)
     end
 
-    local ltnFavText = parent:AddText("LTN Favorites")
+    local ltnFavText = parent:AddText("Favorites")
     ltnFavText.SameLine = true
 
     ltnSearchInput.OnChange = function(widget)
@@ -1049,7 +1046,12 @@ function AnLWindowTab(parent)
         LTNComboBoxChange(widget)
     end
 
-    
+    -- local separator = parent:AddSeparator()
+    -- separator:SetColor("Separator", {0.5, 0.5, 0.5, 0})
+        
+    local dummySeparator = parent:AddDummy(1, 1)
+    dummySeparator.IDContext = "ddummySeparator"
+
 
     -- Add ATM controls _ai
     local atmSearchInput = parent:AddInputText("Search ATM", "")
@@ -1108,7 +1110,7 @@ function AnLWindowTab(parent)
         ATMFavButtonClick("right", atmFavCombo)
     end
 
-    local atmFavText = parent:AddText("ATM Favorites")
+    local atmFavText = parent:AddText("Favorites")
     atmFavText.SameLine = true
 
     atmSearchInput.OnChange = function(widget)
@@ -1134,35 +1136,23 @@ function AnLWindowTab(parent)
         ResetAllLTN()
     end
 
-    local appliesSunMoon = parent:AddSeparatorText("xd")
+    local appliesSunMoon = parent:AddSeparatorText("Circles in the sky")
     
 
 
-    local valuesApplyButton = parent:AddButton("Apply day")
-    valuesApplyButton.IDContext = "sunValuesDayLoad"
-    valuesApplyButton.SameLine = false
-    valuesApplyButton.OnClick = function()
-        Ext.Net.PostMessageToServer("valuesApplyDay", "")
-    end
+    -- local valuesApplyButton = parent:AddButton("Apply day")
+    -- valuesApplyButton.IDContext = "sunValuesDayLoad"
+    -- valuesApplyButton.SameLine = false
+    -- valuesApplyButton.OnClick = function()
+    --     Ext.Net.PostMessageToServer("valuesApplyDay", "")
+    -- end
 
-    local valuesApplyButton = parent:AddButton("Apply night")
-    valuesApplyButton.IDContext = "sunValuesNightLoad"
-    valuesApplyButton.SameLine = true
-    valuesApplyButton.OnClick = function()
-        Ext.Net.PostMessageToServer("valuesApplyNight", "")
-    end
 
-    local sunValuesLoadButton = parent:AddButton("Reset all")
-    sunValuesLoadButton.IDContext = "sunValuesLoad"
-    sunValuesLoadButton.SameLine = true
-    sunValuesLoadButton.OnClick = function()
-        Ext.Net.PostMessageToServer("sunValuesResetAll", "")
-        -- ResetSliderValues()
-    end
-
-    local smSeparator = parent:AddSeparatorText("Sun")
+    -- local smSeparator = parent:AddSeparatorText("Sun")
     
-    sunYaw = parent:AddSlider("Yaw", 0, 0, 360, 0.01)
+    local collapsingHeaderSun = parent:AddCollapsingHeader("Sun")
+
+    sunYaw = collapsingHeaderSun:AddSlider("Yaw", 0, 0, 360, 0.01)
     sunYaw.IDContext = "sunYaw"
     sunYaw.SameLine = false
     sunYaw.Value = {0,0,0,0}
@@ -1171,7 +1161,7 @@ function AnLWindowTab(parent)
         UpdateSunYaw(value)
     end
 
-    sunPitch = parent:AddSlider("Pitch", 0, 0, 360, 0.01)
+    sunPitch = collapsingHeaderSun:AddSlider("Pitch", 0, 0, 360, 0.01)
     sunPitch.IDContext = "sunPitch"
     sunPitch.SameLine = false
     sunPitch.OnChange = function(value)
@@ -1179,27 +1169,21 @@ function AnLWindowTab(parent)
         UpdateSunPitch(value)
     end
     
-    sunIntensity = parent:AddSlider("Intensity", 0, 0, 10000, 0.01)
+    sunIntensity = collapsingHeaderSun:AddSlider("Intensity", 0, 0, 1000000, 0.01)
     sunIntensity.IDContext = "sunIntensity"
     sunIntensity.SameLine = false
+    sunIntensity.Logarithmic = true
     sunIntensity.OnChange = function(value)
         --print(sunIntensity.Value[1])
         UpdateSunInt(value)
     end
 
-    -- local sunValuesSaveButton = parent:AddButton("Save values")
-    -- sunValuesSaveButton.IDContext = "sunValuesSave"
-    -- sunValuesSaveButton.SameLine = false
-    -- sunValuesSaveButton.OnClick = function()
-    --     Ext.Net.PostMessageToServer("sunValuesSave", "")
-    -- end
+    -- local moonSeparator = parent:AddSeparatorText("Moon")
 
+    local collapsingHeaderMoon = parent:AddCollapsingHeader("Moon")
 
-
-    local moonSeparator = parent:AddSeparatorText("Moon")
-
-    castLightCheckbox = parent:AddCheckbox("Cast light")
-    castLightCheckbox.IDContext = "UniqueCheckboxID"
+    castLightCheckbox = collapsingHeaderMoon:AddCheckbox("Cast light")
+    castLightCheckbox.IDContext = "castLightCheckbox"
     castLightCheckbox.Checked = false
     castLightCheckbox.SameLine = false
     castLightCheckbox.OnChange = function(value)
@@ -1212,7 +1196,7 @@ function AnLWindowTab(parent)
         end
     end
 
-    moonYaw = parent:AddSlider("Yaw", 0, 0, 360, 0.01)
+    moonYaw = collapsingHeaderMoon:AddSlider("Yaw", 0, 0, 360, 0.01)
     moonYaw.IDContext = "moonYaw"
     moonYaw.SameLine = false
     moonYaw.OnChange = function(value)
@@ -1220,7 +1204,7 @@ function AnLWindowTab(parent)
         UpdateMoonYaw(value)
     end
 
-    moonPitch = parent:AddSlider("Pitch", 0, 0, 360, 0.01)
+    moonPitch = collapsingHeaderMoon:AddSlider("Pitch", 0, 0, 360, 0.01)
     moonPitch.IDContext = "moonPitch"
     moonPitch.SameLine = false
     moonPitch.OnChange = function(value)
@@ -1228,27 +1212,31 @@ function AnLWindowTab(parent)
         UpdateMoonPitch(value)
     end
 
-    moonIntensity = parent:AddSlider("Intensity", 0, 0, 10000, 0.01)
+    moonIntensity = collapsingHeaderMoon:AddSlider("Intensity", 0, 0, 100000, 0.01)
     moonIntensity.IDContext = "moonIntensity"
     moonIntensity.SameLine = false
+    moonIntensity.Logarithmic = true
     moonIntensity.OnChange = function(value)
         --print(moonIntensity.Value[1])
         UpdateMoonInt(value)
     end
 
 
-    moonRadius = parent:AddSlider("Radius", 0, 0, 10000, 0.01)
+    moonRadius = collapsingHeaderMoon:AddSlider("Radius", 0, 0, 100000, 0.01)
     moonRadius.IDContext = "moonRadius"
     moonRadius.SameLine = false
+    moonRadius.Logarithmic = true
     moonRadius.OnChange = function(value)
         --print(moonRadius.Value[1])
         UpdateMoonRadius(value)
     end
     
 
-    local starsSeparator = parent:AddSeparatorText("Stars")
+    -- local starsSeparator = parent:AddSeparatorText("Stars")
     
-    starsCheckbox = parent:AddCheckbox("Stars")
+    local collapsingHeaderStars = parent:AddCollapsingHeader("Stars")
+
+    starsCheckbox = collapsingHeaderStars:AddCheckbox("Stars")
     starsCheckbox.IDContext = "starsCheckbox"
     starsCheckbox.Checked = false
     starsCheckbox.SameLine = false
@@ -1264,7 +1252,7 @@ function AnLWindowTab(parent)
         end
     end
     
-    starsAmount = parent:AddSlider("Amount", 0, 0, 50, 0.01)
+    starsAmount = collapsingHeaderStars:AddSlider("Amount", 0, 0, 50, 0.01)
     starsAmount.IDContext = "starsAmount"
     starsAmount.SameLine = false
     starsAmount.OnChange = function(value)
@@ -1272,15 +1260,16 @@ function AnLWindowTab(parent)
         UpdateStarsAmount(value)
     end
 
-    starsIntensity = parent:AddSlider("Intensity", 0, 0, 10000000, 0.01)
+    starsIntensity = collapsingHeaderStars:AddSlider("Intensity", 0, 0, 100000, 0.01)
     starsIntensity.IDContext = "starsIntensity"
     starsIntensity.SameLine = false
+    starsIntensity.Logarithmic = true
     starsIntensity.OnChange = function(value)
         --print(starsIntensity.Value[1])
         UpdateStarsInt(value)
     end
 
-    starsSaturation1 = parent:AddSlider("Saturation 1", 0, 0, 1, 0.01)
+    starsSaturation1 = collapsingHeaderStars:AddSlider("Saturation 1", 0, 0, 1, 0.01)
     starsSaturation1.IDContext = "starsSaturation1"
     starsSaturation1.SameLine = false
     starsSaturation1.OnChange = function(value)
@@ -1288,7 +1277,7 @@ function AnLWindowTab(parent)
         UpdateStarsSaturation1(value)
     end
 
-    starsSaturation2 = parent:AddSlider("Saturation 2", 0, 0, 1, 0.01)
+    starsSaturation2 = collapsingHeaderStars:AddSlider("Saturation 2", 0, 0, 1, 0.01)
     starsSaturation2.IDContext = "starsSaturation2"
     starsSaturation2.SameLine = false
     starsSaturation2.OnChange = function(value)
@@ -1296,7 +1285,7 @@ function AnLWindowTab(parent)
         UpdateStarsSaturation2(value)
     end
 
-    starsShimmer = parent:AddSlider("Shimmer", 0, 0, 10, 0.01)
+    starsShimmer = collapsingHeaderStars:AddSlider("Shimmer", 0, 0, 10, 0.01)
     starsShimmer.IDContext = "starsShimmer"
     starsShimmer.SameLine = false
     starsShimmer.OnChange = function(value)
@@ -1305,9 +1294,11 @@ function AnLWindowTab(parent)
     end
 
 
-    local shadowSeparator = parent:AddSeparatorText("Shadows")
+    -- local shadowSeparator = parent:AddSeparatorText("Shadows")
 
-    cascadeSpeed = parent:AddSlider("Cascade Speed", 0, 0, 1, 0.01)
+    local collapsingHeaderShadows = parent:AddCollapsingHeader("Shadows")
+
+    cascadeSpeed = collapsingHeaderShadows:AddSlider("Cascade Speed", 0, 0, 1, 0.01)
     cascadeSpeed.IDContext = "cascadeSpeed"
     cascadeSpeed.SameLine = false
     cascadeSpeed.OnChange = function(value)
@@ -1315,12 +1306,28 @@ function AnLWindowTab(parent)
         UpdateCascadeSpeed(value)
     end
 
-    lightSize = parent:AddSlider("Light Size", 0, 0, 30, 0.01)
+    lightSize = collapsingHeaderShadows:AddSlider("Light Size", 0, 0, 30, 0.01)
     lightSize.IDContext = "lightSize"
     lightSize.SameLine = false
     lightSize.OnChange = function(value)
         --print(lightSize.Value[1])
         UpdateLightSize(value)
+    end
+
+    local valuesApplyButton = parent:AddButton("Apply")
+    valuesApplyButton.IDContext = "sunValuesNightLoad"
+    valuesApplyButton.OnClick = function()
+        Ext.Net.PostMessageToServer("valuesApply", "")
+    end
+
+    local sunValuesLoadButton = parent:AddButton("Reset all")
+    sunValuesLoadButton.IDContext = "sunValuesLoad"
+    sunValuesLoadButton.SameLine = true
+    sunValuesLoadButton.OnClick = function()
+        Ext.Net.PostMessageToServer("sunValuesResetAll", "")
+        starsCheckbox.Checked = false
+        castLightCheckbox.Checked = false
+        -- ResetSliderValues()
     end
 
 end

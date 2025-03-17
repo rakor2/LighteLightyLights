@@ -31,10 +31,13 @@ function UpdateValuesText()
     if LightDropdown.SelectedIndex >= 0 then
         local selectedLight = ClientSpawnedLights[LightDropdown.SelectedIndex + 1]
         if selectedLight then
-            local intensity = LightIntensityValues[selectedLight.uuid] or 1.0
-            local distance = LightRadiusValues[selectedLight.uuid] or 1.0
+            local intensity = LightIntensityValues[selectedLight.uuid] or 1
+            local distance = LightRadiusValues[selectedLight.uuid] or 1
             currentIntensityTextWidget.Label = string.format("Power: %.3f", intensity)
             currentDistanceTextWidget.Label = string.format("Distance: %.3f", distance)
+            radiusSliderValue.Value = {distance, 0, 0, 0}
+            intensitySliderValue.Value = {intensity, 0, 0,0}
+            print("lol", intensity, distance)
         end
     else
         -- Reset text if no light selected _ai
@@ -361,17 +364,21 @@ function IntensitySliderChange(widget)
             local vfxEntity = vfxEntClient[LightDropdown.SelectedIndex + 1]
             if vfxEntity then
                 -- Calculate new intensity value _ai
-                local currentIntensity = LightIntensityValues[light.uuid] or 1.0
-                local newIntensity = currentIntensity + (currentValue * 0.00001)
+                -- local currentIntensity = LightIntensityValues[light.uuid] or 1.0
+                -- local newIntensity = currentIntensity + (currentValue * 0.00001)
                 
                 -- Save the intensity value _ai
                 LightIntensityValues[light.uuid] = newIntensity
-                
+
+
+                newIntensity = currentValue
+
+
                 -- Update VFX _ai
                 UpdateVFXIntensity(vfxEntity, newIntensity)
                 UpdateValuesText() -- Update values text _ai
             end
-            widget.Value = {0, 0, 0, 0}
+            -- widget.Value = {0, 0, 0, 0}
         end
     end
 end
@@ -397,17 +404,20 @@ function RadiusSliderChange(widget)
             local vfxEntity = vfxEntClient[LightDropdown.SelectedIndex + 1]
             if vfxEntity then
                 -- Calculate new radius value _ai
-                local currentRadius = LightRadiusValues[light.uuid] or 1.0
-                local newRadius = currentRadius + (currentValue * 0.00001)
+                -- local currentRadius = LightRadiusValues[light.uuid] or 1.0
+                -- local newRadius = currentRadius + (currentValue * 0.00001)
                 
-                -- Save the radius value _ai
+                -- -- Save the radius value _ai
                 LightRadiusValues[light.uuid] = newRadius
                 
+
+                newRadius = currentValue
+
                 -- Update VFX _ai
                 UpdateVFXRadius(vfxEntity, newRadius)
                 UpdateValuesText() -- Update values text _ai
             end
-            widget.Value = {0, 0, 0, 0}
+            -- widget.Value = {0, 0, 0, 0}
         end
     end
 end

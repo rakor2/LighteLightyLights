@@ -948,6 +948,32 @@ Ext.RegisterNetListener("sunValuesSave", function(channel, payload)
 
 end)
 
+function valuesApply()
+    local ticksPassed = 0
+    local ticks = 5
+    if currentLTN ~= nil then
+        for i = 1, #ltn_triggers do
+            Osi.TriggerSetLighting(ltn_triggers[i].uuid, "6e3f3623-5c84-a681-6131-2da753fa2c8f")
+            if i == #ltn_triggers then
+                if applyLTNSub then return end 
+                applyLTNSub = Ext.Events.Tick:Subscribe(function()
+                    ticksPassed = ticksPassed + 1
+                    if ticksPassed >= ticks then
+                        for k = 1, #ltn_triggers do
+                            -- print(k, currentLTN)
+                            Osi.TriggerSetLighting(ltn_triggers[k].uuid, currentLTN)
+                            if k == #ltn_triggers then
+                                Ext.Events.Tick:Unsubscribe(applyLTNSub)
+                                applyLTNSub = nil
+                            end
+                        end
+                    end
+                end)
+            end
+        end
+    end
+end
+
 Ext.RegisterNetListener("sunValuesResetAll", function(channel, payload)
     --print("[S][LLL] Load button pressed")
 
@@ -972,17 +998,24 @@ Ext.RegisterNetListener("sunValuesResetAll", function(channel, payload)
         Ext.Resource.Get(ltn_templates[i].uuid, "Lighting").Lighting.SkyLight.ProcStarsShimmer = values.StarsShimmer[i]
         Ext.Resource.Get(ltn_templates[i].uuid, "Lighting").Lighting.Sun.CascadeSpeed = values.CascadeSpeed[i]
         Ext.Resource.Get(ltn_templates[i].uuid, "Lighting").Lighting.Sun.LightSize = values.LightSize[i]
+        if i == #ltn_templates then
+            valuesApply()
+        end
     end
+end)
 
+
+Ext.RegisterNetListener("valuesApply", function(channel, payload)
+    valuesApply()
 end)
 
 
 Ext.RegisterNetListener("CastLight", function(channel, payload)
 
-    local xd = tonumber(payload) == 1
+    local castLightState = tonumber(payload) == 1
 
     for i = 1, #ltn_templates do
-        Ext.Resource.Get(ltn_templates[i].uuid, "Lighting").Lighting.Moon.CastLightEnabled = xd
+        Ext.Resource.Get(ltn_templates[i].uuid, "Lighting").Lighting.Moon.CastLightEnabled = castLightState
     end
 end)
 
@@ -1017,11 +1050,11 @@ end)
 Ext.RegisterNetListener("StarsState", function(channel, payload)
     --print("[S][LLL] Stars state:", payload)
 
-    local xd = tonumber(payload) == 1
+    local starsState = tonumber(payload) == 1
 
     for i = 1, #ltn_templates do
 
-        Ext.Resource.Get(ltn_templates[i].uuid, "Lighting").Lighting.SkyLight.ProcStarsEnabled = xd
+        Ext.Resource.Get(ltn_templates[i].uuid, "Lighting").Lighting.SkyLight.ProcStarsEnabled = starsState 
     end
 end)
 
@@ -1075,60 +1108,31 @@ Ext.RegisterNetListener("LightSize", function(channel, payload)
 end)
 
 
-Ext.RegisterNetListener("valuesApplyDay", function(channel, payload)
-    local ticksPassed = 0
-    local ticks = 5
-    if currentLTN ~= nil then
-        for i = 1, #ltn_triggers do
-            Osi.TriggerSetLighting(ltn_triggers[i].uuid, "308e4292-f1e7-dc5e-9680-a66f28d1a869")
-            if i == #ltn_triggers then
-                if applyLTNSub then return end 
-                applyLTNSub = Ext.Events.Tick:Subscribe(function()
-                    ticksPassed = ticksPassed + 1
-                    if ticksPassed >= ticks then
-                        for k = 1, #ltn_triggers do
-                            -- print(k, currentLTN)
-                            Osi.TriggerSetLighting(ltn_triggers[k].uuid, currentLTN)
-                            if k == #ltn_triggers then
-                                Ext.Events.Tick:Unsubscribe(applyLTNSub)
-                                applyLTNSub = nil
-                            end
-                        end
-                    end
-                end)
-            end
-        end
-    end
-end)
-
-Ext.RegisterNetListener("valuesApplyNight", function(channel, payload)
-    local ticksPassed = 0
-    local ticks = 5
-    if currentLTN ~= nil then
-        for i = 1, #ltn_triggers do
-            Osi.TriggerSetLighting(ltn_triggers[i].uuid, "6e3f3623-5c84-a681-6131-2da753fa2c8f")
-            if i == #ltn_triggers then
-                if applyLTNSub then return end 
-                applyLTNSub = Ext.Events.Tick:Subscribe(function()
-                    ticksPassed = ticksPassed + 1
-                    if ticksPassed >= ticks then
-                        for k = 1, #ltn_triggers do
-                            -- print(k, currentLTN)
-                            Osi.TriggerSetLighting(ltn_triggers[k].uuid, currentLTN)
-                            if k == #ltn_triggers then
-                                Ext.Events.Tick:Unsubscribe(applyLTNSub)
-                                applyLTNSub = nil
-                            end
-                        end
-                    end
-                end)
-            end
-        end
-    end
-end)
-
-
-
+-- Ext.RegisterNetListener("valuesApplyDay", function(channel, payload)
+--     local ticksPassed = 0
+--     local ticks = 5
+--     if currentLTN ~= nil then
+--         for i = 1, #ltn_triggers do
+--             Osi.TriggerSetLighting(ltn_triggers[i].uuid, "18c19ed1-f5f0-0380-ec7c-943ad733f031")
+--             if i == #ltn_triggers then
+--                 if applyLTNSub then return end 
+--                 applyLTNSub = Ext.Events.Tick:Subscribe(function()
+--                     ticksPassed = ticksPassed + 1
+--                     if ticksPassed >= ticks then
+--                         for k = 1, #ltn_triggers do
+--                             -- print(k, currentLTN)
+--                             Osi.TriggerSetLighting(ltn_triggers[k].uuid, currentLTN)
+--                             if k == #ltn_triggers then
+--                                 Ext.Events.Tick:Unsubscribe(applyLTNSub)
+--                                 applyLTNSub = nil
+--                             end
+--                         end
+--                     end
+--                 end)
+--             end
+--         end
+--     end
+-- end)
 
 
 
