@@ -1,0 +1,98 @@
+{
+    "SchemaVersion": 1,
+    "ModName": "Lighty Lights",
+    "Tabs": [
+        {
+            "TabId": "LightyLights-main",
+            "TabName": "Lighty Lights",
+            "Sections": [
+                {
+                    "SectionId": "general_settings",
+                    "SectionName": "",
+                    "Settings": [
+                        {
+                            "Id": "toggle_ll_window",
+                            "Name": "Toggle lighty lights window",
+                            "Type": "keybinding_v2",
+                            "Default": {
+                                "Keyboard": {
+                                    "Key": "INSERT",
+                                    "ModifierKeys": []
+                                }
+                            },
+                            "Description": "looks boring without a description",
+                            "Handles": {
+                                "NameHandle": "",
+                                "DescriptionHandle": ""
+                            }
+                        },
+                        {
+                            "Id": "toggle_light",
+                            "Name": "Toggle selected light",
+                            "Type": "keybinding_v2",
+                            "Default": {
+                                "Keyboard": {
+                                    "Key": "INSERT",
+                                    "ModifierKeys": []
+                                }
+                            },
+                            "Description": "looks empty without a description",
+                            "Handles": {
+                                "NameHandle": "",
+                                "DescriptionHandle": ""
+                            }
+                        },
+                        {
+                            "Id": "toggle_all_lights",
+                            "Name": "Toggle all lights",
+                            "Type": "keybinding_v2",
+                            "Default": {
+                                "Keyboard": {
+                                    "Key": "INSERT",
+                                    "ModifierKeys": []
+                                }
+                            },
+                            "Description": "looks boring without a description",
+                            "Handles": {
+                                "NameHandle": "",
+                                "DescriptionHandle": ""
+                            }
+                        },
+                        {
+                            "Id": "toggle_marker",
+                            "Name": "Toggle marker",
+                            "Type": "keybinding_v2",
+                            "Default": {
+                                "Keyboard": {
+                                    "Key": "INSERT",
+                                    "ModifierKeys": []
+                                }
+                            },
+                            "Description": "looks empty without a description",
+                            "Handles": {
+                                "NameHandle": "",
+                                "DescriptionHandle": ""
+                            }
+                        },
+                        {
+                            "Id": "toggle_all_markers",
+                            "Name": "Toggle all markers",
+                            "Type": "keybinding_v2",
+                            "Default": {
+                                "Keyboard": {
+                                    "Key": "INSERT",
+                                    "ModifierKeys": []
+                                }
+                            },
+                            "Description": "looks boring without a description",
+                            "Handles": {
+                                "NameHandle": "",
+                                "DescriptionHandle": ""
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,126 @@
+LTN_BGO_Camp_A, UUID: f2c0d648-869a-dee1-4842-8ec9e37b0441
+LTN_CIN_Default_Night_VUE_A_EmperorRevealed, UUID: 7500ffaa-b05b-f78d-5dbd-f66b51bdbd2b
+LTN_CIN_Night_VUE_A_LaezelRomance, UUID: 2eeb8720-f5a5-abd3-299a-4cdf56ae7384
+LTN_CIN_Vista_EV14_Noon, UUID: d4421b82-0614-8ad7-94b7-b09f10538933
+LTN_CIN_WLD_Crash_Main_FakeNight_FirstShot_01, UUID: 6e3f3623-5c84-a681-6131-2da753fa2c8f
+LTN_CIN_WLD_Crash_Main_Night_A, UUID: 470a9a44-6b55-53bd-c4ec-3ef6ec48e4ba =
+LTN_CMP_Camp_DungeonShar_A_DayNight, UUID: 5bdb449b-97c3-5b96-1703-b2cee7744925 = 
+LTN_Default_EV10_Avernus_Ext_KarlachAvernusFinale, UUID: cb1d6214-fd23-3c21-ea5c-12629c2136f1 =
+LTN_Default_EV10_CINE_PocketDimension_01, UUID: ce206645-ccf6-25d1-81a7-a1ef68521aed
+LTN_Default_EV10_Dungeon_BonecloaksApothecary_Basement_A, UUID: 4ac832f3-10cf-5eb7-c6e4-acb4ed39c86c
+LTN_Default_EV10_Dungeon_WQHBasement, UUID: f5dad7a5-fa90-d6b5-0199-d66b7a541d57 = 
+LTN_Default_EV10_Underwater, UUID: 4f0b8d3d-7d34-df00-65f5-f9a965843941
+LTN_Default_EV11_Dawn_End_Highhall_A, UUID: a9eec69e-8dda-45a6-4f8d-04cf96c39a10
+LTN_Default_EV11_NoonOvercast_Blizzard, UUID: 24205455-6113-94fa-310f-a113e893b3c5
+LTN_Default_EV11_NoonOvercastwithRain_Test, UUID: 13056f88-9c3b-706d-cd73-3698aac08301
+LTN_Default_EV11_NoonOvercastwithRain, UUID: f9f78a3b-88f9-7225-e111-9a3d8a428a95
+LTN_Default_EV13_WLD_Forest_Village_C, UUID: 6eb7f03f-e13c-d477-b583-9abf49ff98ba
+LTN_Default_EV14_Noon, UUID: f18d6411-edd7-e5b7-2aae-d372a67643f5 = 
+LTN_Default_Morning_VUE_A, UUID: 6ec897a4-997e-3632-30ba-e66ad63dcec6
+LTN_Default_Night_CIN_ShadowheartWolfDream_A, UUID: f4cc74af-9033-a8b4-7b7c-9e6de7cb6c19
+LTN_Default_Night_Nightfall_A, UUID: a893db52-1e14-1a8a-4aa2-016fb906eca5 = 
+LTN_Default_Night_VUE_A_Intermezzo_A, UUID: f3fbd8d5-1c61-22a6-4828-aa89a73ab658 =
+LTN_Default_Overcast_VUE, UUID: 87ceb9e7-4aa5-a294-0ea5-59c4eacea5e3
+LTN_Default_Storm_VUE_H, UUID: 1c646135-1f7e-e3a1-08fb-b9005db95f64
+LTN_Default_WORK, UUID: 1986e8d8-ac72-7bff-64c9-f8538548d505
+LTN_menuscreen_Campfire_A_Night, UUID: a880652f-e7e2-6680-bfd1-e894d8930012
+LTN_Noon_Cloudy_A, UUID: 5313f39f-c0a8-7731-5361-933378f64e9b
+LTN_SCL_Intermezzo_A_EV10_Night, UUID: 29e803da-dfea-94a1-f52a-a6c54025e711
+LTN_StarSky_A, UUID: 80a0365f-ece6-02b4-f17e-c099bbc4895d
+LTN_StarSky_B_old, UUID: 54fa1de5-408d-40b4-7d62-50f3995266f7
+LTN_StarSky_B, UUID: 4969f743-5b68-2741-beaa-8a91ae393330
+LTN_StarSky_CINE_A, UUID: f4566a1f-a02b-0234-7fa5-eb1fad478e67
+LTN_SYS_CC_Dusk_B_ImprovedContrast, UUID: 021ca84b-ada4-306d-ed88-55569b9da05a
+LTN_SYS_CC_Dusk_B, UUID: 724a7d9e-d31c-c54c-a7bc-83ad556b6c80
+LTN_SYS_CC_Dusk_C_ImprovedContrast_Timeline_A, UUID: 02f8b81d-32a3-3336-95ec-ad82d848b11a
+LTN_SYS_CC_Dusk_C_ImprovedContrast, UUID: 26d15cdf-3867-1dd3-95ae-5d978c24679e
+LTN_SYS_Character_Creation_A, UUID: d1a54851-c229-5a36-8067-328fd5e89ab4
+LTN_SYS_Keyart_Dusk_C, UUID: d75e8f87-e3eb-f75b-f0dc-41e1c63f3c41
+LTN_SYS_Menuscreen_Vista_B, UUID: 22d26aa9-90f6-d4bb-8b39-63ad231055ef
+LTN_SYS_MenusScreen_Act3_BlackTransition, UUID: 86a3f299-c68b-6467-c292-a3200afc6387
+LTN_TimelinePreview_Default, UUID: 043c3587-686c-c463-cb4f-9e77a8c4c74f
+LTN_Underdark_Default_KethericCity_A, UUID: c787c4a7-2bac-42ca-0740-3eb4c4848575
+LTN_WLD_Campfire_A_Day, UUID: e12d74ee-8d3c-dd6e-62aa-52191fff6551
+LTN_WLD_Campfire_A_Dusk, UUID: 7e321d52-fceb-1ec4-e93a-b4ae58198951
+LTN_WLD_Campfire_A_Night_C, UUID: c088e2ae-b0f4-e413-4f88-ace474754624
+LTN_WLD_Campfire_A_Night, UUID: 1faaf484-7aaf-e9b5-5cb9-d1ec1da5a588
+LTN_WLD_CIN_Dreamscene_Laezel_A, UUID: 4a56b74c-fc39-5fdb-895f-a4cd5bb2104a
+LTN_WLD_Crashsite_Morning_A_Beach_C, UUID: f7d77810-b7d9-958e-3964-c34309ebf819
+LTN_WLD_Hag_Swamp_Evil_A, UUID: 59fd020a-d47d-273b-a3d5-b4e279dcb181
+LTN_WLD_SharTemple_A_WORK, UUID: db5c03b3-0b27-7d18-623a-6f1e9297ddec
+LTN_BGH_Highberrys_Cellar_A, UUID: 4ffe46ad-b46b-0a3a-c739-d71f1bf209d9
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

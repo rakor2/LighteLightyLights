@@ -1,0 +1,17 @@
+{
+    "maxCacheSize": 100,
+    "hoverMaxFiles": 10,
+    "packingPriority": 0,
+    "hoverEnabled": true,
+    "rootModPath": "i:\\SteamLibrary\\steamapps\\common\\Baldurs Gate 3\\Data\\Mods\\LighterLightyLights_6aa50183-bce4-576e-749f-3a2c60233b09",
+    "modDestPath": "I:\\SteamLibrary\\steamapps\\common\\Baldurs Gate 3\\Mods",
+    "lslibPath": "",
+    "launchContinueGame": false,
+    "excludedFiles": [],
+    "addHandlesToAllLocas": true,
+    "gameInstallLocation": "I:\\SteamLibrary\\steamapps\\common\\Baldurs Gate 3",
+    "modName": "LighterLightyLights_6aa50183-bce4-576e-749f-3a2c60233b09",
+    "excludeHidden": true,
+    "autoCloseBG3": false,
+    "laucherAPI": "DirectX"
+}
