@@ -11,7 +11,7 @@
                     "SectionName": "",
                     "Settings": [
                         {
-                            "Id": "toggle_ll_window",
+                            "Id": "ll_toggle_window",
                             "Name": "Toggle lighty lights window",
                             "Type": "keybinding_v2",
                             "Default": {
@@ -27,7 +27,7 @@
                             }
                         },
                         {
-                            "Id": "toggle_light",
+                            "Id": "ll_toggle_light",
                             "Name": "Toggle selected light",
                             "Type": "keybinding_v2",
                             "Default": {
@@ -43,7 +43,7 @@
                             }
                         },
                         {
-                            "Id": "toggle_all_lights",
+                            "Id": "ll_toggle_all_lights",
                             "Name": "Toggle all lights",
                             "Type": "keybinding_v2",
                             "Default": {
@@ -59,7 +59,7 @@
                             }
                         },
                         {
-                            "Id": "toggle_marker",
+                            "Id": "ll_toggle_marker",
                             "Name": "Toggle marker",
                             "Type": "keybinding_v2",
                             "Default": {
@@ -75,8 +75,40 @@
                             }
                         },
                         {
-                            "Id": "toggle_all_markers",
+                            "Id": "ll_toggle_all_markers",
                             "Name": "Toggle all markers",
+                            "Type": "keybinding_v2",
+                            "Default": {
+                                "Keyboard": {
+                                    "Key": "INSERT",
+                                    "ModifierKeys": []
+                                }
+                            },
+                            "Description": "looks boring without a description",
+                            "Handles": {
+                                "NameHandle": "",
+                                "DescriptionHandle": ""
+                            }
+                        },
+                        {
+                            "Id": "ll_duplicate",
+                            "Name": "Duplicate selected light",
+                            "Type": "keybinding_v2",
+                            "Default": {
+                                "Keyboard": {
+                                    "Key": "INSERT",
+                                    "ModifierKeys": []
+                                }
+                            },
+                            "Description": "looks boring without a description",
+                            "Handles": {
+                                "NameHandle": "",
+                                "DescriptionHandle": ""
+                            }
+                        },
+                        {
+                            "Id": "ll_stick",
+                            "Name": "Stick light to camera",
                             "Type": "keybinding_v2",
                             "Default": {
                                 "Keyboard": {

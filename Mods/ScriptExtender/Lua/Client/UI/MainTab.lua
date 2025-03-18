@@ -36,27 +36,43 @@ function ApplyStyle(window, styleNum)
 end
 
 
+function EnableMCMHotkeys()
+    MCM.SetKeybindingCallback('ll_toggle_window', function()
+        mw.Open = not mw.Open
+    end)
+    
+    MCM.SetKeybindingCallback('ll_toggle_light', function()
+        ToggleLight()
+    end)
+    
+    MCM.SetKeybindingCallback('ll_toggle_all_lights', function()
+        ToggleLights()
+    end)
+    
+    MCM.SetKeybindingCallback('ll_toggle_marker', function()
+        ToggleMarker()
+    end)
+    
+    MCM.SetKeybindingCallback('ll_toggle_all_markers', function()
+        ToggleAllMarkers()
+    end)
+    
+    MCM.SetKeybindingCallback('ll_duplicate', function()
+        DuplicateLight()
+    end)
 
-MCM.SetKeybindingCallback('toggle_ll_window', function()
-    mw.Open = not mw.Open
-end)
+    MCM.SetKeybindingCallback('ll_stick', function()
+        if CheckBoxCF.Checked == false then
+            CheckBoxCF.Checked = true
+            CameraStick()
+        else
+            CheckBoxCF.Checked = false
+            CameraStick()
+        end
+    end)
 
-MCM.SetKeybindingCallback('toggle_light', function()
-    ToggleLight()
-end)
-
-MCM.SetKeybindingCallback('toggle_all_lights', function()
-    ToggleLights()
-end)
-
-MCM.SetKeybindingCallback('toggle_marker', function()
-    ToggleMarker()
-end)
-
-MCM.SetKeybindingCallback('toggle_all_markers', function()
-    ToggleAllMarkers()
-end)
-
+    
+end
 
 
 function MainTab2(mt2)
@@ -71,6 +87,9 @@ function MainTab2(mt2)
     mw.Closeable = true
     MainWindow(mw)
 
+    if mw then
+        EnableMCMHotkeys()
+    end
 
     -- xdText = mt2:AddText("")
 
@@ -415,9 +434,9 @@ function MainWindowTab(parent) -- local parent = mw
     local Separator = parent:AddSeparatorText("Position")
 
     
-    local CheckBoxCF = parent:AddCheckbox("Stick light to camera")
-    CheckBoxCF.OnChange = function(checkbox)
-        CameraStick(checkbox)
+    CheckBoxCF = parent:AddCheckbox("Stick light to camera")
+    CheckBoxCF.OnChange = function()
+        CameraStick()
     end
 
     -- Add save/load position buttons _ai

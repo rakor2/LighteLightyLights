@@ -115,6 +115,20 @@ function ConfirmDeleteAllClick(deleteAllButton, confirmButton)
     lightStates = {}
     currentValues.intensity = {}
     currentValues.radius = {}
+
+    UsedLightSlots = {
+        ["Directional_5"] = {},
+        ["Directional_10"] = {},
+        ["Directional_20"] = {},
+        ["Directional_30"] = {},
+        ["Directional_40"] = {},
+        ["Directional_60"] = {},
+        ["Directional_90"] = {},
+        ["Directional_150"] = {},
+        ["Directional_180"] = {},
+        ["Point"] = {},
+        ["Torch"] = {}
+    }
     
     -- Reset UI _ai
     if LightDropdown then

@@ -255,8 +255,8 @@ function startButtonCooldown(buttonType)
 end
 
 -- Stick to camera thing
-function CameraStick(checkbox)
-    if checkbox.Checked then
+function CameraStick()
+    if CheckBoxCF.Checked then
         cameraFollowSubscriptionId = Ext.Events.Tick:Subscribe(function()
             if not LightDropdown or LightDropdown.SelectedIndex < 0 then return end
             local selectedLight = ClientSpawnedLights[LightDropdown.SelectedIndex + 1]   
@@ -639,9 +639,6 @@ function ToggleLights()
     end
 end
 
-MCM.SetKeybindingCallback('toggle_all_lights', function()
-    ToggleLights()
-end)
 
 -- Toggle single light function _ai
 function ToggleLight()
@@ -672,9 +669,6 @@ function ToggleLight()
     end
 end
 
-MCM.SetKeybindingCallback('toggle_light', function()
-    ToggleLight()
-end)
 
 function DisableVFXEffects(isChecked)
     -- Unsubscribe from previous subscription if exists _ai
