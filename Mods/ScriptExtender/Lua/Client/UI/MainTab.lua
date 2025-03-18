@@ -355,6 +355,7 @@ function MainWindowTab(parent) -- local parent = mw
             useOriginPoint.Checked = false
             ToggleOriginPoint(false)
             posSourceCheckbox.Checked = false
+            CollapsingHeaderOrbit.Label = "Character relative"
         end
         PositionSourceCutscene(checkbox.Checked)
     end
