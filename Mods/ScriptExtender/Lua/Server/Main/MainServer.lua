@@ -10,6 +10,7 @@ lightMarker = nil
 
 -- Create or move marker to light position _ai
 function CreateOrMoveLightMarker(lightUUID)
+    print("here")
     local lightPos = GetLightPosition(lightUUID)
     local rot = GetLightRotation(lightUUID)
     

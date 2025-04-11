@@ -24,12 +24,21 @@ local lightStates = {}
 -- Camera subscription ID for move to camera function _ai
 cameraSubscriptionId = nil
 
+-- Объявление глобальных переменных для цветовых пикеров _ai
+sunColorPicker = nil
+moonColorPicker = nil
+
 -- Function to update values text _ai
 function UpdateValuesText()
-    if not LightDropdown or not currentIntensityTextWidget or not currentDistanceTextWidget then 
-        return 
-    end
-    
+    -- DPrint("-1")
+    -- if not LightDropdown or not currentIntensityTextWidget or not currentDistanceTextWidget then 
+    --     return 
+    -- end
+
+    -- DPrint("0")
+    -- DPrint(LightIntensityValues[selectedLight.uuid], LightRadiusValues[selectedLight.uuid])
+    -- DPrint(currentValues.intensity[selectedLight.uuid], currentValues.radius[selectedLight.uuid])
+
     if LightDropdown.SelectedIndex >= 0 then
         local selectedLight = ClientSpawnedLights[LightDropdown.SelectedIndex + 1]
         if selectedLight then
@@ -41,22 +50,29 @@ function UpdateValuesText()
             if intensity then
                 -- currentIntensityTextWidget.Label = string.format("Power: %.3f", intensity)
                 intensitySliderValue.Value = {intensity, 0, 0, 0}
-
+                -- DPrint("1")
+                -- DPrint(LightIntensityValues[selectedLight.uuid], LightRadiusValues[selectedLight.uuid])
             else
                 -- currentIntensityTextWidget.Label = string.format("Power: %.3f", 1.0)
                 intensitySliderValue.Value = {1.0, 0, 0, 0}
                 LightIntensityValues[selectedLight.uuid] = 1.0
+                -- DPrint("2")
+                -- DPrint(LightIntensityValues[selectedLight.uuid], LightRadiusValues[selectedLight.uuid])
             end
             
             if distance then
 
                 -- currentDistanceTextWidget.Label = string.format("Distance: %.3f", distance)
                 radiusSliderValue.Value = {distance, 0, 0, 0}
+                -- DPrint("3")
+                -- DPrint(currentValues.intensity[selectedLight.uuid], currentValues.radius[selectedLight.uuid])
             else
 
                 -- currentDistanceTextWidget.Label = string.format("Distance: %.3f", 1.0)
                 radiusSliderValue.Value = {1.0, 0, 0, 0}
                 LightRadiusValues[selectedLight.uuid] = 1.0
+                -- DPrint("4")
+                -- DPrint(currentValues.intensity[selectedLight.uuid], currentValues.radius[selectedLight.uuid])
             end
             
             if temperature then
@@ -127,7 +143,7 @@ local orbitState = {
 
 -- Reset orbit state when light is moved by other means _ai
 function ResetOrbitState()
-    -- print("[Client] Resetting orbit state") -- _ai
+    -- DPrint("[Client] Resetting orbit state") -- _ai
     orbitState.initialized = false
 end
 
@@ -262,6 +278,53 @@ function CameraStick()
             local selectedLight = ClientSpawnedLights[LightDropdown.SelectedIndex + 1]   
             local cameras = Ext.Entity.GetAllEntitiesWithComponent("Camera")
             for _, cameraEntity in ipairs(cameras) do
+                local cameraComp = cameraEntity:GetAllComponents().Camera
+                if cameraComp and cameraComp.field_C == 1 then
+                    -- if cameraComp and cameraComp.Active == true then --SE v23
+                    local transform = cameraEntity:GetAllComponents().Transform
+                    if transform.Transform then
+                        local pos = transform.Transform.Translate
+                        local rot = transform.Transform.RotationQuat
+                        local lightEntity = Ext.Entity.Get(selectedLight.uuid)
+                        lightEntity.Transform.Transform.RotationQuat = { rot[1], rot[2], rot[3], rot[4] }
+                        lightEntity.Transform.Transform.Translate = { pos[1], pos[2], pos[3] }
+                        local data = {
+                            lightUUID = selectedLight.uuid,
+                            position = {
+                                x = pos[1],
+                                y = pos[2],
+                                z = pos[3]
+                            },
+                            rotation = {
+                                x = rot[1],
+                                y = rot[2],
+                                z = rot[3],
+                                w = rot[4]
+                            }
+                        }
+                        Ext.Net.PostMessageToServer("ApplyTranformToServerXd", Ext.Json.Stringify(data))
+                        break
+                    end
+                end
+            end
+        end)
+    else
+        if cameraFollowSubscriptionId then
+            Ext.Events.Tick:Unsubscribe(cameraFollowSubscriptionId)
+            cameraFollowSubscriptionId = nil
+        end
+    end
+end
+
+
+
+function CameraStick()
+    if CheckBoxCF.Checked then
+        cameraFollowSubscriptionId = Ext.Events.Tick:Subscribe(function()
+            if not LightDropdown or LightDropdown.SelectedIndex < 0 then return end
+            local selectedLight = ClientSpawnedLights[LightDropdown.SelectedIndex + 1]   
+            local cameras = Ext.Entity.GetAllEntitiesWithComponent("Camera")
+            for _, cameraEntity in ipairs(cameras) do
                 local cameraComp = cameraEntity:GetAllComponents().Camera 
                 if cameraComp and cameraComp.field_C == 1 then
                     local transform = cameraEntity:GetAllComponents().Transform
@@ -305,7 +368,7 @@ function LightTypeChange(combo)
     -- Light type combo box change handler _ai
     local selectedType = lightTypes[combo.SelectedIndex + 1]
     if selectedType then
-        -- print("[Client] Light type selected:", selectedType)
+        -- DPrint("[Client] Light type selected:", selectedType)
     end
 end
 
@@ -313,9 +376,10 @@ function CreateLightClick()
     local lastIndex = #ClientSpawnedLights
     if lastIndex == 0 or vfxEntClient[lastIndex] then
         local selectedType = lightTypes[lightTypeCombo.SelectedIndex + 1]
+        DPrint("CreateLight")
         RequestSpawnLight(selectedType)
     else
-        print("[LLL][C] Cannot spawn light - waiting for previous light VFX")
+        DPrint("[LLL][C] Cannot spawn light - waiting for previous light VFX")
     end
 end
 
@@ -475,7 +539,7 @@ end
 -- Handle LTN button click _ai
 function HandleLTNButtonClick(direction, currentComboIndex)
     if not ltnButtonEnabled then
-        print("[Client] Applying lighting . . .")
+        DPrint("Applying lighting . . .")
         return
     end
     startButtonCooldown("LTN")
@@ -523,7 +587,7 @@ end
 -- Handle ATM button click _ai
 function HandleATMButtonClick(direction, currentComboIndex)
     if not atmButtonEnabled then
-        print("[Client] Applying atmosphere . . .")
+        DPrint("Applying atmosphere . . .")
         return
     end
     startButtonCooldown("ATM")
@@ -673,22 +737,22 @@ end
 function DisableVFXEffects(isChecked)
     -- Unsubscribe from previous subscription if exists _ai
     if vfxSubscription then
-        -- print("[Client] Unsubscribing from previous VFX subscription") -- Debug _ai
+        -- DPrint("[Client] Unsubscribing from previous VFX subscription") -- Debug _ai
         Ext.Events.Tick:Unsubscribe(vfxSubscription)
         vfxSubscription = nil
-        -- print("[Client] Successfully unsubscribed and cleared vfxSubscription") -- Debug _ai
+        -- DPrint("[Client] Successfully unsubscribed and cleared vfxSubscription") -- Debug _ai
     end
 
     -- If checkbox is not checked, just return _ai
     if not isChecked then
-        -- print("[Client] Checkbox unchecked - VFX effects enabled") -- Debug _ai
+        -- DPrint("[Client] Checkbox unchecked - VFX effects enabled") -- Debug _ai
         return
     end
 
-    -- print("[Client] Creating new VFX subscription") -- Debug _ai
+    -- DPrint("[Client] Creating new VFX subscription") -- Debug _ai
     -- Start new subscription _ai
     vfxSubscription = Ext.Events.Tick:Subscribe(function()
-        -- print("[Client] Processing VFX effects - Tick: " .. tickCounter) -- Debug _ai
+        -- DPrint("[Client] Processing VFX effects - Tick: " .. tickCounter) -- Debug _ai
         local effects = Ext.Entity.GetAllEntitiesWithComponent("Effect")
         for _, entity in ipairs(effects) do
             if entity.Effect and string.find(entity.Effect.EffectName, "VFX_") then
@@ -716,7 +780,7 @@ function DisableVFXEffects(isChecked)
         end
         tickCounter = tickCounter + 1
     end)
-    -- print("[Client] VFX subscription created successfully") -- Debug _ai
+    -- DPrint("[Client] VFX subscription created successfully") -- Debug _ai
 end
 
 -- Origin Point functions _ai
@@ -882,7 +946,7 @@ function RemoveFromATMFavorites(templateIndex)
     for i, index in ipairs(ATMFavorites) do
         if index == templateIndex then
             table.remove(ATMFavorites, i)
-            -- print("[Client] Removed ATM template from favorites:", atm_templates[templateIndex].name)
+            -- DPrint("[Client] Removed ATM template from favorites:", atm_templates[templateIndex].name)
             break
         end
     end
@@ -892,7 +956,7 @@ function RemoveFromLTNFavorites(templateIndex)
     for i, index in ipairs(LTNFavorites) do
         if index == templateIndex then
             table.remove(LTNFavorites, i)
-            -- print("[Client] Removed LTN template from favorites:", ltn_templates[templateIndex].name)
+            -- DPrint("[Client] Removed LTN template from favorites:", ltn_templates[templateIndex].name)
             break
         end
     end
@@ -912,35 +976,35 @@ function GetCurrentFavoriteName(templateType, index)
 end
 
 function SaveFavoritesToFile()
-    -- print("[Client][DEBUG] SaveFavoritesToFile called")
+    -- DPrint("[Client][DEBUG] SaveFavoritesToFile called")
     
     local favorites = {
         atm = ATMFavoritesList,
         ltn = LTNFavoritesList
     }
     
-    -- print("[Client][DEBUG] ATM favorites details:")
+    -- DPrint("[Client][DEBUG] ATM favorites details:")
     for i, fav in ipairs(ATMFavoritesList) do
-        -- print(string.format("  [%d] name: %s, index: %d", i, fav.name, fav.index))
+        -- DPrint(string.format("  [%d] name: %s, index: %d", i, fav.name, fav.index))
     end
     
-    -- print("[Client][DEBUG] LTN favorites details:")
+    -- DPrint("[Client][DEBUG] LTN favorites details:")
     for i, fav in ipairs(LTNFavoritesList) do
-        -- print(string.format("  [%d] name: %s, index: %d", i, fav.name, fav.index))
+        -- DPrint(string.format("  [%d] name: %s, index: %d", i, fav.name, fav.index))
     end
     
     local jsonString = Ext.Json.Stringify(favorites)
-    -- print("[Client][DEBUG] JSON to save:", jsonString)
+    -- DPrint("[Client][DEBUG] JSON to save:", jsonString)
     
     local success = Ext.IO.SaveFile("LightyLights/AnL_Favorites.json", jsonString)
-    -- print("[Client][DEBUG] Save result:", success)
+    -- DPrint("[Client][DEBUG] Save result:", success)
     
     if success then
-        -- print("[Client][DEBUG] Successfully saved favorites to file")
-        -- print("[Client][DEBUG] ATM favorites saved count:", #ATMFavoritesList)
-        -- print("[Client][DEBUG] LTN favorites saved count:", #LTNFavoritesList)
+        -- DPrint("[Client][DEBUG] Successfully saved favorites to file")
+        -- DPrint("[Client][DEBUG] ATM favorites saved count:", #ATMFavoritesList)
+        -- DPrint("[Client][DEBUG] LTN favorites saved count:", #LTNFavoritesList)
     else
-        -- print("[Client][ERROR] Failed to save favorites to file")
+        -- DPrint("[Client][ERROR] Failed to save favorites to file")
     end
 end
 
@@ -972,34 +1036,34 @@ end
 
 -- Functions for favorites _ai
 function AddToATMFavorites(templateIndex)
-    -- print("[Client][DEBUG] AddToATMFavorites called with index:", templateIndex)
-    -- print("[Client][DEBUG] atm_templates exists:", atm_templates ~= nil)
+    -- DPrint("[Client][DEBUG] AddToATMFavorites called with index:", templateIndex)
+    -- DPrint("[Client][DEBUG] atm_templates exists:", atm_templates ~= nil)
     
     if not atm_templates then
-        -- print("[Client][ERROR] atm_templates is not initialized")
+        -- DPrint("[Client][ERROR] atm_templates is not initialized")
         return
     end
 
-    -- print("[Client][DEBUG] ATM templates count:", #atm_templates)
-    -- print("[Client][DEBUG] Current template index:", templateIndex)
+    -- DPrint("[Client][DEBUG] ATM templates count:", #atm_templates)
+    -- DPrint("[Client][DEBUG] Current template index:", templateIndex)
     
     local template = atm_templates[templateIndex]
-    -- print("[Client][DEBUG] Template found:", template ~= nil)
+    -- DPrint("[Client][DEBUG] Template found:", template ~= nil)
     
     if template then
-        -- print("[Client][DEBUG] Template name:", template.name)
-        -- print("[Client][DEBUG] Current ATMFavoritesList count:", #ATMFavoritesList)
+        -- DPrint("[Client][DEBUG] Template name:", template.name)
+        -- DPrint("[Client][DEBUG] Current ATMFavoritesList count:", #ATMFavoritesList)
         
         -- Check if already in favorites _ai
         for i, fav in ipairs(ATMFavoritesList) do
-            -- print("[Client][DEBUG] Checking favorite", i, "index:", fav.index)
+            -- DPrint("[Client][DEBUG] Checking favorite", i, "index:", fav.index)
             if fav.index == templateIndex then
-                -- print("[Client][DEBUG] Template already in favorites:", template.name)
+                -- DPrint("[Client][DEBUG] Template already in favorites:", template.name)
                 return
             end
         end
 
-        -- print("[Client][DEBUG] Adding template to favorites:", template.name)
+        -- DPrint("[Client][DEBUG] Adding template to favorites:", template.name)
         
         -- Add to both lists _ai
         table.insert(ATMFavoritesList, {
@@ -1008,22 +1072,22 @@ function AddToATMFavorites(templateIndex)
         })
         table.insert(ATMFavorites, templateIndex)
         
-        -- print("[Client][DEBUG] After adding - ATMFavoritesList count:", #ATMFavoritesList)
-        -- print("[Client][DEBUG] After adding - ATMFavorites count:", #ATMFavorites)
+        -- DPrint("[Client][DEBUG] After adding - ATMFavoritesList count:", #ATMFavoritesList)
+        -- DPrint("[Client][DEBUG] After adding - ATMFavorites count:", #ATMFavorites)
         
         SaveFavoritesToFile()
     else
-        -- print("[Client][ERROR] Template not found at index", templateIndex)
-        -- print("[Client][DEBUG] Available template indices:")
+        -- DPrint("[Client][ERROR] Template not found at index", templateIndex)
+        -- DPrint("[Client][DEBUG] Available template indices:")
         for i, _ in pairs(atm_templates) do
-            -- print("  -", i)
+            -- DPrint("  -", i)
         end
     end
 end
 
 function AddToLTNFavorites(templateIndex)
     if not ltn_templates then
-        -- print("[Client] Error: ltn_templates is not initialized")
+        -- DPrint("[Client] Error: ltn_templates is not initialized")
         return
     end
 
@@ -1031,12 +1095,12 @@ function AddToLTNFavorites(templateIndex)
     if template then
         for _, fav in ipairs(LTNFavoritesList) do
             if fav.index == templateIndex then
-                -- print("[Client] Template already in favorites:", template.name)
+                -- DPrint("[Client] Template already in favorites:", template.name)
                 return
             end
         end
 
-        -- print("[Client] Adding LTN template to favorites:", template.name)
+        -- DPrint("[Client] Adding LTN template to favorites:", template.name)
         
         -- Add to both lists _ai
         table.insert(LTNFavoritesList, {
@@ -1047,7 +1111,7 @@ function AddToLTNFavorites(templateIndex)
         
         SaveFavoritesToFile()
     else
-        -- print("[Client] Error: Template not found at index", templateIndex)
+        -- DPrint("[Client] Error: Template not found at index", templateIndex)
     end
 end
 
@@ -1326,41 +1390,104 @@ function LTNFavComboChange(widget)
 end
 
 function ChangeLTNValues()
-    -- print("LOLOLOL")
-    local sunYawV = Ext.Resource.Get(currentLTN, "Lighting").Lighting.Sun.Yaw
-    local sunPitchV = Ext.Resource.Get(currentLTN, "Lighting").Lighting.Sun.Pitch
-    local sunIntV = Ext.Resource.Get(currentLTN, "Lighting").Lighting.Sun.SunIntensity
-    local moonCastLightV = Ext.Resource.Get(currentLTN, "Lighting").Lighting.Moon.CastLightEnabled
-    local moonYawV = Ext.Resource.Get(currentLTN, "Lighting").Lighting.Moon.Yaw
-    local moonPitchV = Ext.Resource.Get(currentLTN, "Lighting").Lighting.Moon.Pitch
-    local moonIntV = Ext.Resource.Get(currentLTN, "Lighting").Lighting.Moon.Intensity
-    local moonRadiusV = Ext.Resource.Get(currentLTN, "Lighting").Lighting.Moon.Radius
-    local starsStateV = Ext.Resource.Get(currentLTN, "Lighting").Lighting.SkyLight.ProcStarsEnabled
-    local starsAmountV = Ext.Resource.Get(currentLTN, "Lighting").Lighting.SkyLight.ProcStarsAmount
-    local starsIntV = Ext.Resource.Get(currentLTN, "Lighting").Lighting.SkyLight.ProcStarsIntensity
-    local starsSaturation1V = Ext.Resource.Get(currentLTN, "Lighting").Lighting.SkyLight.ProcStarsSaturation[1]
-    local starsSaturation2V = Ext.Resource.Get(currentLTN, "Lighting").Lighting.SkyLight.ProcStarsSaturation[2]
-    local starsShimmerV = Ext.Resource.Get(currentLTN, "Lighting").Lighting.SkyLight.ProcStarsShimmer
-    local cascadeSpeedV = Ext.Resource.Get(currentLTN, "Lighting").Lighting.Sun.CascadeSpeed
-    local lightSizeV = Ext.Resource.Get(currentLTN, "Lighting").Lighting.Sun.LightSize
-
-    sunYaw.Value = {sunYawV,0,0,0}
-    sunPitch.Value = {sunPitchV,0,0,0}
-    sunIntensity.Value = {sunIntV,0,0,0}
-    moonYaw.Value = {moonYawV,0,0,0}
-    moonPitch.Value = {moonPitchV,0,0,0}
-    moonIntensity.Value = {moonIntV,0,0,0}
-    moonRadius.Value = {moonRadiusV,0,0,0}
-    castLightCheckbox.Checked = moonCastLightV
-    starsCheckbox.Checked = starsStateV
-    starsAmount.Value = {starsAmountV,0,0,0}
-    starsIntensity.Value = {starsIntV,0,0,0}
-    starsSaturation1.Value = {starsSaturation1V,0,0,0}
-    starsSaturation2.Value = {starsSaturation2V,0,0,0}
-    starsShimmer.Value = {starsShimmerV,0,0,0}
-    cascadeSpeed.Value = {cascadeSpeedV,0,0,0}
-    lightSize.Value = {lightSizeV,0,0,0}
-
+    local lighting = Ext.Resource.Get(currentLTN, "Lighting").Lighting
+    local sun = lighting.Sun
+    local moon = lighting.Moon
+    local skyLight = lighting.SkyLight
+    local fog = lighting.Fog
+    local volCloud = lighting.VolumetricCloudSettings
+    
+    -- Sun basic
+    sunYaw.Value = {sun.Yaw, 0, 0, 0}
+    sunPitch.Value = {sun.Pitch, 0, 0, 0}
+    sunIntensity.Value = {sun.SunIntensity, 0, 0, 0}
+    sunColor.Color = {sun.SunColor[1], sun.SunColor[2], sun.SunColor[3], 1.0}
+    
+    -- Moon basic
+    moonYaw.Value = {moon.Yaw, 0, 0, 0}
+    moonPitch.Value = {moon.Pitch, 0, 0, 0}
+    moonIntensity.Value = {moon.Intensity, 0, 0, 0}
+    moonRadius.Value = {moon.Radius, 0, 0, 0}
+    moonColor.Color = {moon.Color[1], moon.Color[2], moon.Color[3], 1.0}
+    moonDistance.Value = {moon.Distance, 0, 0, 0}
+    moonEarthshine.Value = {moon.Earthshine, 0, 0, 0}
+    moonEnabledCheckbox.Checked = moon.Enabled
+    moonGlare.Value = {moon.MoonGlare, 0, 0, 0}
+    castLightCheckbox.Checked = moon.CastLightEnabled
+    
+    -- Stars
+    starsCheckbox.Checked = skyLight.ProcStarsEnabled
+    starsAmount.Value = {skyLight.ProcStarsAmount, 0, 0, 0}
+    starsIntensity.Value = {skyLight.ProcStarsIntensity, 0, 0, 0}
+    starsSaturation1.Value = {skyLight.ProcStarsSaturation[1], 0, 0, 0}
+    starsSaturation2.Value = {skyLight.ProcStarsSaturation[2], 0, 0, 0}
+    starsShimmer.Value = {skyLight.ProcStarsShimmer, 0, 0, 0}
+    
+    -- Shadows
+    cascadeSpeed.Value = {sun.CascadeSpeed, 0, 0, 0}
+    lightSize.Value = {sun.LightSize, 0, 0, 0}
+    cascadeCountSlider.Value = {sun.CascadeCount, 0, 0, 0}
+    shadowBiasSlider.Value = {sun.ShadowBias, 0, 0, 0}
+    shadowEnabledCheckbox.Checked = sun.ShadowEnabled
+    shadowFadeSlider.Value = {sun.ShadowFade, 0, 0, 0}
+    shadowFarPlaneSlider.Value = {sun.ShadowFarPlane, 0, 0, 0}
+    shadowNearPlaneSlider.Value = {sun.ShadowNearPlane, 0, 0, 0}
+    
+    -- Fog Layer 0
+    fogLayer0EnabledCheckbox.Checked = fog.FogLayer0.Enabled
+    fogLayer0Density0.Value = {fog.FogLayer0.Density0, 0, 0, 0}
+    fogLayer0Density1.Value = {fog.FogLayer0.Density1, 0, 0, 0}
+    fogLayer0Height0.Value = {fog.FogLayer0.Height0, 0, 0, 0}
+    fogLayer0Height1.Value = {fog.FogLayer0.Height1, 0, 0, 0}
+    fogLayer0NoiseCoverage.Value = {fog.FogLayer0.NoiseCoverage, 0, 0, 0}
+    fogLayer0Albedo.Color = {fog.FogLayer0.Albedo[1], fog.FogLayer0.Albedo[2], fog.FogLayer0.Albedo[3], 1.0}
+    
+    -- Fog Layer 1
+    fogLayer1EnabledCheckbox.Checked = fog.FogLayer1.Enabled
+    fogLayer1Density0.Value = {fog.FogLayer1.Density0, 0, 0, 0}
+    fogLayer1Density1.Value = {fog.FogLayer1.Density1, 0, 0, 0}
+    fogLayer1Height0.Value = {fog.FogLayer1.Height0, 0, 0, 0}
+    fogLayer1Height1.Value = {fog.FogLayer1.Height1, 0, 0, 0}
+    fogLayer1NoiseCoverage.Value = {fog.FogLayer1.NoiseCoverage, 0, 0, 0}
+    fogLayer1Albedo.Color = {fog.FogLayer1.Albedo[1], fog.FogLayer1.Albedo[2], fog.FogLayer1.Albedo[3], 1.0}
+    
+    -- Fog General
+    fogPhase.Value = {fog.Phase, 0, 0, 0}
+    fogRenderDistance.Value = {fog.RenderDistance, 0, 0, 0}
+    
+    -- tearsRotate.Value = {moon.TearsRotate, 0, 0, 0}
+    -- tearsScale.Value = {moon.TearsScale, 0, 0, 0}
+    
+    -- SkyLight
+    cirrusCloudsAmountSlider.Value = {skyLight.CirrusCloudsAmount, 0, 0, 0}
+    cirrusCloudsColor.Color = {skyLight.CirrusCloudsColor[1], skyLight.CirrusCloudsColor[2], skyLight.CirrusCloudsColor[3], 1.0}
+    cirrusCloudsEnabledCheckbox.Checked = skyLight.CirrusCloudsEnabled
+    cirrusCloudsIntensitySlider.Value = {skyLight.CirrusCloudsIntensity, 0, 0, 0}
+    rotateSkydomeEnabledCheckbox.Checked = skyLight.RotateSkydomeEnabled
+    scatteringEnabledCheckbox.Checked = skyLight.ScatteringEnabled
+    scatteringIntensitySlider.Value = {skyLight.ScatteringIntensity, 0, 0, 0}
+    scatteringSunColor.Color = {skyLight.ScatteringSunColor[1], skyLight.ScatteringSunColor[2], skyLight.ScatteringSunColor[3], 1.0}
+    scatteringSunIntensitySlider.Value = {skyLight.ScatteringSunIntensity, 0, 0, 0}
+    skydomeEnabledCheckbox.Checked = skyLight.SkydomeEnabled
+    
+    -- Sun Extended
+    scatteringIntensityScaleSlider.Value = {sun.ScatteringIntensityScale, 0, 0, 0}
+    
+    -- Volumetric Cloud
+    cloudEnabledCheckbox.Checked = volCloud.Enabled
+    cloudAmbientLightFactorSlider.Value = {volCloud.AmbientLightFactor, 0, 0, 0}
+    cloudBaseColor.Color = {volCloud.BaseColor[1], volCloud.BaseColor[2], volCloud.BaseColor[3], 1.0}
+    cloudEndHeightSlider.Value = {volCloud.CoverageSettings.EndHeight, 0, 0, 0}
+    cloudHorizonDistanceSlider.Value = {volCloud.CoverageSettings.HorizonDistance, 0, 0, 0}
+    cloudStartHeightSlider.Value = {volCloud.CoverageSettings.StartHeight, 0, 0, 0}
+    cloudCoverageStartDistanceSlider.Value = {volCloud.CoverageStartDistance, 0, 0, 0}
+    cloudCoverageWindSpeedSlider.Value = {volCloud.CoverageWindSpeed, 0, 0, 0}
+    cloudDetailScaleSlider.Value = {volCloud.DetailScale, 0, 0, 0}
+    cloudIntensitySlider.Value = {volCloud.Intensity, 0, 0, 0}
+    cloudShadowFactorSlider.Value = {volCloud.ShadowFactor, 0, 0, 0}
+    cloudSunLightFactorSlider.Value = {volCloud.SunLightFactor, 0, 0, 0}
+    cloudSunRayLengthSlider.Value = {volCloud.SunRayLength, 0, 0, 0}
+    cloudTopColor.Color = {volCloud.TopColor[1], volCloud.TopColor[2], volCloud.TopColor[3], 1.0}
 end
 
 

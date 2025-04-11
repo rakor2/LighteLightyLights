@@ -1,6 +1,6 @@
 -- -- Test button _ai
 -- Ext.RegisterNetListener("TestButtonClicked", function(channel, payload)
---     --print("[MainServer]", "Test button clicked")
+--     --DPrint("[MainServer]", "Test button clicked")
 -- end)
 
 
@@ -29,23 +29,25 @@ end
 
 -- Handle spawn light request from client _ai
 Ext.RegisterNetListener("SpawnLight", function(channel, payload)
-    -- print("[Server] SpawnLight received with payload:", payload)
+    DPrint("3")
+    -- DPrint("[Server] SpawnLight received with payload:", payload)
     local data = Ext.Json.Parse(payload)
     local posHost = GetHostPosition()
     
     -- Create light and save its UUID _ai
     local lightIndex = #ServerSpawnedLights + 1
     uuidServer[lightIndex] = Osi.CreateAt(data.template, posHost.x, posHost.y, posHost.z, 0, 1, "")
-    
+    DPrint(uuidServer[lightIndex])
+    DPrint("4")
     -- Mark slot as used _ai
     if data.type and data.slotIndex then
-        -- print(string.format("[Server] Marking slot %d as used for type %s", data.slotIndex, data.type))
+        -- DPrint(string.format("[Server] Marking slot %d as used for type %s", data.slotIndex, data.type))
         UsedLightSlots[data.type][data.slotIndex] = true
         
-        -- Debug print current slots state _ai
-        -- print("[Server] Current UsedLightSlots state for", data.type)
+        -- Debug DPrint current slots state _ai
+        -- DPrint("[Server] Current UsedLightSlots state for", data.type)
         for i, slot in ipairs(Light_Actual_Templates_Slots[data.type]) do
-            -- print(string.format("  Slot %d: Used: %s", i, UsedLightSlots[data.type][i] and "Yes" or "No"))
+            -- DPrint(string.format("  Slot %d: Used: %s", i, UsedLightSlots[data.type][i] and "Yes" or "No"))
         end
     end
     
@@ -62,9 +64,13 @@ Ext.RegisterNetListener("SpawnLight", function(channel, payload)
         color = "white"  -- Set initial color to white _ai
     })
     
+    DDump(ServerSpawnedLights)
+    DPrint(uuidServer[lightIndex])
+
+    DPrint("5")
     -- Create or move marker for the new light _ai
     CreateOrMoveLightMarker(uuidServer[lightIndex])
-    
+    DPrint("6")
     -- First sync the list to update clients _ai
     SyncSpawnedLightsToClients()
     
@@ -83,14 +89,14 @@ end)
 -- Handle delete light request _ai
 Ext.RegisterNetListener("Delete", function(channel, payload)
     local index = tonumber(payload)
-    -- print("[Server] Delete request received for index:", index)
+    -- DPrint("[Server] Delete request received for index:", index)
     
     if index and index <= #ServerSpawnedLights then
         local lightData = ServerSpawnedLights[index]
         
         -- Free up the slot _ai
         if lightData.type and lightData.slotIndex then
-            -- print(string.format("[Server] Freeing up slot %d for type %s", lightData.slotIndex, lightData.type))
+            -- DPrint(string.format("[Server] Freeing up slot %d for type %s", lightData.slotIndex, lightData.type))
             UsedLightSlots[lightData.type][lightData.slotIndex] = nil
         end
         
@@ -475,13 +481,13 @@ Ext.RegisterNetListener("UpdateLightOrbit", function(channel, payload)
     local data = Ext.Json.Parse(payload)
     local lightUUID = data.uuid
     
-    -- print("[Server] Orbit Update:") -- _ai
-    -- print(string.format("  Target position: x=%.2f, y=%.2f, z=%.2f", data.x, data.y, data.z)) -- _ai
+    -- DPrint("[Server] Orbit Update:") -- _ai
+    -- DPrint(string.format("  Target position: x=%.2f, y=%.2f, z=%.2f", data.x, data.y, data.z)) -- _ai
     
     if lightUUID then
         -- Get current rotation _ai
         local rot = GetLightRotation(lightUUID)
-        -- print(string.format("  Current rotation: rx=%.2f, ry=%.2f, rz=%.2f", rot.x, rot.y, rot.z)) -- _ai
+        -- DPrint(string.format("  Current rotation: rx=%.2f, ry=%.2f, rz=%.2f", rot.x, rot.y, rot.z)) -- _ai
         
         Osi.ToTransform(lightUUID, data.x, data.y, data.z, rot.x, rot.y, rot.z)
         -- Update marker position _ai
@@ -641,7 +647,7 @@ Ext.RegisterNetListener("ReplaceLight", function(channel, payload)
     local oldUuid = data.uuid
     local newType = data.newType
     
-    print("[Server] Replace light request:", oldUuid, "to type", newType)
+    DPrint("[Server] Replace light request:", oldUuid, "to type", newType)
     
     -- Find old light and get its position and rotation _ai
     local oldLight = nil
@@ -655,7 +661,7 @@ Ext.RegisterNetListener("ReplaceLight", function(channel, payload)
     end
     
     if oldLight then
-        print("[Server] Found old light:", oldLight.type, "slot", oldLight.slotIndex)
+        DPrint("[Server] Found old light:", oldLight.type, "slot", oldLight.slotIndex)
         
         -- Extract the number and custom name from the old light's name _ai
         local oldNumber = oldLight.name:match("#(%d+)")
@@ -675,8 +681,8 @@ Ext.RegisterNetListener("ReplaceLight", function(channel, payload)
         local newTemplate = nil
         local slots = Light_Actual_Templates_Slots[newType]
         
-        -- Debug print current slots state for new type _ai
-        print("[Server] Current slots state for", newType)
+        -- Debug DPrint current slots state for new type _ai
+        DPrint("[Server] Current slots state for", newType)
         for i, slot in ipairs(slots) do
             if slot[2] ~= "nil" then
                 local isUsed = false
@@ -686,7 +692,7 @@ Ext.RegisterNetListener("ReplaceLight", function(channel, payload)
                         break
                     end
                 end
-                print(string.format("  Slot %d: Used: %s", i, isUsed and "Yes" or "No"))
+                DPrint(string.format("  Slot %d: Used: %s", i, isUsed and "Yes" or "No"))
                 if not isUsed then
                     newSlotIndex = i
                     newTemplate = slot[2]
@@ -696,11 +702,11 @@ Ext.RegisterNetListener("ReplaceLight", function(channel, payload)
         end
         
         if not newTemplate then
-            print("[Server] No available slots for type", newType)
+            DPrint("[Server] No available slots for type", newType)
             return
         end
         
-        print("[Server] Selected new slot", newSlotIndex, "with template", newTemplate)
+        DPrint("[Server] Selected new slot", newSlotIndex, "with template", newTemplate)
         
         -- Save gobo data before deleting old light _ai
         local oldGoboUUID = LightGoboMap[oldUuid]
@@ -708,7 +714,7 @@ Ext.RegisterNetListener("ReplaceLight", function(channel, payload)
         
         -- Free up the old slot before deleting the light _ai
         if oldLight.type and oldLight.slotIndex then
-            print(string.format("[Server] Freeing up slot %d for type %s during replacement", oldLight.slotIndex, oldLight.type))
+            DPrint(string.format("[Server] Freeing up slot %d for type %s during replacement", oldLight.slotIndex, oldLight.type))
             UsedLightSlots[oldLight.type][oldLight.slotIndex] = nil
         end
         
@@ -872,7 +878,7 @@ Ext.RegisterNetListener("SaveLightPosition", function(channel, payload)
         rz = rot.z
     }
     
-    -- print(string.format("[Server] Saved position for light: %s", lightUUID))
+    -- DPrint(string.format("[Server] Saved position for light: %s", lightUUID))
 end)
 
 Ext.RegisterNetListener("LoadLightPosition", function(channel, payload)
@@ -883,7 +889,7 @@ Ext.RegisterNetListener("LoadLightPosition", function(channel, payload)
     if SavedLightPositions[lightUUID] then
         local pos = SavedLightPositions[lightUUID]
         
-        -- print(string.format("[Server] Loading position for light %s: x=%.2f, y=%.2f, z=%.2f, rx=%.2f, ry=%.2f, rz=%.2f", 
+        -- DPrint(string.format("[Server] Loading position for light %s: x=%.2f, y=%.2f, z=%.2f, rx=%.2f, ry=%.2f, rz=%.2f", 
         --     lightUUID, pos.x, pos.y, pos.z, pos.rx, pos.ry, pos.rz))
         
         -- Apply saved position and rotation using ToTransform _ai
@@ -892,61 +898,265 @@ Ext.RegisterNetListener("LoadLightPosition", function(channel, payload)
         -- Update marker position _ai
         UpdateMarkerPosition(lightUUID)
         
-        -- print(string.format("[Server] Loaded position for light: %s", lightUUID))
+        -- DPrint(string.format("[Server] Loaded position for light: %s", lightUUID))
     else
-        -- print(string.format("[Server] No saved position found for light: %s", lightUUID))
+        -- DPrint(string.format("[Server] No saved position found for light: %s", lightUUID))
     end
 end)
 
 -- Reset all ATM triggers _ai
 Ext.RegisterNetListener("ResetAllATM", function(channel, payload)
-    -- print("[Server] Resetting all ATM triggers") -- _ai
+    -- DPrint("[Server] Resetting all ATM triggers") -- _ai
     for _, trigger in ipairs(atm_triggers) do
-        -- print("[Server] Resetting ATM trigger:", trigger.name) -- _ai
+        -- DPrint("[Server] Resetting ATM trigger:", trigger.name) -- _ai
         Osi.TriggerResetAtmosphere(trigger.uuid)
     end
 end)
 
 -- Reset all LTN triggers _ai
 Ext.RegisterNetListener("ResetAllLTN", function(channel, payload)
-    -- print("[Server] Resetting all LTN triggers") -- _ai
+    -- DPrint("[Server] Resetting all LTN triggers") -- _ai
     for _, trigger in ipairs(ltn_triggers) do
-        -- print("[Server] Resetting LTN trigger:", trigger.name) -- _ai
+        -- DPrint("[Server] Resetting LTN trigger:", trigger.name) -- _ai
         Osi.TriggerResetLighting(trigger.uuid)
     end
 end)
 
 
+Ext.RegisterNetListener("LTNValueCahnged", function(channel, payload)
+    local data = Ext.Json.Parse(payload)
 
-
-Ext.RegisterNetListener("SunYaw", function(channel, payload)
-    --print("[S][LLL] Sun yaw:", payload)
     for i = 1, #ltn_templates do
-        Ext.Resource.Get(ltn_templates[i].uuid, "Lighting").Lighting.Sun.Yaw = payload
+        local lighting = Ext.Resource.Get(ltn_templates[i].uuid, "Lighting").Lighting
+
+        if data.name == "SunYaw" then lighting.Sun.Yaw = data.value
+        elseif data.name == "SunPitch" then lighting.Sun.Pitch = data.value
+        elseif data.name == "SunInt" then lighting.Sun.SunIntensity = data.value
+        elseif data.name == "SunColor" then lighting.Sun.SunColor = {data.value1,data.value2,data.value3}
+        elseif data.name == "CastLight" then lighting.Moon.CastLightEnabled = data.value
+        elseif data.name == "MoonYaw" then lighting.Moon.Yaw = data.value
+        elseif data.name == "MoonPitch" then lighting.Moon.Pitch = data.value
+        elseif data.name == "MoonInt" then lighting.Sun.Moon.Intensity = data.value
+        elseif data.name == "MoonRadius" then lighting.Sun.Moon.Radius = data.value
+        elseif data.name == "MoonColor" then lighting.Sun.Moon.Color = {data.value1,data.value2,data.value3}
+        elseif data.name == "StarsState" then lighting.SkyLight.ProcStarsEnabled = data.value
+        elseif data.name == "StarsAmount" then lighting.SkyLight.ProcStarsAmount = data.value
+        elseif data.name == "StarsInt" then lighting.SkyLight.ProcStarsIntensity = data.value
+        elseif data.name == "StarsSaturation1" then lighting.SkyLight.ProcStarsSaturation[1] = data.value
+        elseif data.name == "StarsSaturation2" then lighting.SkyLight.ProcStarsSaturation[2] = data.value
+        elseif data.name == "StarsShimmer" then lighting.SkyLight.SkyLight.ProcStarsShimmer = data.value
+        elseif data.name == "CascadeSpeed" then lighting.SkyLight.Sun.CascadeSpeed = data.value
+        elseif data.name == "LightSize" then lighting.Sun.LightSize = data.value
+        
+        --Fog Layer 0
+        elseif data.name == "FogLayer0Enabled" then lighting.Fog.FogLayer0.Enabled = data.value
+        elseif data.name == "FogLayer0Density0" then lighting.Fog.FogLayer0.Density0 = data.value
+        elseif data.name == "FogLayer0Density1" then lighting.Fog.FogLayer0.Density1 = data.value
+        elseif data.name == "FogLayer0Height0" then lighting.Fog.FogLayer0.Height0 = data.value
+        elseif data.name == "FogLayer0Height1" then lighting.Fog.FogLayer0.Height1 = data.value
+        elseif data.name == "FogLayer0NoiseCoverage" then lighting.Fog.FogLayer0.NoiseCoverage = data.value
+        elseif data.name == "FogLayer0Albedo" then lighting.Fog.FogLayer0.Albedo = {data.value1, data.value2, data.value3}
+        
+        --Fog Layer 1
+        elseif data.name == "FogLayer1Enabled" then lighting.Fog.FogLayer1.Enabled = data.value
+        elseif data.name == "FogLayer1Density0" then lighting.Fog.FogLayer1.Density0 = data.value
+        elseif data.name == "FogLayer1Density1" then lighting.Fog.FogLayer1.Density1 = data.value
+        elseif data.name == "FogLayer1Height0" then lighting.Fog.FogLayer1.Height0 = data.value
+        elseif data.name == "FogLayer1Height1" then lighting.Fog.FogLayer1.Height1 = data.value
+        elseif data.name == "FogLayer1NoiseCoverage" then lighting.Fog.FogLayer1.NoiseCoverage = data.value
+        elseif data.name == "FogLayer1Albedo" then lighting.Fog.FogLayer1.Albedo = {data.value1, data.value2, data.value3}
+        
+        --Fog General
+        elseif data.name == "FogPhase" then lighting.Fog.Phase = data.value
+        elseif data.name == "FogRenderDistance" then lighting.Fog.RenderDistance = data.value
+        
+        --Moon Extended
+        elseif data.name == "MoonDistance" then lighting.Moon.Distance = data.value
+        elseif data.name == "MoonEarthshine" then lighting.Moon.Earthshine = data.value
+        elseif data.name == "MoonEnabled" then lighting.Moon.Enabled = data.value
+        elseif data.name == "MoonGlare" then lighting.Moon.MoonGlare = data.value
+        elseif data.name == "TearsRotate" then lighting.Moon.TearsRotate = data.value
+        elseif data.name == "TearsScale" then lighting.Moon.TearsScale = data.value
+        
+        --SkyLight
+        elseif data.name == "CirrusCloudsAmount" then lighting.SkyLight.CirrusCloudsAmount = data.value
+        elseif data.name == "CirrusCloudsColor" then lighting.SkyLight.CirrusCloudsColor = {data.value1, data.value2, data.value3}
+        elseif data.name == "CirrusCloudsEnabled" then lighting.SkyLight.CirrusCloudsEnabled = data.value
+        elseif data.name == "CirrusCloudsIntensity" then lighting.SkyLight.CirrusCloudsIntensity = data.value
+        elseif data.name == "RotateSkydomeEnabled" then lighting.SkyLight.RotateSkydomeEnabled = data.value
+        elseif data.name == "ScatteringEnabled" then lighting.SkyLight.ScatteringEnabled = data.value
+        elseif data.name == "ScatteringIntensity" then lighting.SkyLight.ScatteringIntensity = data.value
+        elseif data.name == "ScatteringSunColor" then lighting.SkyLight.ScatteringSunColor = {data.value1, data.value2, data.value3}
+        elseif data.name == "ScatteringSunIntensity" then lighting.SkyLight.ScatteringSunIntensity = data.value
+        elseif data.name == "SkydomeEnabled" then lighting.SkyLight.SkydomeEnabled = data.value
+        
+        --Sun Extended
+        elseif data.name == "CascadeCount" then lighting.Sun.CascadeCount = data.value
+        elseif data.name == "ShadowBias" then lighting.Sun.ShadowBias = data.value
+        elseif data.name == "ShadowEnabled" then lighting.Sun.ShadowEnabled = data.value
+        elseif data.name == "ShadowFade" then lighting.Sun.ShadowFade = data.value
+        elseif data.name == "ShadowFarPlane" then lighting.Sun.ShadowFarPlane = data.value
+        elseif data.name == "ShadowNearPlane" then lighting.Sun.ShadowNearPlane = data.value
+        elseif data.name == "ScatteringIntensityScale" then lighting.Sun.ScatteringIntensityScale = data.value
+        
+        --Volumetric Cloud
+        elseif data.name == "CloudEnabled" then lighting.VolumetricCloudSettings.Enabled = data.value
+        elseif data.name == "CloudAmbientLightFactor" then lighting.VolumetricCloudSettings.AmbientLightFactor = data.value
+        elseif data.name == "CloudBaseColor" then lighting.VolumetricCloudSettings.BaseColor = {data.value1, data.value2, data.value3}
+        elseif data.name == "CloudEndHeight" then lighting.VolumetricCloudSettings.CoverageSettings.EndHeight = data.value
+        elseif data.name == "CloudHorizonDistance" then lighting.VolumetricCloudSettings.CoverageSettings.HorizonDistance = data.value
+        elseif data.name == "CloudStartHeight" then lighting.VolumetricCloudSettings.CoverageSettings.StartHeight = data.value
+        elseif data.name == "CloudCoverageStartDistance" then lighting.VolumetricCloudSettings.CoverageStartDistance = data.value
+        elseif data.name == "CloudCoverageWindSpeed" then lighting.VolumetricCloudSettings.CoverageWindSpeed = data.value
+        elseif data.name == "CloudDetailScale" then lighting.VolumetricCloudSettings.DetailScale = data.value
+        elseif data.name == "CloudIntensity" then lighting.VolumetricCloudSettings.Intensity = data.value
+        elseif data.name == "CloudShadowFactor" then lighting.VolumetricCloudSettings.ShadowFactor = data.value
+        elseif data.name == "CloudSunLightFactor" then lighting.VolumetricCloudSettings.SunLightFactor = data.value
+        elseif data.name == "CloudSunRayLength" then lighting.VolumetricCloudSettings.SunRayLength = data.value
+        elseif data.name == "CloudTopColor" then lighting.VolumetricCloudSettings.TopColor = {data.value1, data.value2, data.value3}
+        end
     end
 end)
 
-Ext.RegisterNetListener("SunPitch", function(channel, payload)
-    --print("[S][LLL] Sun pitch:", payload)
-    for i = 1, #ltn_templates do
-        Ext.Resource.Get(ltn_templates[i].uuid, "Lighting").Lighting.Sun.Pitch = payload
-    end
-end)
 
-Ext.RegisterNetListener("SunInt", function(channel, payload)
-    --print("[S][LLL] Sun int:", payload)
-    for i = 1, #ltn_templates do
-        Ext.Resource.Get(ltn_templates[i].uuid, "Lighting").Lighting.Sun.SunIntensity = payload
-    end
-end)
+-- Ext.RegisterNetListener("SunYaw", function(channel, payload)
+--     --DPrint("[S][LLL] Sun yaw:", payload)
+--     for i = 1, #ltn_templates do
+--         Ext.Resource.Get(ltn_templates[i].uuid, "Lighting").Lighting.Sun.Yaw = payload
+--     end
+-- end)
+
+-- Ext.RegisterNetListener("SunPitch", function(channel, payload)
+--     --DPrint("[S][LLL] Sun pitch:", payload)
+--     for i = 1, #ltn_templates do
+--         Ext.Resource.Get(ltn_templates[i].uuid, "Lighting").Lighting.Sun.Pitch = payload
+--     end
+-- end)
+
+-- Ext.RegisterNetListener("SunInt", function(channel, payload)
+--     --DPrint("[S][LLL] Sun int:", payload)
+--     for i = 1, #ltn_templates do
+--         Ext.Resource.Get(ltn_templates[i].uuid, "Lighting").Lighting.Sun.SunIntensity = payload
+--     end
+-- end)
+
+-- Ext.RegisterNetListener("SunColor", function(channel, payload)
+
+--     data = Ext.Json.Parse(payload)
+    
+--     --DPrint("[S][LLL] Sun int:", payload)
+--     for i = 1, #ltn_templates do
+--         Ext.Resource.Get(ltn_templates[i].uuid, "Lighting").Lighting.Sun.SunColor = {data.value1,data.value2,data.value3}
+--     end
+-- end)
 
 
-Ext.RegisterNetListener("sunValuesSave", function(channel, payload)
-    --print("[S][LLL] Save button pressed")
+-- Ext.RegisterNetListener("CastLight", function(channel, payload)
 
-    SaveValuesToTable()
+--     local castLightState = tonumber(payload) == 1
 
-end)
+--     for i = 1, #ltn_templates do
+--         Ext.Resource.Get(ltn_templates[i].uuid, "Lighting").Lighting.Moon.CastLightEnabled = castLightState
+--     end
+-- end)
+
+-- Ext.RegisterNetListener("MoonYaw", function(channel, payload)
+--     --DPrint("[S][LLL] Moon yaw:", payload)
+--     for i = 1, #ltn_templates do
+--         Ext.Resource.Get(ltn_templates[i].uuid, "Lighting").Lighting.Moon.Yaw = payload
+--     end
+-- end)
+
+-- Ext.RegisterNetListener("MoonPitch", function(channel, payload)
+--     --DPrint("[S][LLL] Moon pitch:", payload)
+--     for i = 1, #ltn_templates do
+--         Ext.Resource.Get(ltn_templates[i].uuid, "Lighting").Lighting.Moon.Pitch = payload
+--     end
+-- end)
+
+-- Ext.RegisterNetListener("MoonInt", function(channel, payload)
+--     --DPrint("[S][LLL] Moon int:", payload)
+--     for i = 1, #ltn_templates do
+--         Ext.Resource.Get(ltn_templates[i].uuid, "Lighting").Lighting.Moon.Intensity = payload
+--     end
+-- end)
+
+-- Ext.RegisterNetListener("MoonRadius", function(channel, payload)
+--     --DPrint("[S][LLL] Moon radius:", payload)
+--     for i = 1, #ltn_templates do
+--         Ext.Resource.Get(ltn_templates[i].uuid, "Lighting").Lighting.Moon.Radius = payload
+--     end
+-- end)
+
+-- Ext.RegisterNetListener("MoonColor", function(channel, payload)
+
+--     data = Ext.Json.Parse(payload)
+    
+--     --DPrint("[S][LLL] Sun int:", payload)
+--     for i = 1, #ltn_templates do
+--         Ext.Resource.Get(ltn_templates[i].uuid, "Lighting").Lighting.Moon.Color = {data.c1,data.c2,data.c3}
+--     end
+-- end)
+
+-- Ext.RegisterNetListener("StarsState", function(channel, payload)
+--     --DPrint("[S][LLL] Stars state:", payload)
+
+--     local starsState = tonumber(payload) == 1
+
+--     for i = 1, #ltn_templates do
+
+--         Ext.Resource.Get(ltn_templates[i].uuid, "Lighting").Lighting.SkyLight.ProcStarsEnabled = starsState 
+--     end
+-- end)
+
+-- Ext.RegisterNetListener("StarsAmount", function(channel, payload)
+--     --DPrint("[S][LLL] Stars amount:", payload)
+--     for i = 1, #ltn_templates do
+--         Ext.Resource.Get(ltn_templates[i].uuid, "Lighting").Lighting.SkyLight.ProcStarsAmount = payload
+--     end
+-- end)
+
+-- Ext.RegisterNetListener("StarsInt", function(channel, payload)
+--     --DPrint("[S][LLL] Stars int:", payload)
+--     for i = 1, #ltn_templates do
+--         Ext.Resource.Get(ltn_templates[i].uuid, "Lighting").Lighting.SkyLight.ProcStarsIntensity = payload
+--     end
+-- end)
+
+-- Ext.RegisterNetListener("StarsSaturation1", function(channel, payload)
+--     --DPrint("[S][LLL] Stars saturation 1:", payload)
+--     for i = 1, #ltn_templates do
+--         Ext.Resource.Get(ltn_templates[i].uuid, "Lighting").Lighting.SkyLight.ProcStarsSaturation[1] = payload
+--     end
+-- end)
+
+-- Ext.RegisterNetListener("StarsSaturation2", function(channel, payload)
+--     --DPrint("[S][LLL] Stars saturation 2:", payload)
+--     for i = 1, #ltn_templates do
+--         Ext.Resource.Get(ltn_templates[i].uuid, "Lighting").Lighting.SkyLight.ProcStarsSaturation[2] = payload
+--     end
+-- end)
+
+-- Ext.RegisterNetListener("StarsShimmer", function(channel, payload)
+--     --DPrint("[S][LLL] Stars shimmer:", payload)
+--     for i = 1, #ltn_templates do
+--         Ext.Resource.Get(ltn_templates[i].uuid, "Lighting").Lighting.SkyLight.ProcStarsShimmer = payload
+--     end
+-- end)
+
+-- Ext.RegisterNetListener("CascadeSpeed", function(channel, payload)
+--     --DPrint("[S][LLL] Cascade speed:", payload)
+--     for i = 1, #ltn_templates do
+--         Ext.Resource.Get(ltn_templates[i].uuid, "Lighting").Lighting.Sun.CascadeSpeed = payload
+--     end
+-- end)
+
+-- Ext.RegisterNetListener("LightSize", function(channel, payload)
+--     --DPrint("[S][LLL] Light size:", payload)
+--     for i = 1, #ltn_templates do
+--         Ext.Resource.Get(ltn_templates[i].uuid, "Lighting").Lighting.Sun.LightSize = payload
+--     end
+-- end)
 
 function valuesApply()
     local ticksPassed = 0
@@ -960,7 +1170,7 @@ function valuesApply()
                     ticksPassed = ticksPassed + 1
                     if ticksPassed >= ticks then
                         for k = 1, #ltn_triggers do
-                            -- print(k, currentLTN)
+                            -- DPrint(k, currentLTN)
                             Osi.TriggerSetLighting(ltn_triggers[k].uuid, currentLTN)
                             if k == #ltn_triggers then
                                 Ext.Events.Tick:Unsubscribe(applyLTNSub)
@@ -974,165 +1184,196 @@ function valuesApply()
     end
 end
 
-Ext.RegisterNetListener("sunValuesResetAll", function(channel, payload)
-    --print("[S][LLL] Load button pressed")
+
+
+
+Ext.RegisterNetListener("sunValuesResetAll", function (channel, payload)
+    --DPrint("[S][LLL] Load button pressed")
 
     local json = Ext.IO.LoadFile("LightyLights/LTN_Cache.json")
     local values = Ext.Json.Parse(json)
 
     for i = 1, #ltn_templates do
 
-        Ext.Resource.Get(ltn_templates[i].uuid, "Lighting").Lighting.Sun.Yaw = values.SunYaw[i]
-        Ext.Resource.Get(ltn_templates[i].uuid, "Lighting").Lighting.Sun.Pitch = values.SunPitch[i]
-        Ext.Resource.Get(ltn_templates[i].uuid, "Lighting").Lighting.Sun.SunIntensity = values.SunInt[i]
-        Ext.Resource.Get(ltn_templates[i].uuid, "Lighting").Lighting.Moon.CastLightEnabled = values.MoonCastLight[i]
-        Ext.Resource.Get(ltn_templates[i].uuid, "Lighting").Lighting.Moon.Yaw = values.MoonYaw[i]
-        Ext.Resource.Get(ltn_templates[i].uuid, "Lighting").Lighting.Moon.Pitch = values.MoonPitch[i]
-        Ext.Resource.Get(ltn_templates[i].uuid, "Lighting").Lighting.Moon.Intensity = values.MoonInt[i]
-        Ext.Resource.Get(ltn_templates[i].uuid, "Lighting").Lighting.Moon.Radius = values.MoonRadius[i]
-        Ext.Resource.Get(ltn_templates[i].uuid, "Lighting").Lighting.SkyLight.ProcStarsEnabled = values.StarsState[i]
-        Ext.Resource.Get(ltn_templates[i].uuid, "Lighting").Lighting.SkyLight.ProcStarsAmount = values.StarsAmount[i]
-        Ext.Resource.Get(ltn_templates[i].uuid, "Lighting").Lighting.SkyLight.ProcStarsIntensity = values.StarsInt[i]
-        Ext.Resource.Get(ltn_templates[i].uuid, "Lighting").Lighting.SkyLight.ProcStarsSaturation[1] = values.StarsSaturation1[i]
-        Ext.Resource.Get(ltn_templates[i].uuid, "Lighting").Lighting.SkyLight.ProcStarsSaturation[2] = values.StarsSaturation2[i]
-        Ext.Resource.Get(ltn_templates[i].uuid, "Lighting").Lighting.SkyLight.ProcStarsShimmer = values.StarsShimmer[i]
-        Ext.Resource.Get(ltn_templates[i].uuid, "Lighting").Lighting.Sun.CascadeSpeed = values.CascadeSpeed[i]
-        Ext.Resource.Get(ltn_templates[i].uuid, "Lighting").Lighting.Sun.LightSize = values.LightSize[i]
-        if i == #ltn_templates then
-            valuesApply()
-        end
+        local uuid = ltn_templates[i].uuid
+        local parameters = values[uuid][2]
+
+
+            local lighting = Ext.Resource.Get(uuid, "Lighting").Lighting
+            
+            --Sun
+            lighting.Sun.Yaw = parameters.SunYaw
+            lighting.Sun.Pitch = parameters.SunPitch
+            lighting.Sun.SunIntensity = parameters.SunIntensity
+            lighting.Sun.SunColor = { 
+                parameters.SunColor[1],
+                parameters.SunColor[2],
+                parameters.SunColor[3]
+            }
+            lighting.Sun.CascadeCount = parameters.CascadeCount
+            lighting.Sun.CascadeSpeed = parameters.CascadeSpeed
+            lighting.Sun.LightSize = parameters.LightSize
+            lighting.Sun.ShadowBias = parameters.ShadowBias
+            lighting.Sun.ShadowEnabled = parameters.ShadowEnabled
+            lighting.Sun.ShadowFade = parameters.ShadowFade
+            lighting.Sun.ShadowFarPlane = parameters.ShadowFarPlane
+            lighting.Sun.ShadowNearPlane = parameters.ShadowNearPlane
+            lighting.Sun.ShadowObscurity = parameters.ShadowObscurity
+            lighting.Sun.ScatteringIntensityScale = parameters.ScatteringIntensityScale
+
+            --Moon
+            lighting.Moon.Enabled = parameters.MoonEnabled
+            lighting.Moon.Distance = parameters.MoonDistance
+            lighting.Moon.Earthshine = parameters.MoonEarthshine
+            lighting.Moon.MoonGlare = parameters.MoonGlare
+            lighting.Moon.TearsRotate = parameters.TearsRotate
+            lighting.Moon.TearsScale = parameters.TearsScale
+
+            --Fog Layer 0
+            lighting.Fog.FogLayer0.Albedo = {
+                parameters.FogLayer0Albedo[1],
+                parameters.FogLayer0Albedo[2],
+                parameters.FogLayer0Albedo[3]
+            }
+            lighting.Fog.FogLayer0.Density0 = parameters.FogLayer0Density0
+            lighting.Fog.FogLayer0.Density1 = parameters.FogLayer0Density1
+            lighting.Fog.FogLayer0.Enabled = parameters.FogLayer0Enabled
+            lighting.Fog.FogLayer0.Height0 = parameters.FogLayer0Height0
+            lighting.Fog.FogLayer0.Height1 = parameters.FogLayer0Height1
+            lighting.Fog.FogLayer0.NoiseCoverage = parameters.FogLayer0NoiseCoverage
+            lighting.Fog.FogLayer0.NoiseFrequency = {
+                parameters.FogLayer0NoiseFrequency[1],
+                parameters.FogLayer0NoiseFrequency[2],
+                parameters.FogLayer0NoiseFrequency[3]
+            }
+            lighting.Fog.FogLayer0.NoiseRotation = {
+                parameters.FogLayer0NoiseRotation[1],
+                parameters.FogLayer0NoiseRotation[2],
+                parameters.FogLayer0NoiseRotation[3]
+            }
+            lighting.Fog.FogLayer0.NoiseWind = {
+                parameters.FogLayer0NoiseWind[1],
+                parameters.FogLayer0NoiseWind[2],
+                parameters.FogLayer0NoiseWind[3]
+            }
+
+            --Fog Layer 1
+            lighting.Fog.FogLayer1.Albedo = {
+                parameters.FogLayer1Albedo[1],
+                parameters.FogLayer1Albedo[2],
+                parameters.FogLayer1Albedo[3]
+            }
+            lighting.Fog.FogLayer1.Density0 = parameters.FogLayer1Density0
+            lighting.Fog.FogLayer1.Density1 = parameters.FogLayer1Density1
+            lighting.Fog.FogLayer1.Enabled = parameters.FogLayer1Enabled
+            lighting.Fog.FogLayer1.Height0 = parameters.FogLayer1Height0
+            lighting.Fog.FogLayer1.Height1 = parameters.FogLayer1Height1
+            lighting.Fog.FogLayer1.NoiseCoverage = parameters.FogLayer1NoiseCoverage
+            lighting.Fog.FogLayer1.NoiseFrequency = {
+                parameters.FogLayer1NoiseFrequency[1],
+                parameters.FogLayer1NoiseFrequency[2],
+                parameters.FogLayer1NoiseFrequency[3]
+            }
+            lighting.Fog.FogLayer1.NoiseRotation = {
+                parameters.FogLayer1NoiseRotation[1],
+                parameters.FogLayer1NoiseRotation[2],
+                parameters.FogLayer1NoiseRotation[3]
+            }
+            lighting.Fog.FogLayer1.NoiseWind = {
+                parameters.FogLayer1NoiseWind[1],
+                parameters.FogLayer1NoiseWind[2],
+                parameters.FogLayer1NoiseWind[3]
+            }
+
+            --Fog General
+            lighting.Fog.Phase = parameters.FogPhase
+            lighting.Fog.RenderDistance = parameters.FogRenderDistance
+
+            --SkyLight
+            lighting.SkyLight.CirrusCloudsAmount = parameters.CirrusCloudsAmount
+            lighting.SkyLight.CirrusCloudsColor = {
+                parameters.CirrusCloudsColor[1],
+                parameters.CirrusCloudsColor[2],
+                parameters.CirrusCloudsColor[3]
+            }
+            lighting.SkyLight.CirrusCloudsEnabled = parameters.CirrusCloudsEnabled
+            lighting.SkyLight.CirrusCloudsIntensity = parameters.CirrusCloudsIntensity
+            lighting.SkyLight.RotateSkydomeEnabled = parameters.RotateSkydomeEnabled
+            lighting.SkyLight.ScatteringEnabled = parameters.ScatteringEnabled
+            lighting.SkyLight.ScatteringIntensity = parameters.ScatteringIntensity
+            lighting.SkyLight.ScatteringSunColor = {
+                parameters.ScatteringSunColor[1],
+                parameters.ScatteringSunColor[2],
+                parameters.ScatteringSunColor[3]
+            }
+            lighting.SkyLight.ScatteringSunIntensity = parameters.ScatteringSunIntensity
+            lighting.SkyLight.SkydomeEnabled = parameters.SkydomeEnabled
+            lighting.SkyLight.SkydomeTex = parameters.SkydomeTex
+
+            --Volumetric Cloud
+            lighting.VolumetricCloudSettings.AmbientLightFactor = parameters.CloudAmbientLightFactor
+            lighting.VolumetricCloudSettings.BaseColor = {
+                parameters.CloudBaseColor[1],
+                parameters.CloudBaseColor[2],
+                parameters.CloudBaseColor[3]
+            }
+            lighting.VolumetricCloudSettings.CoverageSettings.EndHeight = parameters.CloudEndHeight
+            lighting.VolumetricCloudSettings.CoverageSettings.HorizonDistance = parameters.CloudHorizonDistance
+            lighting.VolumetricCloudSettings.CoverageSettings.Offset = {
+                parameters.CloudOffset[1],
+                parameters.CloudOffset[2]
+            }
+            lighting.VolumetricCloudSettings.CoverageSettings.StartHeight = parameters.CloudStartHeight
+            lighting.VolumetricCloudSettings.CoverageStartDistance = parameters.CloudCoverageStartDistance
+            lighting.VolumetricCloudSettings.CoverageWindSpeed = parameters.CloudCoverageWindSpeed
+            lighting.VolumetricCloudSettings.DetailScale = parameters.CloudDetailScale
+            lighting.VolumetricCloudSettings.Enabled = parameters.CloudEnabled
+            lighting.VolumetricCloudSettings.Intensity = parameters.CloudIntensity
+            lighting.VolumetricCloudSettings.ShadowFactor = parameters.CloudShadowFactor
+            lighting.VolumetricCloudSettings.SunLightFactor = parameters.CloudSunLightFactor
+            lighting.VolumetricCloudSettings.SunRayLength = parameters.CloudSunRayLength
+            lighting.VolumetricCloudSettings.TopColor = {
+                parameters.CloudTopColor[1],
+                parameters.CloudTopColor[2],
+                parameters.CloudTopColor[3]
+            }
     end
+
+    valuesApply()
+    
 end)
+
 
 
 Ext.RegisterNetListener("valuesApply", function(channel, payload)
     valuesApply()
 end)
 
-
-Ext.RegisterNetListener("CastLight", function(channel, payload)
-
-    local castLightState = tonumber(payload) == 1
-
-    for i = 1, #ltn_templates do
-        Ext.Resource.Get(ltn_templates[i].uuid, "Lighting").Lighting.Moon.CastLightEnabled = castLightState
+Ext.RegisterNetListener("valuesApplyDay", function(channel, payload)
+    local ticksPassed = 0
+    local ticks = 5
+    if currentLTN ~= nil then
+        for i = 1, #ltn_triggers do
+            Osi.TriggerSetLighting(ltn_triggers[i].uuid, "18c19ed1-f5f0-0380-ec7c-943ad733f031")
+            if i == #ltn_triggers then
+                if applyLTNSub then return end 
+                applyLTNSub = Ext.Events.Tick:Subscribe(function()
+                    ticksPassed = ticksPassed + 1
+                    if ticksPassed >= ticks then
+                        for k = 1, #ltn_triggers do
+                            -- DPrint(k, currentLTN)
+                            Osi.TriggerSetLighting(ltn_triggers[k].uuid, currentLTN)
+                            if k == #ltn_triggers then
+                                Ext.Events.Tick:Unsubscribe(applyLTNSub)
+                                applyLTNSub = nil
+                            end
+                        end
+                    end
+                end)
+            end
+        end
     end
 end)
-
-Ext.RegisterNetListener("MoonYaw", function(channel, payload)
-    --print("[S][LLL] Moon yaw:", payload)
-    for i = 1, #ltn_templates do
-        Ext.Resource.Get(ltn_templates[i].uuid, "Lighting").Lighting.Moon.Yaw = payload
-    end
-end)
-
-Ext.RegisterNetListener("MoonPitch", function(channel, payload)
-    --print("[S][LLL] Moon pitch:", payload)
-    for i = 1, #ltn_templates do
-        Ext.Resource.Get(ltn_templates[i].uuid, "Lighting").Lighting.Moon.Pitch = payload
-    end
-end)
-
-Ext.RegisterNetListener("MoonInt", function(channel, payload)
-    --print("[S][LLL] Moon int:", payload)
-    for i = 1, #ltn_templates do
-        Ext.Resource.Get(ltn_templates[i].uuid, "Lighting").Lighting.Moon.Intensity = payload
-    end
-end)
-
-Ext.RegisterNetListener("MoonRadius", function(channel, payload)
-    --print("[S][LLL] Moon radius:", payload)
-    for i = 1, #ltn_templates do
-        Ext.Resource.Get(ltn_templates[i].uuid, "Lighting").Lighting.Moon.Radius = payload
-    end
-end)
-
-Ext.RegisterNetListener("StarsState", function(channel, payload)
-    --print("[S][LLL] Stars state:", payload)
-
-    local starsState = tonumber(payload) == 1
-
-    for i = 1, #ltn_templates do
-
-        Ext.Resource.Get(ltn_templates[i].uuid, "Lighting").Lighting.SkyLight.ProcStarsEnabled = starsState 
-    end
-end)
-
-Ext.RegisterNetListener("StarsAmount", function(channel, payload)
-    --print("[S][LLL] Stars amount:", payload)
-    for i = 1, #ltn_templates do
-        Ext.Resource.Get(ltn_templates[i].uuid, "Lighting").Lighting.SkyLight.ProcStarsAmount = payload
-    end
-end)
-
-Ext.RegisterNetListener("StarsInt", function(channel, payload)
-    --print("[S][LLL] Stars int:", payload)
-    for i = 1, #ltn_templates do
-        Ext.Resource.Get(ltn_templates[i].uuid, "Lighting").Lighting.SkyLight.ProcStarsIntensity = payload
-    end
-end)
-
-Ext.RegisterNetListener("StarsSaturation1", function(channel, payload)
-    --print("[S][LLL] Stars saturation 1:", payload)
-    for i = 1, #ltn_templates do
-        Ext.Resource.Get(ltn_templates[i].uuid, "Lighting").Lighting.SkyLight.ProcStarsSaturation[1] = payload
-    end
-end)
-
-Ext.RegisterNetListener("StarsSaturation2", function(channel, payload)
-    --print("[S][LLL] Stars saturation 2:", payload)
-    for i = 1, #ltn_templates do
-        Ext.Resource.Get(ltn_templates[i].uuid, "Lighting").Lighting.SkyLight.ProcStarsSaturation[2] = payload
-    end
-end)
-
-Ext.RegisterNetListener("StarsShimmer", function(channel, payload)
-    --print("[S][LLL] Stars shimmer:", payload)
-    for i = 1, #ltn_templates do
-        Ext.Resource.Get(ltn_templates[i].uuid, "Lighting").Lighting.SkyLight.ProcStarsShimmer = payload
-    end
-end)
-
-Ext.RegisterNetListener("CascadeSpeed", function(channel, payload)
-    --print("[S][LLL] Cascade speed:", payload)
-    for i = 1, #ltn_templates do
-        Ext.Resource.Get(ltn_templates[i].uuid, "Lighting").Lighting.Sun.CascadeSpeed = payload
-    end
-end)
-
-Ext.RegisterNetListener("LightSize", function(channel, payload)
-    --print("[S][LLL] Light size:", payload)
-    for i = 1, #ltn_templates do
-        Ext.Resource.Get(ltn_templates[i].uuid, "Lighting").Lighting.Sun.LightSize = payload
-    end
-end)
-
-
--- Ext.RegisterNetListener("valuesApplyDay", function(channel, payload)
---     local ticksPassed = 0
---     local ticks = 5
---     if currentLTN ~= nil then
---         for i = 1, #ltn_triggers do
---             Osi.TriggerSetLighting(ltn_triggers[i].uuid, "18c19ed1-f5f0-0380-ec7c-943ad733f031")
---             if i == #ltn_triggers then
---                 if applyLTNSub then return end 
---                 applyLTNSub = Ext.Events.Tick:Subscribe(function()
---                     ticksPassed = ticksPassed + 1
---                     if ticksPassed >= ticks then
---                         for k = 1, #ltn_triggers do
---                             -- print(k, currentLTN)
---                             Osi.TriggerSetLighting(ltn_triggers[k].uuid, currentLTN)
---                             if k == #ltn_triggers then
---                                 Ext.Events.Tick:Unsubscribe(applyLTNSub)
---                                 applyLTNSub = nil
---                             end
---                         end
---                     end
---                 end)
---             end
---         end
---     end
--- end)
 
 
 

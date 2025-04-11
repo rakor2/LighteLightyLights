@@ -28,6 +28,8 @@ SimplePrinter = _Class:Create("SimplePrinter", nil, {
     RunningHue = 0,
 })
 
+-- includeTime = false
+
 ---@param h integer hue
 ---@param s integer saturation
 ---@param v integer value
@@ -193,6 +195,7 @@ function SimplePrinter:RunningRainbowPrint(data, depth, includeTime)
     local pre = string.format("[%s] %s[%s]: ", self.Machine, self.Prefix, "PrintR")
     if includeTime == true then
         pre = string.format("%s[%s]", pre, Ext.Utils.MonotonicTime())
+        
     end
     pre = pre.." "
     local infoString,full
@@ -234,35 +237,36 @@ function SimplePrinter:RunningRainbowPrint(data, depth, includeTime)
     Ext.Utils.Print(full)
 end
 
+
+---@vararg any
+function SimplePrinter:PrintFlicker(...)
+    local s = string.format("[%s] %s:", self.Machine, self.Prefix)
+    if self.ApplyColor then
+        s = self:Colorize(s)
+    end
+
+    local f
+    if #{...} <= 1 then
+        f = tostring(...)
+    else
+        f = string.format(...)
+    end
+
+    Ext.Utils.Print('\27[5m' .. s..f .. '\27[0m')
+end
+
+
 SimplePrint = SimplePrinter:New{Prefix = "LLL", ApplyColor = true}
-function SPrint(...) SimplePrint:SetFontColor(58, 183, 255) SimplePrint:Print(...) end
-function STest(...) SimplePrint:SetFontColor(202, 63, 109) SimplePrint:PrintTest(...) end
-function SDebug(...) SimplePrint:SetFontColor(216, 106, 189) SimplePrint:PrintDebug(...) end
-function SWarn(...) SimplePrint:SetFontColor(221, 116, 18) SimplePrint:PrintWarning(...) end
-function SDump(...) SimplePrint:SetFontColor(37, 161, 85) SimplePrint:Dump(...) end
-function SDumpS(...) SimplePrint:SetFontColor(241, 177, 225) SimplePrint:Dump(..., true) end
-function SDumpArray(...) SimplePrint:DumpArray(...) end
+function DPrint(...) SimplePrint:SetFontColor(0, 255, 158) SimplePrint:Print(...) end
+function DTest(...) SimplePrint:SetFontColor(228, 101, 255) SimplePrint:PrintTest(...) end
+function DDebug(...) SimplePrint:SetFontColor(255, 224, 81) SimplePrint:PrintDebug(...) end
+function DWarn(...) SimplePrint:SetFontColor(221, 116, 18) SimplePrint:PrintWarning(...) end
+function DDump(...) SimplePrint:SetFontColor(78, 233, 255) SimplePrint:Dump(...) end
+function DDumpS(...) SimplePrint:SetFontColor(104, 255, 0) SimplePrint:Dump(..., true) end
+function DDumpArray(...) SimplePrint:DumpArray(...) end
 
-function RPrint(...) SimplePrint:RunningRainbowPrint(..., 12, false) end
-function RPrintS(...) SimplePrint:RunningRainbowPrint(..., 1, false) end
--- local printcolor    = rgb(58, 183, 255)
--- local testcolor     = rgb(202, 63, 109)
--- local debugcolor    = rgb(216, 106, 189)
--- local warncolor     = rgb(221, 116, 18)
--- local dumpcolor     = rgb(37, 161, 85)
--- local dumpscolor    = rgb(241, 177, 225)
 
--- SPrint("Print")
--- STest("Test")
--- local dmp = {"DUMP", {["Dump"] = "dumpies", 42, ["Other"] = { 33, ["42"] = 69}}}
--- SDump(dmp)
--- SDebug("Debug")
--- SWarn("Warning")
--- SDumpS(dmp)
--- local td = {}
--- for i = 1, 10, 1 do
---     table.insert(td, i)
---     RPrint("Testing... "..i)
--- end
--- RPrint(td)
--- RPrint(dmp)
+function DFPrint(...) SimplePrint:SetFontColor(0, 255, 158) SimplePrint:PrintFlicker(...) end
+
+function DRPrint(...) SimplePrint:RunningRainbowPrint(..., 12, false) end
+function DRPrintS(...) SimplePrint:RunningRainbowPrint(..., 1, false) end

@@ -1,15 +1,15 @@
--- function SendTestPrint()
+-- function SendTestDPrint()
 --     Ext.Net.PostMessageToServer("TestButtonClicked", "")
 -- end
 
 -- Request spawn light _ai
 function RequestSpawnLight(lightType)
-    -- Debug print available slots _ai
-    -- print("[Client] RequestSpawnLight for type:", lightType)
-    -- print("[Client] Current UsedLightSlots state:")
+    -- Debug DPrint available slots _ai
+    -- DPrint("[Client] RequestSpawnLight for type:", lightType)
+    -- DPrint("[Client] Current UsedLightSlots state:")
     local slots = Light_Actual_Templates_Slots[lightType]
     for i, slot in ipairs(slots) do
-        -- print(string.format("  Slot %d: %s (GUID: %s) - Used: %s", 
+        -- DPrint(string.format("  Slot %d: %s (GUID: %s) - Used: %s", 
         --     i, slot[1], slot[2], 
         --     UsedLightSlots[lightType][i] and "Yes" or "No"))
     end
@@ -22,13 +22,13 @@ function RequestSpawnLight(lightType)
         if slot[2] ~= "nil" and not UsedLightSlots[lightType][i] then
             slotIndex = i
             slotGUID = slot[2]
-            -- print(string.format("[LLL][C] Selected slot %d with GUID: %s", i, slotGUID))
+            -- DPrint(string.format("[LLL][C] Selected slot %d with GUID: %s", i, slotGUID))
             break
         end
     end
     
     if not slotGUID then
-        print("[LLL][C] No available slots for", lightType)
+        DPrint("[LLL][C] No available slots for", lightType)
         return
     end
     
@@ -40,7 +40,8 @@ function RequestSpawnLight(lightType)
         slotIndex = slotIndex
     })
     
-    -- print("[Client] Sending SpawnLight request with payload:", payload)
+    -- DPrint("[Client] Sending SpawnLight request with payload:", payload)
+    DPrint("2")
     Ext.Net.PostMessageToServer("SpawnLight", payload)
 end
 
@@ -71,6 +72,8 @@ function LightDropdownChange(dropdown)
             else
                 currentValues.radius[selectedLight.uuid] = 1.0
             end
+            DPrint(LightIntensityValues[selectedLight.uuid], LightRadiusValues[selectedLight.uuid])
+            DPrint(currentValues.intensity[selectedLight.uuid], currentValues.radius[selectedLight.uuid])
 
             UpdateValuesText()
         end
@@ -318,7 +321,7 @@ function SaveLightPosition()
     if LightDropdown.SelectedIndex >= 0 then
         local light = ClientSpawnedLights[LightDropdown.SelectedIndex + 1]
         if light then
-            -- print(string.format("[Client] Saving position for light: %s", light.uuid))
+            -- DPrint(string.format("[Client] Saving position for light: %s", light.uuid))
             local payload = Ext.Json.Stringify({
                 lightUUID = light.uuid
             })
@@ -332,7 +335,7 @@ function LoadLightPosition()
     if LightDropdown.SelectedIndex >= 0 then
         local light = ClientSpawnedLights[LightDropdown.SelectedIndex + 1]
         if light then
-            -- print(string.format("[Client] Loading position for light: %s", light.uuid))
+            -- DPrint(string.format("[Client] Loading position for light: %s", light.uuid))
             local payload = Ext.Json.Stringify({
                 lightUUID = light.uuid
             })
@@ -416,9 +419,9 @@ end
 function ApplyLTNTemplate(index)
     if index > 0 and index <= #ltn_templates then
         currentLTNIndex = index
-        -- print(string.format("[Client] Applied LTN: %s, UUID: %s", ltn_templates[currentLTNIndex].name, ltn_templates[currentLTNIndex].uuid))
+        -- DPrint(string.format("[Client] Applied LTN: %s, UUID: %s", ltn_templates[currentLTNIndex].name, ltn_templates[currentLTNIndex].uuid))
         for _, trigger in ipairs(ltn_triggers) do
-            -- print(string.format("[Client] - Applied to LTN trigger: %s", trigger.uuid))
+            -- DPrint(string.format("[Client] - Applied to LTN trigger: %s", trigger.uuid))
             local payload = Ext.Json.Stringify({
                 triggerUUID = trigger.uuid,
                 templateUUID = ltn_templates[currentLTNIndex].uuid
@@ -435,10 +438,10 @@ end
 function ApplyATMTemplate(index)
     if index > 0 and index <= #atm_templates then
         currentATMIndex = index
-        -- print(string.format("[Client] Applied ATM: %s", atm_templates[currentATMIndex].name))
+        -- DPrint(string.format("[Client] Applied ATM: %s", atm_templates[currentATMIndex].name))
         
         for _, trigger in ipairs(atm_triggers) do
-            -- print(string.format("[Client] - Applied to ATM trigger: %s", trigger.uuid))
+            -- DPrint(string.format("[Client] - Applied to ATM trigger: %s", trigger.uuid))
             local payload = Ext.Json.Stringify({
                 triggerUUID = trigger.uuid,
                 templateUUID = atm_templates[currentATMIndex].uuid
@@ -449,70 +452,384 @@ function ApplyATMTemplate(index)
 end
 
 
-function UpdateSunYaw(value)
-    Ext.Net.PostMessageToServer("SunYaw", value.Value[1])
+function UpdateValue(name, type, value)
+
+        if type == "value" then
+            local data = {
+                name = name,
+                value = value
+            }
+            Ext.Net.PostMessageToServer("LTNValueCahnged", Ext.Json.Stringify(data))
+
+        elseif type == "value1" then 
+            local data = {
+                name = name,
+                value = value.Value[1]
+            }
+            Ext.Net.PostMessageToServer("LTNValueCahnged", Ext.Json.Stringify(data))
+
+        elseif type == "value4" then
+            local data = {
+                name = name,
+                value1 = value.Color[1],
+                value2 = value.Color[2],
+                value3 = value.Color[3],
+                value4 = value.Color[4]
+            }
+        Ext.Net.PostMessageToServer("LTNValueCahnged", Ext.Json.Stringify(data))
+
+    end
 end
 
-function UpdateSunPitch(value)
-    Ext.Net.PostMessageToServer("SunPitch", value.Value[1])
-end
 
-function UpdateSunInt(value)
-    Ext.Net.PostMessageToServer("SunInt", value.Value[1])
-end
+-- function UpdateSunColor(value)
+--     local data = {
+--         c1 = value.Color[1],
+--         c2 = value.Color[2],
+--         c3 = value.Color[3],
+--         c4 = value.Color[4]
+--     }
+--     Ext.Net.PostMessageToServer("SunColor", Ext.Json.Stringify(data))
+-- end
 
 function UpdateCastLight(value)
     Ext.Net.PostMessageToServer("CastLight", value)
 end
 
-function UpdateMoonYaw(value)
-    Ext.Net.PostMessageToServer("MoonYaw", value.Value[1])
+
+function UpdateMoonColor(value)
+    local data = {
+        c1 = value.Color[1],
+        c2 = value.Color[2],
+        c3 = value.Color[3],
+        c4 = value.Color[4]
+    }
+    Ext.Net.PostMessageToServer("MoonColor", Ext.Json.Stringify(data))
 end
 
-function UpdateMoonPitch(value)
-    Ext.Net.PostMessageToServer("MoonPitch", value.Value[1])
+
+-- Fog Layer 0
+function UpdateFogLayer0Albedo(value)
+    local data = {
+        a1 = value.Color[1],
+        a2 = value.Color[2],
+        a3 = value.Color[3]
+    }
+    Ext.Net.PostMessageToServer("FogLayer0Albedo", Ext.Json.Stringify(data))
 end
 
-function UpdateMoonInt(value)
-    Ext.Net.PostMessageToServer("MoonInt", value.Value[1])
+function UpdateFogLayer0Density0(value)
+    Ext.Net.PostMessageToServer("FogLayer0Density0", value.Value[1])
 end
 
-function UpdateMoonRadius(value)
-    Ext.Net.PostMessageToServer("MoonRadius", value.Value[1])
+function UpdateFogLayer0Density1(value)
+    Ext.Net.PostMessageToServer("FogLayer0Density1", value.Value[1])
 end
 
-function UpdateStarsState(value)
-    Ext.Net.PostMessageToServer("StarsState", value)
+function UpdateFogLayer0Enabled(value)
+    Ext.Net.PostMessageToServer("FogLayer0Enabled", value)
 end
 
-function UpdateStarsAmount(value)
-    Ext.Net.PostMessageToServer("StarsAmount", value.Value[1])
+function UpdateFogLayer0Height0(value)
+    Ext.Net.PostMessageToServer("FogLayer0Height0", value.Value[1])
 end
 
-function UpdateStarsInt(value)
-    Ext.Net.PostMessageToServer("StarsInt", value.Value[1])
+function UpdateFogLayer0Height1(value)
+    Ext.Net.PostMessageToServer("FogLayer0Height1", value.Value[1])
 end
 
-function UpdateStarsSaturation1(value)
-    Ext.Net.PostMessageToServer("StarsSaturation1", value.Value[1])
+function UpdateFogLayer0NoiseCoverage(value)
+    Ext.Net.PostMessageToServer("FogLayer0NoiseCoverage", value.Value[1])
 end
 
-function UpdateStarsSaturation2(value)
-    Ext.Net.PostMessageToServer("StarsSaturation2", value.Value[1])
+function UpdateFogLayer0NoiseFrequency(value)
+    local data = {
+        nf1 = value.Value[1],
+        nf2 = value.Value[2],
+        nf3 = value.Value[3]
+    }
+    Ext.Net.PostMessageToServer("FogLayer0NoiseFrequency", Ext.Json.Stringify(data))
 end
 
-function UpdateStarsShimmer(value)
-    Ext.Net.PostMessageToServer("StarsShimmer", value.Value[1])
+function UpdateFogLayer0NoiseRotation(value)
+    local data = {
+        nr1 = value.Value[1],
+        nr2 = value.Value[2],
+        nr3 = value.Value[3]
+    }
+    Ext.Net.PostMessageToServer("FogLayer0NoiseRotation", Ext.Json.Stringify(data))
 end
 
-function UpdateCascadeSpeed(value)
-    Ext.Net.PostMessageToServer("CascadeSpeed", value.Value[1])
+function UpdateFogLayer0NoiseWind(value)
+    local data = {
+        nw1 = value.Value[1],
+        nw2 = value.Value[2],
+        nw3 = value.Value[3]
+    }
+    Ext.Net.PostMessageToServer("FogLayer0NoiseWind", Ext.Json.Stringify(data))
 end
 
-function UpdateLightSize(value)
-    Ext.Net.PostMessageToServer("LightSize", value.Value[1])
+-- Fog Layer 1
+function UpdateFogLayer1Albedo(value)
+    local data = {
+        nw1 = value.Color[1],
+        nw2 = value.Color[2],
+        nw3 = value.Color[3]
+    }
+    Ext.Net.PostMessageToServer("FogLayer1Albedo", Ext.Json.Stringify(data))
 end
 
+function UpdateFogLayer1Density0(value)
+    Ext.Net.PostMessageToServer("FogLayer1Density0", value.Value[1])
+end
+
+function UpdateFogLayer1Density1(value)
+    Ext.Net.PostMessageToServer("FogLayer1Density1", value.Value[1])
+end
+
+function UpdateFogLayer1Enabled(value)
+    Ext.Net.PostMessageToServer("FogLayer1Enabled", value)
+end
+
+function UpdateFogLayer1Height0(value)
+    Ext.Net.PostMessageToServer("FogLayer1Height0", value.Value[1])
+end
+
+function UpdateFogLayer1Height1(value)
+    Ext.Net.PostMessageToServer("FogLayer1Height1", value.Value[1])
+end
+
+function UpdateFogLayer1NoiseCoverage(value)
+    Ext.Net.PostMessageToServer("FogLayer1NoiseCoverage", value.Value[1])
+end
+
+function UpdateFogLayer1NoiseFrequency(value)
+    local data = {
+        nf1 = value.Value[1],
+        nf2 = value.Value[2],
+        nf3 = value.Value[3]
+    }
+    Ext.Net.PostMessageToServer("FogLayer1NoiseFrequency", Ext.Json.Stringify(data))
+end
+
+function UpdateFogLayer1NoiseRotation(value)
+    local data = {
+        nr1 = value.Value[1],
+        nr2 = value.Value[2],
+        nr3 = value.Value[3]
+    }
+    Ext.Net.PostMessageToServer("FogLayer1NoiseRotation", Ext.Json.Stringify(data))
+end
+
+function UpdateFogLayer1NoiseWind(value)
+    local data = {
+        nw1 = value.Value[1],
+        nw2 = value.Value[2],
+        nw3 = value.Value[3]
+    }
+    Ext.Net.PostMessageToServer("FogLayer1NoiseWind", Ext.Json.Stringify(data))
+end
+
+-- Fog General
+function UpdateFogPhase(value)
+    Ext.Net.PostMessageToServer("FogPhase", value.Value[1])
+end
+
+function UpdateFogRenderDistance(value)
+    Ext.Net.PostMessageToServer("FogRenderDistance", value.Value[1])
+end
+
+-- Moon
+function UpdateMoonDistance(value)
+    Ext.Net.PostMessageToServer("MoonDistance", value.Value[1])
+end
+
+function UpdateMoonEarthshine(value)
+    Ext.Net.PostMessageToServer("MoonEarthshine", value.Value[1])
+end
+
+function UpdateMoonEnabled(value)
+    Ext.Net.PostMessageToServer("MoonEnabled", value)
+end
+
+function UpdateMoonGlare(value)
+    Ext.Net.PostMessageToServer("MoonGlare", value.Value[1])
+end
+
+function UpdateTearsRotate(value)
+    Ext.Net.PostMessageToServer("TearsRotate", value.Value[1])
+end
+
+function UpdateTearsScale(value)
+    Ext.Net.PostMessageToServer("TearsScale", value.Value[1])
+end
+
+-- SkyLight
+function UpdateCirrusCloudsAmount(value)
+    Ext.Net.PostMessageToServer("CirrusCloudsAmount", value.Value[1])
+end
+
+function UpdateCirrusCloudsColor(value)
+    local data = {
+        cc1 = value.Color[1],
+        cc2 = value.Color[2],
+        clampc3 = value.Color[3]
+    }
+    Ext.Net.PostMessageToServer("CirrusCloudsColor", Ext.Json.Stringify(data))
+end
+
+function UpdateCirrusCloudsEnabled(value)
+    Ext.Net.PostMessageToServer("CirrusCloudsEnabled", value)
+end
+
+function UpdateCirrusCloudsIntensity(value)
+    Ext.Net.PostMessageToServer("CirrusCloudsIntensity", value.Value[1])
+end
+
+function UpdateRotateSkydomeEnabled(value)
+    Ext.Net.PostMessageToServer("RotateSkydomeEnabled", value)
+end
+
+function UpdateScatteringEnabled(value)
+    Ext.Net.PostMessageToServer("ScatteringEnabled", value)
+end
+
+function UpdateScatteringIntensity(value)
+    Ext.Net.PostMessageToServer("ScatteringIntensity", value.Value[1])
+end
+
+function UpdateScatteringSunColor(value)
+    local data = {
+        sc1 = value.Color[1],
+        sc2 = value.Color[2],
+        sc3 = value.Color[3]
+    }
+    Ext.Net.PostMessageToServer("ScatteringSunColor", Ext.Json.Stringify(data))
+end
+
+function UpdateScatteringSunIntensity(value)
+    Ext.Net.PostMessageToServer("ScatteringSunIntensity", value.Value[1])
+end
+
+function UpdateSkydomeEnabled(value)
+    Ext.Net.PostMessageToServer("SkydomeEnabled", value)
+end
+
+function UpdateSkydomeTex(value)
+    Ext.Net.PostMessageToServer("SkydomeTex", value)
+end
+
+-- Sun
+function UpdateSunIntensity(value)
+    Ext.Net.PostMessageToServer("SunIntensity", value.Value[1])
+end
+
+function UpdateCascadeCount(value)
+    Ext.Net.PostMessageToServer("CascadeCount", value.Value[1])
+end
+
+function UpdateShadowBias(value)
+    Ext.Net.PostMessageToServer("ShadowBias", value.Value[1])
+end
+
+function UpdateShadowEnabled(value)
+    Ext.Net.PostMessageToServer("ShadowEnabled", value)
+end
+
+function UpdateShadowFade(value)
+    Ext.Net.PostMessageToServer("ShadowFade", value.Value[1])
+end
+
+function UpdateShadowFarPlane(value)
+    Ext.Net.PostMessageToServer("ShadowFarPlane", value.Value[1])
+end
+
+function UpdateShadowNearPlane(value)
+    Ext.Net.PostMessageToServer("ShadowNearPlane", value.Value[1])
+end
+
+function UpdateShadowObscurity(value)
+    Ext.Net.PostMessageToServer("ShadowObscurity", value.Value[1])
+end
+
+function UpdateScatteringIntensityScale(value)
+    Ext.Net.PostMessageToServer("ScatteringIntensityScale", value.Value[1])
+end
+
+-- Volumetric Cloud
+function UpdateCloudAmbientLightFactor(value)
+    Ext.Net.PostMessageToServer("CloudAmbientLightFactor", value.Value[1])
+end
+
+function UpdateCloudBaseColor(value)
+    local data = {
+        cbc1 = value.Color[1],
+        cbc2 = value.Color[2],
+        cbc3 = value.Color[3]
+    }
+    Ext.Net.PostMessageToServer("CloudBaseColor", Ext.Json.Stringify(data))
+end
+
+function UpdateCloudEndHeight(value)
+    Ext.Net.PostMessageToServer("CloudEndHeight", value.Value[1])
+end
+
+function UpdateCloudHorizonDistance(value)
+    Ext.Net.PostMessageToServer("CloudHorizonDistance", value.Value[1])
+end
+
+function UpdateCloudOffset(value)
+    local data = {
+        co1 = value.Value[1],
+        co2 = value.Value[2]
+    }
+    Ext.Net.PostMessageToServer("CloudOffset", Ext.Json.Stringify(data))
+end
+
+function UpdateCloudStartHeight(value)
+    Ext.Net.PostMessageToServer("CloudStartHeight", value.Value[1])
+end
+
+function UpdateCloudCoverageStartDistance(value)
+    Ext.Net.PostMessageToServer("CloudCoverageStartDistance", value.Value[1])
+end
+
+function UpdateCloudCoverageWindSpeed(value)
+    Ext.Net.PostMessageToServer("CloudCoverageWindSpeed", value.Value[1])
+end
+
+function UpdateCloudDetailScale(value)
+    Ext.Net.PostMessageToServer("CloudDetailScale", value.Value[1])
+end
+
+function UpdateCloudEnabled(value)
+    Ext.Net.PostMessageToServer("CloudEnabled", value)
+end
+
+function UpdateCloudIntensity(value)
+    Ext.Net.PostMessageToServer("CloudIntensity", value.Value[1])
+end
+
+function UpdateCloudShadowFactor(value)
+    Ext.Net.PostMessageToServer("CloudShadowFactor", value.Value[1])
+end
+
+function UpdateCloudSunLightFactor(value)
+    Ext.Net.PostMessageToServer("CloudSunLightFactor", value.Value[1])
+end
+
+function UpdateCloudSunRayLength(value)
+    Ext.Net.PostMessageToServer("CloudSunRayLength", value.Value[1])
+end
+
+function UpdateCloudTopColor(value)
+    local data = {
+        ctc1 = value.Color[1],
+        ctc2 = value.Color[2],
+        ctc3 = value.Color[3]
+    }
+    Ext.Net.PostMessageToServer("CloudTopColor", Ext.Json.Stringify(data))
+end
 
 -- Toggle marker function _ai
 function ToggleMarker()

@@ -13,15 +13,15 @@ end
 --     -- Convert angle to radians _ai
 --     local rad = math.rad(angle)
     
---     print("[Math] Orbit Calculation:") -- _ai
---     print(string.format("  Input: angle=%.2f(%.2f rad), radius=%.2f, height=%.2f", angle, rad, radius, height)) -- _ai
+--     DPrint("[Math] Orbit Calculation:") -- _ai
+--     DPrint(string.format("  Input: angle=%.2f(%.2f rad), radius=%.2f, height=%.2f", angle, rad, radius, height)) -- _ai
     
 --     -- Calculate new position _ai
 --     local x = charPos.x + radius * math.cos(rad)
 --     local y = charPos.y + height
 --     local z = charPos.z + radius * math.sin(rad)
     
---     print(string.format("  Result: x=%.2f, y=%.2f, z=%.2f", x, y, z)) -- _ai
+--     DPrint(string.format("  Result: x=%.2f, y=%.2f, z=%.2f", x, y, z)) -- _ai
 --     return x, y, z
 -- end
 

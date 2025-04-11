@@ -82,7 +82,7 @@ function MainTab2(mt2)
 
     -- Create window first _ai
     mw = Ext.IMGUI.NewWindow("Lighty Lights")
-    mw.Open = false
+    mw.Open = true
 
     mw.Closeable = true
     MainWindow(mw)
@@ -203,6 +203,9 @@ function MainWindow(mw)
 
     goboTab = mainTabBar:AddTabItem("Gobo")
     GoboWindowTab(goboTab)
+
+
+    StyleV2:RegisterWindow(mw)
 
     -- -- Add Scene Saver tab to the same TabBar _ai
     -- sceneSaverTab = mainTabBar:AddTabItem("Scene Saver")
@@ -870,6 +873,7 @@ function MainWindowTab(parent) -- local parent = mw
         DisableVFXEffects(widget.Checked)
     end
 
+    
 end
 
 --===============-------------------------------------------------------------------------------------------------------------------------------
@@ -1167,16 +1171,11 @@ function AnLWindowTab(parent)
         ResetAllLTN()
     end
 
-    local appliesSunMoon = parent:AddSeparatorText("Circles in the sky")
+
+
     
+    local appliesSunMoon = parent:AddSeparatorText("Circles in the sky")
 
-
-    -- local valuesApplyButton = parent:AddButton("Apply day")
-    -- valuesApplyButton.IDContext = "sunValuesDayLoad"
-    -- valuesApplyButton.SameLine = false
-    -- valuesApplyButton.OnClick = function()
-    --     Ext.Net.PostMessageToServer("valuesApplyDay", "")
-    -- end
 
 
     -- local smSeparator = parent:AddSeparatorText("Sun")
@@ -1188,16 +1187,16 @@ function AnLWindowTab(parent)
     sunYaw.SameLine = false
     sunYaw.Value = {0,0,0,0}
     sunYaw.OnChange = function(value)
-        -- print(sunYaw.Value[1])
-        UpdateSunYaw(value)
+        -- DPrint(sunYaw.Value[1])
+        UpdateValue("SunYaw", "value1", value)
     end
 
     sunPitch = collapsingHeaderSun:AddSlider("Pitch", 0, 0, 360, 0.01)
     sunPitch.IDContext = "sunPitch"
     sunPitch.SameLine = false
     sunPitch.OnChange = function(value)
-        --print(sunPitch.Value[1])
-        UpdateSunPitch(value)
+        --DPrint(sunPitch.Value[1])
+        UpdateValue("SunPitch", "value1", value)
     end
     
     sunIntensity = collapsingHeaderSun:AddSlider("Intensity", 0, 0, 1000000, 0.01)
@@ -1205,25 +1204,48 @@ function AnLWindowTab(parent)
     sunIntensity.SameLine = false
     sunIntensity.Logarithmic = true
     sunIntensity.OnChange = function(value)
-        --print(sunIntensity.Value[1])
-        UpdateSunInt(value)
+        --DPrint(sunIntensity.Value[1])
+        UpdateValue("SunInt", "value1", value)
     end
+
+    sunColor = collapsingHeaderSun:AddColorPicker("Sun color")
+    sunColor.IDContext = "colorSun"
+    sunColor.Color = {1.0, 1.0, 1.0, 1.0}
+    sunColor.NoAlpha = true
+    sunColor.Float = true
+    sunColor.PickerHueWheel = false
+    sunColor.InputRGB = true
+    sunColor.DisplayHex = true
+    sunColor.OnChange = function(value)
+        UpdateValue("SunColor", "value4", value)
+        -- Color change code here
+    end
+    
 
     -- local moonSeparator = parent:AddSeparatorText("Moon")
 
     local collapsingHeaderMoon = parent:AddCollapsingHeader("Moon")
 
+
+    moonEnabledCheckbox = collapsingHeaderMoon:AddCheckbox("Enabled")
+    moonEnabledCheckbox.IDContext = "moonEnabledCheckbox"
+    moonEnabledCheckbox.Checked = false
+    moonEnabledCheckbox.SameLine = false
+    moonEnabledCheckbox.OnChange = function()
+        UpdateValue("MoonEnabled", "value", moonEnabledCheckbox.Checked)
+    end
+
     castLightCheckbox = collapsingHeaderMoon:AddCheckbox("Cast light")
     castLightCheckbox.IDContext = "castLightCheckbox"
     castLightCheckbox.Checked = false
-    castLightCheckbox.SameLine = false
+    castLightCheckbox.SameLine = true
     castLightCheckbox.OnChange = function(value)
         if castLightCheckbox.Checked then
-        --print(castLightCheckbox.Checked)
-            UpdateCastLight(1)
+        --DPrint(castLightCheckbox.Checked)
+            UpdateValue("CastLight", "value", true)
         else
-        --print(castLightCheckbox.Checked)
-            UpdateCastLight(0)
+        --DPrint(castLightCheckbox.Checked)
+            UpdateValue("CastLight", "value", false)
         end
     end
 
@@ -1231,16 +1253,16 @@ function AnLWindowTab(parent)
     moonYaw.IDContext = "moonYaw"
     moonYaw.SameLine = false
     moonYaw.OnChange = function(value)
-        --print(moonYaw.Value[1])
-        UpdateMoonYaw(value)
+        --DPrint(moonYaw.Value[1])
+        UpdateValue("MoonYaw", "value1", value)
     end
 
     moonPitch = collapsingHeaderMoon:AddSlider("Pitch", 0, 0, 360, 0.01)
     moonPitch.IDContext = "moonPitch"
     moonPitch.SameLine = false
     moonPitch.OnChange = function(value)
-        --print(moonPitch.Value[1])
-        UpdateMoonPitch(value)
+        --DPrint(moonPitch.Value[1])
+        UpdateValue("MoonPitch", "value1", value)
     end
 
     moonIntensity = collapsingHeaderMoon:AddSlider("Intensity", 0, 0, 100000, 0.01)
@@ -1248,20 +1270,71 @@ function AnLWindowTab(parent)
     moonIntensity.SameLine = false
     moonIntensity.Logarithmic = true
     moonIntensity.OnChange = function(value)
-        --print(moonIntensity.Value[1])
-        UpdateMoonInt(value)
+        --DPrint(moonIntensity.Value[1])
+        UpdateValue("MoonInt", "value1", value)
     end
 
+    moonEarthshine = collapsingHeaderMoon:AddSlider("Earthshine", 0, 0, 1, 0.01)
+    moonEarthshine.IDContext = "moonEarthshine"
+    moonEarthshine.SameLine = false
+    moonEarthshine.OnChange = function(value)
+        UpdateValue("MoonEarthshine", "value1", value)
+    end
+
+    moonGlare = collapsingHeaderMoon:AddSlider("Glare", 0, 0, 10, 0.01)
+    moonGlare.IDContext = "moonGlare"
+    moonGlare.SameLine = false
+    moonGlare.OnChange = function(value)
+        UpdateValue("MoonGlare", "value1", value)
+    end
 
     moonRadius = collapsingHeaderMoon:AddSlider("Radius", 0, 0, 100000, 0.01)
     moonRadius.IDContext = "moonRadius"
     moonRadius.SameLine = false
     moonRadius.Logarithmic = true
     moonRadius.OnChange = function(value)
-        --print(moonRadius.Value[1])
-        UpdateMoonRadius(value)
+        --DPrint(moonRadius.Value[1])
+        UpdateValue("MoonRadius", "value1", value)
     end
     
+
+    moonDistance = collapsingHeaderMoon:AddSlider("Distance", 0, 0, 1000000, 1)
+    moonDistance.IDContext = "moonDistance"
+    moonDistance.SameLine = false
+    moonDistance.Logarithmic = true
+    moonDistance.OnChange = function(value)
+        UpdateValue("MoonDistance", "value1", value)
+    end
+
+
+
+    -- tearsRotate = collapsingHeaderMoonExtended:AddSlider("Tears Rotate", 0, 0, 360, 0.01)
+    -- tearsRotate.IDContext = "tearsRotate"
+    -- tearsRotate.SameLine = false
+    -- tearsRotate.OnChange = function(value)
+    --     UpdateValue("TearsRotate", "value1", value)
+    -- end
+
+    -- tearsScale = collapsingHeaderMoonExtended:AddSlider("Tears Scale", 0, 0, 10, 0.01)
+    -- tearsScale.IDContext = "tearsScale"
+    -- tearsScale.SameLine = false
+    -- tearsScale.OnChange = function(value)
+    --     UpdateValue("TearsScale", "value1", value)
+    -- end
+
+    
+    moonColor = collapsingHeaderMoon:AddColorPicker("Moon color")
+    moonColor.IDContext = "colorMoon"
+    moonColor.Color = {1.0, 1.0, 1.0, 1.0}
+    moonColor.NoAlpha = true
+    moonColor.Float = true
+    moonColor.PickerHueWheel = false
+    moonColor.InputRGB = true
+    moonColor.DisplayHex = true
+    moonColor.OnChange = function(value)
+        UpdateValue("MoonColor", "value4", value)
+        -- Color change code here
+    end
 
     -- local starsSeparator = parent:AddSeparatorText("Stars")
     
@@ -1273,13 +1346,15 @@ function AnLWindowTab(parent)
     starsCheckbox.SameLine = false
     starsCheckbox.OnChange = function()
         if starsCheckbox.Checked then
-        --print(starsCheckbox.Checked)
-            UpdateStarsState(1)
+        --DPrint(starsCheckbox.Checked)
+            -- UpdateStarsState(1)
             -- Checked code
+            UpdateValue("StarsState", "value", true)
         else
-        --print(starsCheckbox.Checked)
-            UpdateStarsState(0)
+        --DPrint(starsCheckbox.Checked)
+            -- UpdateStarsState(0)
             -- Unchecked code
+            UpdateValue("StarsState", "value", false)
         end
     end
     
@@ -1287,8 +1362,8 @@ function AnLWindowTab(parent)
     starsAmount.IDContext = "starsAmount"
     starsAmount.SameLine = false
     starsAmount.OnChange = function(value)
-        --print(starsAmount.Value[1])
-        UpdateStarsAmount(value)
+        --DPrint(starsAmount.Value[1])
+        UpdateValue("StarsAmount", "value1", value)
     end
 
     starsIntensity = collapsingHeaderStars:AddSlider("Intensity", 0, 0, 100000, 0.01)
@@ -1296,60 +1371,457 @@ function AnLWindowTab(parent)
     starsIntensity.SameLine = false
     starsIntensity.Logarithmic = true
     starsIntensity.OnChange = function(value)
-        --print(starsIntensity.Value[1])
-        UpdateStarsInt(value)
+        --DPrint(starsIntensity.Value[1])
+        UpdateValue("StarsInt", "value1", value)
     end
 
     starsSaturation1 = collapsingHeaderStars:AddSlider("Saturation 1", 0, 0, 1, 0.01)
     starsSaturation1.IDContext = "starsSaturation1"
     starsSaturation1.SameLine = false
     starsSaturation1.OnChange = function(value)
-        --print(starsSaturation1.Value[1])
-        UpdateStarsSaturation1(value)
+        --DPrint(starsSaturation1.Value[1])
+        UpdateValue("StarsSaturation1", "value1", value)
     end
 
     starsSaturation2 = collapsingHeaderStars:AddSlider("Saturation 2", 0, 0, 1, 0.01)
     starsSaturation2.IDContext = "starsSaturation2"
     starsSaturation2.SameLine = false
     starsSaturation2.OnChange = function(value)
-        --print(starsSaturation2.Value[1])
-        UpdateStarsSaturation2(value)
+        --DPrint(starsSaturation2.Value[1])
+        UpdateValue("StarsSaturation2", "value1", value)
     end
 
     starsShimmer = collapsingHeaderStars:AddSlider("Shimmer", 0, 0, 10, 0.01)
     starsShimmer.IDContext = "starsShimmer"
     starsShimmer.SameLine = false
     starsShimmer.OnChange = function(value)
-        --print(starsShimmer.Value[1])
-        UpdateStarsShimmer(value)
+        --DPrint(starsShimmer.Value[1])
+        UpdateValue("StarsShimmer", "value1", value)
     end
 
 
-    -- local shadowSeparator = parent:AddSeparatorText("Shadows")
 
     local collapsingHeaderShadows = parent:AddCollapsingHeader("Shadows")
 
-    cascadeSpeed = collapsingHeaderShadows:AddSlider("Cascade Speed", 0, 0, 1, 0.01)
+
+    shadowEnabledCheckbox = collapsingHeaderShadows:AddCheckbox("Shadow enabled")
+    shadowEnabledCheckbox.IDContext = "shadowEnabled"
+    shadowEnabledCheckbox.Checked = false
+    shadowEnabledCheckbox.SameLine = false
+    shadowEnabledCheckbox.OnChange = function()
+        UpdateValue("ShadowEnabled", "value", shadowEnabledCheckbox.Checked)
+    end
+
+    cascadeSpeed = collapsingHeaderShadows:AddSlider("Cascade speed", 0, 0, 1, 0.01)
     cascadeSpeed.IDContext = "cascadeSpeed"
     cascadeSpeed.SameLine = false
     cascadeSpeed.OnChange = function(value)
-        --print(cascadeSpeed.Value[1])
-        UpdateCascadeSpeed(value)
+        --DPrint(cascadeSpeed.Value[1])
+        UpdateValue("CascadeSpeed", "value1", value)
     end
 
-    lightSize = collapsingHeaderShadows:AddSlider("Light Size", 0, 0, 30, 0.01)
+    lightSize = collapsingHeaderShadows:AddSlider("Light size", 0, 0, 30, 0.01)
     lightSize.IDContext = "lightSize"
     lightSize.SameLine = false
     lightSize.OnChange = function(value)
-        --print(lightSize.Value[1])
-        UpdateLightSize(value)
+        --DPrint(lightSize.Value[1])
+        UpdateValue("LightSize", "value1", value)
     end
+
+    cascadeCountSlider = collapsingHeaderShadows:AddSlider("Cascade count", 0, 0, 10, 1)
+    cascadeCountSlider.IDContext = "cascadeCount"
+    cascadeCountSlider.SameLine = false
+    cascadeCountSlider.OnChange = function(value)
+        UpdateValue("CascadeCount", "value1", value)
+    end
+
+    shadowBiasSlider = collapsingHeaderShadows:AddSlider("Shadow bias", 0, 0, 1, 0.001)
+    shadowBiasSlider.IDContext = "shadowBias"
+    shadowBiasSlider.SameLine = false
+    shadowBiasSlider.OnChange = function(value)
+        UpdateValue("ShadowBias", "value1", value)
+    end
+
+    shadowFadeSlider = collapsingHeaderShadows:AddSlider("Shadow fade", 0, 0, 1, 0.01)
+    shadowFadeSlider.IDContext = "shadowFade"
+    shadowFadeSlider.SameLine = false
+    shadowFadeSlider.OnChange = function(value)
+        UpdateValue("ShadowFade", "value1", value)
+    end
+
+    shadowFarPlaneSlider = collapsingHeaderShadows:AddSlider("Shadow far plane", 0, 0, 100000, 1)
+    shadowFarPlaneSlider.IDContext = "shadowFarPlane"
+    shadowFarPlaneSlider.SameLine = false
+    shadowFarPlaneSlider.Logarithmic = true
+    shadowFarPlaneSlider.OnChange = function(value)
+        UpdateValue("ShadowFarPlane", "value1", value)
+    end
+
+    shadowNearPlaneSlider = collapsingHeaderShadows:AddSlider("Shadow near plane", 0, 0, 1000, 0.1)
+    shadowNearPlaneSlider.IDContext = "shadowNearPlane"
+    shadowNearPlaneSlider.SameLine = false
+    shadowNearPlaneSlider.OnChange = function(value)
+        UpdateValue("ShadowNearPlane", "value1", value)
+    end
+
+
+
+    local collapsingHeaderFogLayer = parent:AddCollapsingHeader("Fog")
+    local collapsingHeaderFogGeneral = collapsingHeaderFogLayer:AddTree("Fog general")
+
+
+
+    fogPhase = collapsingHeaderFogGeneral:AddSlider("Phase", 0, 0, 1, 0.01)
+    fogPhase.IDContext = "fogPhase"
+    fogPhase.SameLine = false
+    fogPhase.OnChange = function(value)
+        UpdateValue("FogPhase", "value1", value)
+    end
+
+    fogRenderDistance = collapsingHeaderFogGeneral:AddSlider("Render distance", 0, 0, 10000, 1)
+    fogRenderDistance.IDContext = "fogRenderDistance"
+    fogRenderDistance.SameLine = false
+    fogRenderDistance.OnChange = function(value)
+        UpdateValue("FogRenderDistance", "value1", value)
+    end
+
+
+    local collapsingHeaderFogLayer1 = collapsingHeaderFogLayer:AddTree("Fog layer 1")
+
+    fogLayer1EnabledCheckbox = collapsingHeaderFogLayer1:AddCheckbox("Enabled")
+    fogLayer1EnabledCheckbox.IDContext = "fogLayer1EnabledCheckbox"
+    fogLayer1EnabledCheckbox.Checked = false
+    fogLayer1EnabledCheckbox.SameLine = false
+    fogLayer1EnabledCheckbox.OnChange = function()
+        UpdateValue("FogLayer1Enabled", "value", fogLayer1EnabledCheckbox.Checked)
+    end
+
+    fogLayer1Density0 = collapsingHeaderFogLayer1:AddSlider("Density 0", 0, 0, 1, 0.01)
+    fogLayer1Density0.IDContext = "fogLayer1Density0"
+    fogLayer1Density0.SameLine = false
+    fogLayer1Density0.OnChange = function(value)
+        UpdateValue("FogLayer1Density0", "value1", value)
+    end
+
+    fogLayer1Density1 = collapsingHeaderFogLayer1:AddSlider("Density 1", 0, 0, 1, 0.01)
+    fogLayer1Density1.IDContext = "fogLayer1Density1"
+    fogLayer1Density1.SameLine = false
+    fogLayer1Density1.OnChange = function(value)
+        UpdateValue("FogLayer1Density1", "value1", value)
+    end
+
+    fogLayer1Height0 = collapsingHeaderFogLayer1:AddSlider("Height 0", 0, -10000, 10000, 1)
+    fogLayer1Height0.IDContext = "fogLayer1Height0"
+    fogLayer1Height0.SameLine = false
+    fogLayer1Height0.OnChange = function(value)
+        UpdateValue("FogLayer1Height0", "value1", value)
+    end
+
+    fogLayer1Height1 = collapsingHeaderFogLayer1:AddSlider("Height 1", 0, -10000, 10000, 1)
+    fogLayer1Height1.IDContext = "fogLayer1Height1"
+    fogLayer1Height1.SameLine = false
+    fogLayer1Height1.OnChange = function(value)
+        UpdateValue("FogLayer1Height1", "value1", value)
+    end
+
+    fogLayer1NoiseCoverage = collapsingHeaderFogLayer1:AddSlider("Noise coverage", 0, 0, 1, 0.01)
+    fogLayer1NoiseCoverage.IDContext = "fogLayer1NoiseCoverage"
+    fogLayer1NoiseCoverage.SameLine = false
+    fogLayer1NoiseCoverage.OnChange = function(value)
+        UpdateValue("FogLayer1NoiseCoverage", "value1", value)
+    end
+
+    fogLayer1Albedo = collapsingHeaderFogLayer1:AddColorPicker("Albedo color")
+    fogLayer1Albedo.IDContext = "fogLayer1Albedo"
+    fogLayer1Albedo.Color = {1.0, 1.0, 1.0, 1.0}
+    fogLayer1Albedo.NoAlpha = true
+    fogLayer1Albedo.Float = true
+    fogLayer1Albedo.PickerHueWheel = false
+    fogLayer1Albedo.InputRGB = true
+    fogLayer1Albedo.DisplayHex = true
+    fogLayer1Albedo.OnChange = function(value)
+        UpdateValue("FogLayer1Albedo", "value4", value)
+    end
+
+    local collapsingHeaderFogLayer0 = collapsingHeaderFogLayer:AddTree("Fog layer 0")
+
+    fogLayer0EnabledCheckbox = collapsingHeaderFogLayer0:AddCheckbox("Enabled")
+    fogLayer0EnabledCheckbox.IDContext = "fogLayer0EnabledCheckbox"
+    fogLayer0EnabledCheckbox.Checked = false
+    fogLayer0EnabledCheckbox.SameLine = false
+    fogLayer0EnabledCheckbox.OnChange = function()
+        UpdateValue("FogLayer0Enabled", "value", fogLayer0EnabledCheckbox.Checked)
+    end
+
+    fogLayer0Density0 = collapsingHeaderFogLayer0:AddSlider("Density 0", 0, 0, 1, 0.01)
+    fogLayer0Density0.IDContext = "fogLayer0Density0"
+    fogLayer0Density0.SameLine = false
+    fogLayer0Density0.OnChange = function(value)
+        UpdateValue("FogLayer0Density0", "value1", value)
+    end
+
+    fogLayer0Density1 = collapsingHeaderFogLayer0:AddSlider("Density 1", 0, 0, 1, 0.01)
+    fogLayer0Density1.IDContext = "fogLayer0Density1"
+    fogLayer0Density1.SameLine = false
+    fogLayer0Density1.OnChange = function(value)
+        UpdateValue("FogLayer0Density1", "value1", value)
+    end
+
+    fogLayer0Height0 = collapsingHeaderFogLayer0:AddSlider("Height 0", 0, -10000, 10000, 1)
+    fogLayer0Height0.IDContext = "fogLayer0Height0"
+    fogLayer0Height0.SameLine = false
+    fogLayer0Height0.OnChange = function(value)
+        UpdateValue("FogLayer0Height0", "value1", value)
+    end
+
+    fogLayer0Height1 = collapsingHeaderFogLayer0:AddSlider("Height 1", 0, -10000, 10000, 1)
+    fogLayer0Height1.IDContext = "fogLayer0Height1"
+    fogLayer0Height1.SameLine = false
+    fogLayer0Height1.OnChange = function(value)
+        UpdateValue("FogLayer0Height1", "value1", value)
+    end
+
+    fogLayer0NoiseCoverage = collapsingHeaderFogLayer0:AddSlider("Noise coverage", 0, 0, 1, 0.01)
+    fogLayer0NoiseCoverage.IDContext = "fogLayer0NoiseCoverage"
+    fogLayer0NoiseCoverage.SameLine = false
+    fogLayer0NoiseCoverage.OnChange = function(value)
+        UpdateValue("FogLayer0NoiseCoverage", "value1", value)
+    end
+
+    fogLayer0Albedo = collapsingHeaderFogLayer0:AddColorPicker("Albedo color")
+    fogLayer0Albedo.IDContext = "fogLayer0Albedo"
+    fogLayer0Albedo.Color = {1.0, 1.0, 1.0, 1.0}
+    fogLayer0Albedo.NoAlpha = true
+    fogLayer0Albedo.Float = true
+    fogLayer0Albedo.PickerHueWheel = false
+    fogLayer0Albedo.InputRGB = true
+    fogLayer0Albedo.DisplayHex = true
+    fogLayer0Albedo.OnChange = function(value)
+        UpdateValue("FogLayer0Albedo", "value4", value)
+    end
+
+
+    local collapsingHeaderSkyLight = parent:AddCollapsingHeader("Sky light")
+
+
+
+    cirrusCloudsEnabledCheckbox = collapsingHeaderSkyLight:AddCheckbox("Cirrus clouds enabled")
+    cirrusCloudsEnabledCheckbox.IDContext = "cirrusCloudsEnabled"
+    cirrusCloudsEnabledCheckbox.Checked = false
+    cirrusCloudsEnabledCheckbox.SameLine = false
+    cirrusCloudsEnabledCheckbox.OnChange = function()
+        UpdateValue("CirrusCloudsEnabled", "value", cirrusCloudsEnabledCheckbox.Checked)
+    end
+
+    
+    cirrusCloudsIntensitySlider = collapsingHeaderSkyLight:AddSlider("Cirrus clouds intensity", 0, 0, 100, 0.01)
+    cirrusCloudsIntensitySlider.IDContext = "cirrusCloudsIntensity"
+    cirrusCloudsIntensitySlider.SameLine = false
+    cirrusCloudsIntensitySlider.OnChange = function(value)
+        UpdateValue("CirrusCloudsIntensity", "value1", value)
+    end
+
+    cirrusCloudsAmountSlider = collapsingHeaderSkyLight:AddSlider("Cirrus clouds amount", 0, 0, 1, 0.01)
+    cirrusCloudsAmountSlider.IDContext = "cirrusCloudsAmount"
+    cirrusCloudsAmountSlider.SameLine = false
+    cirrusCloudsAmountSlider.OnChange = function(value)
+        UpdateValue("CirrusCloudsAmount", "value1", value)
+    end
+
+    cirrusCloudsColor = collapsingHeaderSkyLight:AddColorPicker("Cirrus clouds color")
+    cirrusCloudsColor.IDContext = "cirrusCloudsColor"
+    cirrusCloudsColor.Color = {1.0, 1.0, 1.0, 1.0}
+    cirrusCloudsColor.NoAlpha = true
+    cirrusCloudsColor.Float = true
+    cirrusCloudsColor.PickerHueWheel = false
+    cirrusCloudsColor.InputRGB = true
+    cirrusCloudsColor.DisplayHex = true
+    cirrusCloudsColor.OnChange = function(value)
+        UpdateValue("CirrusCloudsColor", "value4", value)
+    end
+
+    rotateSkydomeEnabledCheckbox = collapsingHeaderSkyLight:AddCheckbox("Rotate skydome")
+    rotateSkydomeEnabledCheckbox.IDContext = "rotateSkydomeEnabled"
+    rotateSkydomeEnabledCheckbox.Checked = false
+    rotateSkydomeEnabledCheckbox.SameLine = false
+    rotateSkydomeEnabledCheckbox.OnChange = function()
+        UpdateValue("RotateSkydomeEnabled", "value", rotateSkydomeEnabledCheckbox.Checked)
+    end
+
+    scatteringEnabledCheckbox = collapsingHeaderSkyLight:AddCheckbox("Scattering enabled")
+    scatteringEnabledCheckbox.IDContext = "scatteringEnabled"
+    scatteringEnabledCheckbox.Checked = false
+    scatteringEnabledCheckbox.SameLine = false
+    scatteringEnabledCheckbox.OnChange = function()
+        UpdateValue("ScatteringEnabled", "value", scatteringEnabledCheckbox.Checked)
+    end
+
+    scatteringIntensitySlider = collapsingHeaderSkyLight:AddSlider("Scattering intensity", 0, 0, 10, 0.01)
+    scatteringIntensitySlider.IDContext = "scatteringIntensity"
+    scatteringIntensitySlider.SameLine = false
+    scatteringIntensitySlider.OnChange = function(value)
+        UpdateValue("ScatteringIntensity", "value1", value)
+    end
+
+    scatteringSunColor = collapsingHeaderSkyLight:AddColorPicker("Scattering sun color")
+    scatteringSunColor.IDContext = "scatteringSunColor"
+    scatteringSunColor.Color = {1.0, 1.0, 1.0, 1.0}
+    scatteringSunColor.NoAlpha = true
+    scatteringSunColor.Float = true
+    scatteringSunColor.PickerHueWheel = false
+    scatteringSunColor.InputRGB = true
+    scatteringSunColor.DisplayHex = true
+    scatteringSunColor.OnChange = function(value)
+        UpdateValue("ScatteringSunColor", "value4", value)
+    end
+
+    scatteringSunIntensitySlider = collapsingHeaderSkyLight:AddSlider("Scattering sun intensity", 0, 0, 100, 0.01)
+    scatteringSunIntensitySlider.IDContext = "scatteringSunIntensity"
+    scatteringSunIntensitySlider.SameLine = false
+    scatteringSunIntensitySlider.OnChange = function(value)
+        UpdateValue("ScatteringSunIntensity", "value1", value)
+    end
+
+    skydomeEnabledCheckbox = collapsingHeaderSkyLight:AddCheckbox("Skydome enabled")
+    skydomeEnabledCheckbox.IDContext = "skydomeEnabled"
+    skydomeEnabledCheckbox.Checked = false
+    skydomeEnabledCheckbox.SameLine = false
+    skydomeEnabledCheckbox.OnChange = function()
+        UpdateValue("SkydomeEnabled", "value", skydomeEnabledCheckbox.Checked)
+    end
+
+
+    scatteringIntensityScaleSlider = collapsingHeaderSkyLight:AddSlider("Scattering intensity scale", 0, 0, 10, 0.01)
+    scatteringIntensityScaleSlider.IDContext = "scatteringIntensityScale"
+    scatteringIntensityScaleSlider.SameLine = false
+    scatteringIntensityScaleSlider.OnChange = function(value)
+        UpdateValue("ScatteringIntensityScale", "value1", value)
+    end
+
+
+
+
+    local collapsingHeaderVolumetricCloud = parent:AddCollapsingHeader("Volumetric cloud")
+
+
+
+    cloudEnabledCheckbox = collapsingHeaderVolumetricCloud:AddCheckbox("Enabled")
+    cloudEnabledCheckbox.IDContext = "cloudEnabled"
+    cloudEnabledCheckbox.Checked = false
+    cloudEnabledCheckbox.SameLine = false
+    cloudEnabledCheckbox.OnChange = function()
+        UpdateValue("CloudEnabled", "value", cloudEnabledCheckbox.Checked)
+    end
+    
+    cloudIntensitySlider = collapsingHeaderVolumetricCloud:AddSlider("Intensity", 0, 0, 100000, 0.01)
+    cloudIntensitySlider.IDContext = "cloudIntensity"
+    cloudIntensitySlider.SameLine = false
+    cloudIntensitySlider.OnChange = function(value)
+        UpdateValue("CloudIntensity", "value1", value)
+    end
+
+    cloudAmbientLightFactorSlider = collapsingHeaderVolumetricCloud:AddSlider("Ambient light factor", 0, 0, 10, 0.01)
+    cloudAmbientLightFactorSlider.IDContext = "cloudAmbientLightFactor"
+    cloudAmbientLightFactorSlider.SameLine = false
+    cloudAmbientLightFactorSlider.OnChange = function(value)
+        UpdateValue("CloudAmbientLightFactor", "value1", value)
+    end
+
+    cloudEndHeightSlider = collapsingHeaderVolumetricCloud:AddSlider("End height", 0, 0, 20000, 1)
+    cloudEndHeightSlider.IDContext = "cloudEndHeight"
+    cloudEndHeightSlider.SameLine = false
+    cloudEndHeightSlider.OnChange = function(value)
+        UpdateValue("CloudEndHeight", "value1", value)
+    end
+
+    cloudHorizonDistanceSlider = collapsingHeaderVolumetricCloud:AddSlider("Horizon distance", 0, 0, 100000, 1)
+    cloudHorizonDistanceSlider.IDContext = "cloudHorizonDistance"
+    cloudHorizonDistanceSlider.SameLine = false
+    cloudHorizonDistanceSlider.OnChange = function(value)
+        UpdateValue("CloudHorizonDistance", "value1", value)
+    end
+
+    cloudStartHeightSlider = collapsingHeaderVolumetricCloud:AddSlider("Start height", 0, 0, 10000, 1)
+    cloudStartHeightSlider.IDContext = "cloudStartHeight"
+    cloudStartHeightSlider.SameLine = false
+    cloudStartHeightSlider.OnChange = function(value)
+        UpdateValue("CloudStartHeight", "value1", value)
+    end
+
+    cloudCoverageStartDistanceSlider = collapsingHeaderVolumetricCloud:AddSlider("Coverage start distance", 0, 0, 100000, 1)
+    cloudCoverageStartDistanceSlider.IDContext = "cloudCoverageStartDistance"
+    cloudCoverageStartDistanceSlider.SameLine = false
+    cloudCoverageStartDistanceSlider.OnChange = function(value)
+        UpdateValue("CloudCoverageStartDistance", "value1", value)
+    end
+
+    cloudCoverageWindSpeedSlider = collapsingHeaderVolumetricCloud:AddSlider("Coverage wind speed", 0, 0, 100, 0.01)
+    cloudCoverageWindSpeedSlider.IDContext = "cloudCoverageWindSpeed"
+    cloudCoverageWindSpeedSlider.SameLine = false
+    cloudCoverageWindSpeedSlider.OnChange = function(value)
+        UpdateValue("CloudCoverageWindSpeed", "value1", value)
+    end
+
+    cloudDetailScaleSlider = collapsingHeaderVolumetricCloud:AddSlider("Detail scale", 0, 0, 10, 0.01)
+    cloudDetailScaleSlider.IDContext = "cloudDetailScale"
+    cloudDetailScaleSlider.SameLine = false
+    cloudDetailScaleSlider.OnChange = function(value)
+        UpdateValue("CloudDetailScale", "value1", value)
+    end
+
+
+    cloudShadowFactorSlider = collapsingHeaderVolumetricCloud:AddSlider("Shadow factor", 0, 0, 1, 0.01)
+    cloudShadowFactorSlider.IDContext = "cloudShadowFactor"
+    cloudShadowFactorSlider.SameLine = false
+    cloudShadowFactorSlider.OnChange = function(value)
+        UpdateValue("CloudShadowFactor", "value1", value)
+    end
+
+    cloudSunLightFactorSlider = collapsingHeaderVolumetricCloud:AddSlider("Sun light factor", 0, 0, 10, 0.01)
+    cloudSunLightFactorSlider.IDContext = "cloudSunLightFactor"
+    cloudSunLightFactorSlider.SameLine = false
+    cloudSunLightFactorSlider.OnChange = function(value)
+        UpdateValue("CloudSunLightFactor", "value1", value)
+    end
+
+    cloudSunRayLengthSlider = collapsingHeaderVolumetricCloud:AddSlider("Sun ray length", 0, 0, 1, 0.01)
+    cloudSunRayLengthSlider.IDContext = "cloudSunRayLength"
+    cloudSunRayLengthSlider.SameLine = false
+    cloudSunRayLengthSlider.OnChange = function(value)
+        UpdateValue("CloudSunRayLength", "value1", value)
+    end
+
+    cloudBaseColor = collapsingHeaderVolumetricCloud:AddColorPicker("Base color")
+    cloudBaseColor.IDContext = "cloudBaseColor"
+    cloudBaseColor.Color = {1.0, 1.0, 1.0, 1.0}
+    cloudBaseColor.NoAlpha = true
+    cloudBaseColor.Float = true
+    cloudBaseColor.PickerHueWheel = false
+    cloudBaseColor.InputRGB = true
+    cloudBaseColor.DisplayHex = true
+    cloudBaseColor.OnChange = function(value)
+        UpdateValue("CloudBaseColor", "value4", value)
+    end
+
+    cloudTopColor = collapsingHeaderVolumetricCloud:AddColorPicker("Top color")
+    cloudTopColor.IDContext = "cloudTopColor"
+    cloudTopColor.Color = {1.0, 1.0, 1.0, 1.0}
+    cloudTopColor.NoAlpha = true
+    cloudTopColor.Float = true
+    cloudTopColor.PickerHueWheel = false
+    cloudTopColor.InputRGB = true
+    cloudTopColor.DisplayHex = true
+    cloudTopColor.OnChange = function(value)
+        UpdateValue("CloudTopColor", "value4", value)
+    end
+
 
     local valuesApplyButton = parent:AddButton("Apply")
     valuesApplyButton.IDContext = "sunValuesNightLoad"
     valuesApplyButton.OnClick = function()
         Ext.Net.PostMessageToServer("valuesApply", "")
     end
+
 
     local sunValuesLoadButton = parent:AddButton("Reset all")
     sunValuesLoadButton.IDContext = "sunValuesLoad"
@@ -1360,6 +1832,14 @@ function AnLWindowTab(parent)
         castLightCheckbox.Checked = false
         -- ResetSliderValues()
     end
+
+    local valuesApplyButton = parent:AddButton("Apply if something won't apply")
+    valuesApplyButton.IDContext = "sunValuesDayLoad"
+    valuesApplyButton.SameLine = false
+    valuesApplyButton.OnClick = function()
+        Ext.Net.PostMessageToServer("valuesApplyDay", "")
+    end
+
 
 end
 

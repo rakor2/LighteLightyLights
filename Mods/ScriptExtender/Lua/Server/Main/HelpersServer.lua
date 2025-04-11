@@ -84,7 +84,7 @@ function GetHostPosition()
     end
     
     local serverPos = GetHostPositionServer()
-    -- print("[Server][DEBUG] Server position: x=", serverPos.x, "y=", serverPos.y, "z=", serverPos.z) -- _ai
+    -- DPrint("[Server][DEBUG] Server position: x=", serverPos.x, "y=", serverPos.y, "z=", serverPos.z) -- _ai
     return serverPos
 end
 

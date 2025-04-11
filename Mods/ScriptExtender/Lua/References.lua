@@ -4,11 +4,11 @@
 Ext.RegisterNetListener("vfxEntity", function(channel, payload)
     local function GetLightVFXEntity(light)
         local entClient = Ext.Entity.Get("UUID с сервера")
-        print(entClient)
+        DPrint(entClient)
         if entClient ~= nil then
             return vfxEntClient = entClient.Visual.Visual.Attachments[1].Visual.VisualEntity
         end
-        print(vfxEntClient)
+        DPrint(vfxEntClient)
     end
 end)
 
@@ -68,7 +68,7 @@ Possible fix
             -- Get Entity and VFX with delay _ai
             Ext.OnNextTick(function()
                 entClient[i] = Ext.Entity.Get(light.uuid)
-                print(string.format("[Client] entClient[%d] = %s (UUID: %s)", i, tostring(entClient[i]), light.uuid))
+                DPrint(string.format("[Client] entClient[%d] = %s (UUID: %s)", i, tostring(entClient[i]), light.uuid))
             end)
             
             local handlerId
@@ -88,9 +88,9 @@ Possible fix
                                     if attachVis ~= nil then
                                         local attachVisEntity = attachVis.Entity
                                         if attachVisEntity ~= nil then
-                                            print(string.format("Attachment %s visual entity found after % ticks.", attachNum, tick))
+                                            DPrint(string.format("Attachment %s visual entity found after % ticks.", attachNum, tick))
                                             vfxEntClient[i] = attachVisEntity
-                                            print(string.format("[Client] vfxEntClient[%d] = %s (from entClient UUID: %s)", i, tostring(vfxEntClient[i]), light.uuid))
+                                            DPrint(string.format("[Client] vfxEntClient[%d] = %s (from entClient UUID: %s)", i, tostring(vfxEntClient[i]), light.uuid))
                                             Ext.Events.Tick:Unsubscribe(handlerId)
                                         end
                                     end
@@ -114,14 +114,14 @@ end
             -- Get Entity and VFX with delay _ai
             Ext.OnNextTick(function()
                 entClient[i] = Ext.Entity.Get(light.uuid)
-                print(string.format("[Client] entClient[%d] = %s (UUID: %s)", i, tostring(entClient[i]), light.uuid))
+                DPrint(string.format("[Client] entClient[%d] = %s (UUID: %s)", i, tostring(entClient[i]), light.uuid))
 
                 local handlerId
                 handlerId = Ext.Events.Tick:Subscribe(function()
                     local b, vfxEntity = pcall(GetVisualAttachmentEntity, entClient[i])
                     if b and vfxEntity then
                         vfxEntClient[i] = vfxEntity
-                        print(string.format("[Client] vfxEntClient[%d] = %s (from entClient UUID: %s)", i, tostring(vfxEntClient[i]), light.uuid))
+                        DPrint(string.format("[Client] vfxEntClient[%d] = %s (from entClient UUID: %s)", i, tostring(vfxEntClient[i]), light.uuid))
                         Ext.Events.Tick:Unsubscribe(handlerId)
                     end
                 end)

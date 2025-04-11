@@ -380,12 +380,12 @@ Style.MainWindow6 = {
 
 Style.MainWindow7 = {
     Main7 = function(mainWindow)
-
+        
         mainWindow:SetColor("Text", {1.00, 1.00, 1.00, 1.00})
         mainWindow:SetColor("TextDisabled", {0.50, 0.50, 0.50, 1.00})
-        mainWindow:SetColor("WindowBg", {0.06, 0.06, 0.06, 0.94})
-        mainWindow:SetColor("ChildBg", {0.00, 0.00, 0.00, 0.00})
-        mainWindow:SetColor("PopupBg", {0.08, 0.08, 0.08, 0.94})
+        mainWindow:SetColor("WindowBg", {0.08, 0.08, 0.08, 1})
+        mainWindow:SetColor("ChildBg", {0.14, 0.14, 0.14, 1})
+        mainWindow:SetColor("PopupBg", {0.08, 0.08, 0.08, 1})
         mainWindow:SetColor("Border", {0.43, 0.43, 0.50, 0.50})
         mainWindow:SetColor("BorderShadow", {0.00, 0.00, 0.00, 0.00})
         mainWindow:SetColor("FrameBg", {0.16, 0.29, 0.48, 0.54})
@@ -430,6 +430,7 @@ Style.MainWindow7 = {
         mainWindow:SetStyle("GrabRounding", 0)
         mainWindow:SetStyle("TabRounding", 0)
         mainWindow:SetStyle("ButtonTextAlign", 0.5, 0.5)
+
 
     end
 }

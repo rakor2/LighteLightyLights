@@ -20,7 +20,7 @@ function GetCameraData()
         local cameraComp = cameraEntity:GetAllComponents()
         if cameraComp and cameraComp.Camera.field_C == 1 and cameraComp.GameCameraBehavior then
 
-                print("USING GCB")
+                DPrint("USING GCB")
                 
                 local cameraPos = cameraComp.GameCameraBehavior.field_150
                 local targetPos = cameraComp.GameCameraBehavior.TargetDestination
@@ -108,7 +108,7 @@ function GetPlayerDummyPosition()
     x = dummyPos[1]
     y = dummyPos[2]
     z = dummyPos[3]
-    -- print("[C][LLL] Player dummy found:", ent.TLPreviewDummy.Name, "at postition:", x, y, z)
+    -- DPrint("[C][LLL] Player dummy found:", ent.TLPreviewDummy.Name, "at postition:", x, y, z)
     return {x = dummyPos[1], y = dummyPos[2], z = dummyPos[3]}
 end
 

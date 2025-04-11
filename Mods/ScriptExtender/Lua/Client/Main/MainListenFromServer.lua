@@ -48,9 +48,9 @@ Ext.RegisterNetListener("SyncSpawnedLights", function(channel, payload)
     end
     
     -- Regular sync code continues here... _ai
-    -- print("[Client] Processing regular sync update")
-    -- print("[Client] Previous light count:", previousCount)
-    -- print("[Client] New light count:", #syncData.lights)
+    -- DPrint("[Client] Processing regular sync update")
+    -- DPrint("[Client] Previous light count:", previousCount)
+    -- DPrint("[Client] New light count:", #syncData.lights)
     
     -- If we received empty list, clear all data _ai
     if #syncData.lights == 0 then
@@ -90,11 +90,11 @@ Ext.RegisterNetListener("SyncSpawnedLights", function(channel, payload)
         end
     end
     
-    -- Debug print current slots state only for Point type _ai
-    -- print("[Client] Current UsedLightSlots state for Point")
+    -- Debug DPrint current slots state only for Point type _ai
+    -- DPrint("[Client] Current UsedLightSlots state for Point")
     for i, slot in ipairs(Light_Actual_Templates_Slots["Point"]) do
         if slot[2] ~= "nil" then
-            -- print(string.format("  Slot %d: Used: %s", i, UsedLightSlots["Point"][i] and "Yes" or "No"))
+            -- DPrint(string.format("  Slot %d: Used: %s", i, UsedLightSlots["Point"][i] and "Yes" or "No"))
         end
     end
     
@@ -135,7 +135,7 @@ Ext.RegisterNetListener("SyncSpawnedLights", function(channel, payload)
             table.insert(options, light.name)
             
             if previousSelectedUUID and light.uuid == previousSelectedUUID then
-                -- print("[Client] Restoring selection for previously selected light:", light.name)
+                -- DPrint("[Client] Restoring selection for previously selected light:", light.name)
                 LightDropdown.SelectedIndex = i - 1
             end
         end
@@ -143,7 +143,7 @@ Ext.RegisterNetListener("SyncSpawnedLights", function(channel, payload)
         LightDropdown.Options = options
         
         if #ClientSpawnedLights > previousCount then
-            -- print("[Client] New light added, selecting last light")
+            -- DPrint("[Client] New light added, selecting last light")
             LightDropdown.SelectedIndex = #options - 1
             UpdateValuesText()
 
