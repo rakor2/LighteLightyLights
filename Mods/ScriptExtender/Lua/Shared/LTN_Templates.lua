@@ -1,5 +1,5 @@
 ltn_templates = {
-{uuid = "308e4292-f1e7-dc5e-9680-a66f28d1a869", name = "LTN_LLL_Blackout"}, --LTN_LLL_Blackout
+{uuid = "308e4292-f1e7-dc5e-9680-a66f28d1a869", name = ""}, --LTN_LLL_Blackout
 {uuid = "4ffe46ad-b46b-0a3a-c739-d71f1bf209d9", name = "LTN_BGH_Highberrys_Cellar_A"},
 {uuid = "f2c0d648-869a-dee1-4842-8ec9e37b0441", name = "LTN_BGO_Camp_A"},
 {uuid = "f8551744-5846-a40e-d03e-778662463fd4", name = "LTN_BGO_HouseofHope_A"},

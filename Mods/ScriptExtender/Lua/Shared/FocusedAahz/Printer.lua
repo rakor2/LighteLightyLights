@@ -260,7 +260,7 @@ SimplePrint = SimplePrinter:New{Prefix = "LLL", ApplyColor = true}
 function DPrint(...) SimplePrint:SetFontColor(0, 255, 158) SimplePrint:Print(...) end
 function DTest(...) SimplePrint:SetFontColor(228, 101, 255) SimplePrint:PrintTest(...) end
 function DDebug(...) SimplePrint:SetFontColor(255, 224, 81) SimplePrint:PrintDebug(...) end
-function DWarn(...) SimplePrint:SetFontColor(221, 116, 18) SimplePrint:PrintWarning(...) end
+function DWarn(...) SimplePrint:SetFontColor(228, 101, 255) SimplePrint:PrintWarning(...) end
 function DDump(...) SimplePrint:SetFontColor(78, 233, 255) SimplePrint:Dump(...) end
 function DDumpS(...) SimplePrint:SetFontColor(104, 255, 0) SimplePrint:Dump(..., true) end
 function DDumpArray(...) SimplePrint:DumpArray(...) end

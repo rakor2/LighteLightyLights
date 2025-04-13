@@ -8,23 +8,19 @@
             "Sections": [
                 {
                     "SectionId": "general_settings",
-                    "SectionName": "",
+                    "SectionName": "123123",
                     "Settings": [
                         {
                             "Id": "ll_toggle_window",
-                            "Name": "Toggle lighty lights window",
+                            "Name": "! Toggle window",
                             "Type": "keybinding_v2",
                             "Default": {
                                 "Keyboard": {
-                                    "Key": "INSERT",
+                                    "Key": "",
                                     "ModifierKeys": []
                                 }
                             },
-                            "Description": "looks boring without a description",
-                            "Handles": {
-                                "NameHandle": "",
-                                "DescriptionHandle": ""
-                            }
+                            "Description": "looks boring with no description"
                         },
                         {
                             "Id": "ll_toggle_light",
@@ -32,15 +28,11 @@
                             "Type": "keybinding_v2",
                             "Default": {
                                 "Keyboard": {
-                                    "Key": "INSERT",
+                                    "Key": "",
                                     "ModifierKeys": []
                                 }
                             },
-                            "Description": "looks empty without a description",
-                            "Handles": {
-                                "NameHandle": "",
-                                "DescriptionHandle": ""
-                            }
+                            "Description": "looks boring with no description"
                         },
                         {
                             "Id": "ll_toggle_all_lights",
@@ -48,15 +40,11 @@
                             "Type": "keybinding_v2",
                             "Default": {
                                 "Keyboard": {
-                                    "Key": "INSERT",
+                                    "Key": "",
                                     "ModifierKeys": []
                                 }
                             },
-                            "Description": "looks boring without a description",
-                            "Handles": {
-                                "NameHandle": "",
-                                "DescriptionHandle": ""
-                            }
+                            "Description": "looks boring with no description"
                         },
                         {
                             "Id": "ll_toggle_marker",
@@ -64,15 +52,11 @@
                             "Type": "keybinding_v2",
                             "Default": {
                                 "Keyboard": {
-                                    "Key": "INSERT",
+                                    "Key": "",
                                     "ModifierKeys": []
                                 }
                             },
-                            "Description": "looks empty without a description",
-                            "Handles": {
-                                "NameHandle": "",
-                                "DescriptionHandle": ""
-                            }
+                            "Description": "looks boring with no description"
                         },
                         {
                             "Id": "ll_toggle_all_markers",
@@ -80,15 +64,11 @@
                             "Type": "keybinding_v2",
                             "Default": {
                                 "Keyboard": {
-                                    "Key": "INSERT",
+                                    "Key": "",
                                     "ModifierKeys": []
                                 }
                             },
-                            "Description": "looks boring without a description",
-                            "Handles": {
-                                "NameHandle": "",
-                                "DescriptionHandle": ""
-                            }
+                            "Description": "looks boring with no description"
                         },
                         {
                             "Id": "ll_duplicate",
@@ -96,15 +76,11 @@
                             "Type": "keybinding_v2",
                             "Default": {
                                 "Keyboard": {
-                                    "Key": "INSERT",
+                                    "Key": "",
                                     "ModifierKeys": []
                                 }
                             },
-                            "Description": "looks boring without a description",
-                            "Handles": {
-                                "NameHandle": "",
-                                "DescriptionHandle": ""
-                            }
+                            "Description": "looks boring with no description"
                         },
                         {
                             "Id": "ll_stick",
@@ -112,15 +88,59 @@
                             "Type": "keybinding_v2",
                             "Default": {
                                 "Keyboard": {
-                                    "Key": "INSERT",
+                                    "Key": "",
                                     "ModifierKeys": []
                                 }
                             },
-                            "Description": "looks boring without a description",
-                            "Handles": {
-                                "NameHandle": "",
-                                "DescriptionHandle": ""
-                            }
+                            "Description": "looks boring with no description"
+                        },
+                        {
+                            "Id": "ll_window_scroll_down",
+                            "Name": "Scroll window down",
+                            "Type": "keybinding_v2",
+                            "Default": {
+                                "Keyboard": {
+                                    "Key": "",
+                                    "ModifierKeys": []
+                                }
+                            },
+                            "Description": "looks boring with no description"
+                        },
+                        {
+                            "Id": "ll_window_scroll_up",
+                            "Name": "Scroll window up",
+                            "Type": "keybinding_v2",
+                            "Default": {
+                                "Keyboard": {
+                                    "Key": "",
+                                    "ModifierKeys": []
+                                }
+                            },
+                            "Description": "looks boring with no description"
+                        },
+                        {
+                            "Id": "ll_apply_anl",
+                            "Name": "Apply AnL",
+                            "Type": "keybinding_v2",
+                            "Default": {
+                                "Keyboard": {
+                                    "Key": "",
+                                    "ModifierKeys": []
+                                }
+                            },
+                            "Description": "looks boring with no description"
+                        },
+                        {
+                            "Id": "ll_reset_anl",
+                            "Name": "Reset AnL",
+                            "Type": "keybinding_v2",
+                            "Default": {
+                                "Keyboard": {
+                                    "Key": "",
+                                    "ModifierKeys": []
+                                }
+                            },
+                            "Description": "looks boring with no description"
                         }
                     ]
                 }

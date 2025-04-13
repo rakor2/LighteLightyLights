@@ -29,7 +29,6 @@ end
 
 -- Handle spawn light request from client _ai
 Ext.RegisterNetListener("SpawnLight", function(channel, payload)
-    DPrint("3")
     -- DPrint("[Server] SpawnLight received with payload:", payload)
     local data = Ext.Json.Parse(payload)
     local posHost = GetHostPosition()
@@ -37,8 +36,7 @@ Ext.RegisterNetListener("SpawnLight", function(channel, payload)
     -- Create light and save its UUID _ai
     local lightIndex = #ServerSpawnedLights + 1
     uuidServer[lightIndex] = Osi.CreateAt(data.template, posHost.x, posHost.y, posHost.z, 0, 1, "")
-    DPrint(uuidServer[lightIndex])
-    DPrint("4")
+    -- DPrint(uuidServer[lightIndex])
     -- Mark slot as used _ai
     if data.type and data.slotIndex then
         -- DPrint(string.format("[Server] Marking slot %d as used for type %s", data.slotIndex, data.type))
@@ -64,13 +62,10 @@ Ext.RegisterNetListener("SpawnLight", function(channel, payload)
         color = "white"  -- Set initial color to white _ai
     })
     
-    DDump(ServerSpawnedLights)
-    DPrint(uuidServer[lightIndex])
+    -- DDump(ServerSpawnedLights)
 
-    DPrint("5")
     -- Create or move marker for the new light _ai
     CreateOrMoveLightMarker(uuidServer[lightIndex])
-    DPrint("6")
     -- First sync the list to update clients _ai
     SyncSpawnedLightsToClients()
     

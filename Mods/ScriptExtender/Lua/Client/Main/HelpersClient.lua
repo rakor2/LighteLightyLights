@@ -18,7 +18,7 @@ function GetCameraData()
     local cameras = Ext.Entity.GetAllEntitiesWithComponent("Camera")
     for _, cameraEntity in ipairs(cameras) do
         local cameraComp = cameraEntity:GetAllComponents()
-        if cameraComp and cameraComp.Camera.field_C == 1 and cameraComp.GameCameraBehavior then
+        if cameraComp and cameraComp.Camera.Active == true and cameraComp.GameCameraBehavior then
 
                 DPrint("USING GCB")
                 
@@ -34,7 +34,7 @@ function CameraLookAt()
     local cameras = Ext.Entity.GetAllEntitiesWithComponent("Camera")
     for _, cameraEntity in ipairs(cameras) do
         local cameraComp = cameraEntity:GetAllComponents().Camera 
-        if cameraComp and cameraComp.field_C == 1 then
+        if cameraComp and cameraComp.Active == true then
             _D(cameraEntity.Camera.Controller.LookAt)
             _D(cameraEntity.Transform)
         end
@@ -45,7 +45,7 @@ function CameraPos()
     local cameras = Ext.Entity.GetAllEntitiesWithComponent("Camera")
     for _, cameraEntity in ipairs(cameras) do
         local cameraComp = cameraEntity:GetAllComponents().Camera 
-        if cameraComp and cameraComp.field_C == 1 then
+        if cameraComp and cameraComp.Active == true then
             _D(cameraEntity.Transform)
         end
     end
@@ -100,6 +100,21 @@ function FindTLPreviewDummyPlayer()
     end
 end
 
+function FindTLPreviewDummyCompanion()
+    timelineActorDataEntities = Ext.Entity.GetAllEntitiesWithComponent("TimelineActorData")
+    DDump(timelineActorDataEntities)
+    for i = 1, #timelineActorDataEntities do
+        DDump(i)
+        if timelineActorDataEntities[i].TLPreviewDummy and timelineActorDataEntities[i].TLPreviewDummy.Name ~= "DUM_" then
+            local dummyName = timelineActorDataEntities[i].TLPreviewDummy.Name
+            DDump(dummyName)
+                playerDummyEntity = timelineActorDataEntities[i]
+                DDump(playerDummyEntity)
+        end
+    end
+end
+
+Ext.RegisterConsoleCommand("tlc", FindTLPreviewDummyCompanion)
 
 function GetPlayerDummyPosition()
     local ent = FindTLPreviewDummyPlayer()

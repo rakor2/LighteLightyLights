@@ -279,8 +279,7 @@ function CameraStick()
             local cameras = Ext.Entity.GetAllEntitiesWithComponent("Camera")
             for _, cameraEntity in ipairs(cameras) do
                 local cameraComp = cameraEntity:GetAllComponents().Camera
-                if cameraComp and cameraComp.field_C == 1 then
-                    -- if cameraComp and cameraComp.Active == true then --SE v23
+                    if cameraComp and cameraComp.Active == true then --SE v23
                     local transform = cameraEntity:GetAllComponents().Transform
                     if transform.Transform then
                         local pos = transform.Transform.Translate
@@ -317,50 +316,6 @@ function CameraStick()
 end
 
 
-
-function CameraStick()
-    if CheckBoxCF.Checked then
-        cameraFollowSubscriptionId = Ext.Events.Tick:Subscribe(function()
-            if not LightDropdown or LightDropdown.SelectedIndex < 0 then return end
-            local selectedLight = ClientSpawnedLights[LightDropdown.SelectedIndex + 1]   
-            local cameras = Ext.Entity.GetAllEntitiesWithComponent("Camera")
-            for _, cameraEntity in ipairs(cameras) do
-                local cameraComp = cameraEntity:GetAllComponents().Camera 
-                if cameraComp and cameraComp.field_C == 1 then
-                    local transform = cameraEntity:GetAllComponents().Transform
-                    if transform.Transform then
-                        local pos = transform.Transform.Translate
-                        local rot = transform.Transform.RotationQuat
-                        local lightEntity = Ext.Entity.Get(selectedLight.uuid)
-                        lightEntity.Transform.Transform.RotationQuat = { rot[1], rot[2], rot[3], rot[4] }
-                        lightEntity.Transform.Transform.Translate = { pos[1], pos[2], pos[3] }
-                        local data = {
-                            lightUUID = selectedLight.uuid,
-                            position = {
-                                x = pos[1],
-                                y = pos[2],
-                                z = pos[3]
-                            },
-                            rotation = {
-                                x = rot[1],
-                                y = rot[2],
-                                z = rot[3],
-                                w = rot[4]
-                            }
-                        }
-                        Ext.Net.PostMessageToServer("ApplyTranformToServerXd", Ext.Json.Stringify(data))
-                        break
-                    end
-                end
-            end
-        end)
-    else
-        if cameraFollowSubscriptionId then
-            Ext.Events.Tick:Unsubscribe(cameraFollowSubscriptionId)
-            cameraFollowSubscriptionId = nil
-        end
-    end
-end
 
 -- UI Event Handlers _ai
 
@@ -376,7 +331,6 @@ function CreateLightClick()
     local lastIndex = #ClientSpawnedLights
     if lastIndex == 0 or vfxEntClient[lastIndex] then
         local selectedType = lightTypes[lightTypeCombo.SelectedIndex + 1]
-        DPrint("CreateLight")
         RequestSpawnLight(selectedType)
     else
         DPrint("[LLL][C] Cannot spawn light - waiting for previous light VFX")
@@ -414,18 +368,24 @@ function OrbitButtonClick(dimension, step)
 end
 
 function DeleteAllClick(deleteAllButton, confirmButton)
+
+    -- DPrint("Pre Delete timer  " .. tostring(timer))
+
     if not deleteAllButton or not confirmButton then return end
     
     deleteAllButton.Visible = false
     confirmButton.Visible = true
-    
-    -- Hide confirm button and show delete all button after 2 seconds if not clicked _ai
-    Ext.Timer.WaitFor(2000, function()
-        if confirmButton and deleteAllButton then
+
+
+
+    if timer == true then
+        -- DPrint("Timer start")
+        Ext.Timer.WaitFor(2000, function()
+            -- DPrint("Timer stop")
             confirmButton.Visible = false
             deleteAllButton.Visible = true
-        end
-    end)
+        end)
+    end
 end
 
 function ColorPickerChange(picker)
@@ -829,7 +789,7 @@ function MoveOriginPointToCameraPos()
     for _, cameraEntity in ipairs(cameras) do
         local cameraComp = cameraEntity:GetAllComponents().Camera
         
-        if cameraComp and cameraComp.field_C == 1 then
+        if cameraComp and cameraComp.Active == true then
             local transform = cameraEntity:GetAllComponents().Transform
             
             if transform and transform.Transform and transform.Transform.Translate then

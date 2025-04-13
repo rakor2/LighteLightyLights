@@ -5,7 +5,7 @@ Ext.Require("Client/_init.lua")
 
 Settings = {}
 
-function Settings.Save()
+function SettingsSave()
     local settings = {
         key = HotkeySettings.selectedKey,
         modifier = HotkeySettings.selectedModifier,
@@ -15,7 +15,7 @@ function Settings.Save()
     Ext.IO.SaveFile("LightyLights/settings.json", json)
 end
 
-function Settings.Load()
+function SettingsLoad()
     local json = Ext.IO.LoadFile("LightyLights/settings.json")
     if json then
         local settings = Ext.Json.Parse(json)
@@ -26,8 +26,16 @@ function Settings.Load()
         StyleSettings.selectedStyle = settings.style or 1
     end
 end
-Settings.Load()
-DFPrint("Settings loaded")
+
+SettingsLoad()
+
+if Ext.IO.LoadFile("LightyLights/settings.json") then
+    print("")
+    DFPrint(" Settings loaded")
+else
+    print("")
+    DPrint(" Settings file not found. The file will be created after changing UI style")
+end
 
 -- Load favorites when mod initializes _ai
 function LoadFavoritesFromFile()
@@ -72,8 +80,15 @@ function LoadFavoritesFromFile()
         -- DPrint("No favorites file found - using empty lists")
     end
 end
+
 LoadFavoritesFromFile()
-DFPrint("AnL favorites loaded")
+
+if Ext.IO.LoadFile("LightyLights/AnL_Favorites.json") then
+    DFPrint(" AnL favorites loaded")
+else
+    DPrint(" AnL favorites file not found. The file will be created after adding an LTN or ATM in favorites")
+end
+
 
 -- Ext.Events.SessionLoaded:Subscribe(function()
 -- end)
@@ -82,7 +97,7 @@ local function CacheSavedValues()
     local json = Ext.Json.Stringify(savedValuesTable)
     Ext.IO.SaveFile("LightyLights/LTN_Cache.json", json)
         if Ext.IO.LoadFile("LightyLights/LTN_Cache.json") then
-            DPrint("LTN cached successfully")
+            DFPrint(" LTN cached successfully")
         end
 end
 
@@ -262,10 +277,20 @@ end)
 
 Ext.RegisterNetListener("LLL_LevelStarted", function()
     if Ext.IO.LoadFile("LightyLights/LTN_Cache.json") == nil then
-    DPrint("Caching LTN values . . . ")
+    DFPrint("Caching LTN values . . . ")
     SavedValuesTable()
     end
 end)
+
+if Ext.IO.LoadFile("LightyLights/LTN_Cache.json") then
+    DFPrint(" LTN cache loaded")
+else
+    DPrint(" LTN cache file not found. The file will be created after loading a save or by manually using !cacheltn console command while a save is loaded")
+end
+
+print("")
+DPrint("files location: AppData\\Local\\Larian Studios\\Baldur's Gate 3\\Script Extender\\LightyLights")
+print("")
 
 Ext.RegisterConsoleCommand("cacheltnC", SaveValuesToTable)
 

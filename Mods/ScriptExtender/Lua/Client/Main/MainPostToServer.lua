@@ -41,7 +41,6 @@ function RequestSpawnLight(lightType)
     })
     
     -- DPrint("[Client] Sending SpawnLight request with payload:", payload)
-    DPrint("2")
     Ext.Net.PostMessageToServer("SpawnLight", payload)
 end
 
@@ -109,6 +108,7 @@ function ConfirmDeleteAllClick(deleteAllButton, confirmButton)
     confirmButton.Visible = false
     deleteAllButton.Visible = true
     
+
     -- Clear all client-side data _ai
     ClientSpawnedLights = {}
     LightColorValues = {}

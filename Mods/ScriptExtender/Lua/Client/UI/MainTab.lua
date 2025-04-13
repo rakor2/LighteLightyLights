@@ -37,6 +37,7 @@ end
 
 
 function EnableMCMHotkeys()
+    
     MCM.SetKeybindingCallback('ll_toggle_window', function()
         mw.Open = not mw.Open
     end)
@@ -71,7 +72,27 @@ function EnableMCMHotkeys()
         end
     end)
 
-    
+        
+    MCM.SetKeybindingCallback('ll_window_scroll_down', function()
+        mw:SetScroll({0,100000000})
+    end)
+
+    MCM.SetKeybindingCallback('ll_window_scroll_up', function()
+        mw:SetScroll({0,0})
+    end)
+
+
+    MCM.SetKeybindingCallback('ll_apply_anl', function()
+        Ext.Net.PostMessageToServer("valuesApply", "")
+    end)
+
+
+    MCM.SetKeybindingCallback('ll_reset_anl', function()
+        Ext.Net.PostMessageToServer("sunValuesResetAll", "")
+        starsCheckbox.Checked = false
+        castLightCheckbox.Checked = false
+    end)
+
 end
 
 
@@ -82,7 +103,7 @@ function MainTab2(mt2)
 
     -- Create window first _ai
     mw = Ext.IMGUI.NewWindow("Lighty Lights")
-    mw.Open = true
+    mw.Open = false
 
     mw.Closeable = true
     MainWindow(mw)
@@ -107,50 +128,6 @@ function MainTab2(mt2)
         return true
     end
     
-    -- local keyCombo = mt2:AddCombo("Key")
-    -- keyCombo.IDContext = "HotkeyKeyCombo"
-    -- keyCombo.Options = KeyboardKeys
-    -- keyCombo.SelectedIndex = 0
-    
-    -- -- Set initial key selection _ai
-    -- for i, key in ipairs(KeyboardKeys) do
-    --     if key == HotkeySettings.selectedKey then
-    --         keyCombo.SelectedIndex = i - 1
-    --         break
-    --     end
-    -- end
-    
-    -- keyCombo.OnChange = function(widget)
-    --     HotkeySettings.selectedKey = KeyboardKeys[widget.SelectedIndex + 1]
-    -- end
-
-    -- local modifierCombo = mt2:AddCombo("Modifier")
-    -- modifierCombo.IDContext = "HotkeyModifierCombo"
-    -- modifierCombo.Options = KeyboardModifiers
-    -- modifierCombo.SelectedIndex = 0
-    
-    -- -- Set initial modifier selection _ai
-    -- for i, modifier in ipairs(KeyboardModifiers) do
-    --     if modifier == HotkeySettings.selectedModifier then
-    --         modifierCombo.SelectedIndex = i - 1
-    --         break
-    --     end
-    -- end
-    
-    -- modifierCombo.OnChange = function(widget)
-    --     HotkeySettings.selectedModifier = KeyboardModifiers[widget.SelectedIndex + 1]
-    -- end
-
-    -- -- Register hotkey handler _ai
-    -- Ext.Events.KeyInput:Subscribe(function(e)
-    --     if e.Event == "KeyDown" and e.Repeat == false then
-    --         if CheckHotkeyCombination(e) then
-    --             openButton.OnClick()
-    --         end
-    --     end
-    -- end)
-
-
     -- Add style switch combo _ai
     local styleCombo = mt2:AddCombo("Style")
     styleCombo.IDContext = "StyleSwitchCombo"
@@ -160,19 +137,11 @@ function MainTab2(mt2)
     styleCombo.OnChange = function(widget)
         StyleSettings.selectedStyle = widget.SelectedIndex + 1
         ApplyStyle(mw, StyleSettings.selectedStyle)
-        Settings.Save()
+        SettingsSave()
     end
-
-    -- Apply initial style _ai
-    ApplyStyle(mw, StyleSettings.selectedStyle)
-
-        -- Add save button _ai
-    -- local saveButton = mt2:AddButton("Save settings")
-    -- saveButton.IDContext = "SaveSettingsButton"
-    -- saveButton.OnClick = function()
-    --     Settings.Save()
-    -- end
-
+    
+    -- ApplyStyle(mw, StyleSettings.selectedStyle)
+    
 end
 
 function MainWindow(mw)
@@ -180,7 +149,8 @@ function MainWindow(mw)
     Style.MainWindow.Main(mw)
     ViewportSize = Ext.IMGUI.GetViewportSize()
     mw:SetPos({ViewportSize[1]/6, ViewportSize[2]/10})
-    mw:SetSize({622, 1000})
+    -- mw:SetSize({622, 1000})
+    mw:SetSize({700, 1000})
     -- mw.AlwaysAutoResize = true
 
     mw.Visible = true
@@ -214,13 +184,19 @@ function MainWindow(mw)
     -- settingsTab = mainTabBar:AddTabItem("Settings")
     -- SettingsTab(settingsTab)
 
+
+
+    betterPM = mainTabBar:AddTabItem("PM")
+    BetterPMTab(betterPM)
+
+
 end
 
 --===============-------------------------------------------------------------------------------------------------------------------------------
 -----MAIN TAB------
 --===============-------------------------------------------------------------------------------------------------------------------------------
 
-function MainWindowTab(parent) -- local parent = mw
+function MainWindowTab(parent)
 
     parent:AddSeparatorText("Management")
 
@@ -241,6 +217,13 @@ function MainWindowTab(parent) -- local parent = mw
     createButton.SameLine = true
     createButton.OnClick = function()
         CreateLightClick()
+    end
+
+    local createButton = parent:AddButton("D")
+    createButton.IDContext = "CreateLightButton"
+    createButton.SameLine = true
+    createButton.OnClick = function()
+        mw:SetScroll({0,1000000})
     end
 
     -- Add spawned lights combo directly to mt _ai
@@ -363,7 +346,7 @@ function MainWindowTab(parent) -- local parent = mw
         PositionSourceCutscene(checkbox.Checked)
     end
     
-    local Separator = parent:AddSeparatorText("Parameters")
+    local separator = parent:AddSeparatorText("Parameters")
 
     local collapsingHeader = parent:AddCollapsingHeader("Color/Temperature/Power/Distance")
 
@@ -873,6 +856,18 @@ function MainWindowTab(parent) -- local parent = mw
         DisableVFXEffects(widget.Checked)
     end
 
+    local dummyUP = parent:AddDummy(229, 0)
+    dummyUP.IDContext = "dummyUP"
+    dummyUP.SameLine = true
+    
+
+    local createButton = parent:AddButton("U")
+    createButton.IDContext = "CreateLightButton"
+    createButton.SameLine = true
+    createButton.OnClick = function()
+        mw:SetScroll({0,0})
+    end
+
     
 end
 
@@ -1015,6 +1010,19 @@ function AnLWindowTab(parent)
 
     -- Add LTN controls _ai
     local ltnSearchInput = parent:AddInputText("Search LTN", "")
+
+    local dummyUP = parent:AddDummy(27, 0)
+    dummyUP.IDContext = "dummyUP"
+    dummyUP.SameLine = true
+    
+
+    local createButton = parent:AddButton("D")
+    createButton.IDContext = "CreateLightButton"
+    createButton.SameLine = true
+    createButton.OnClick = function()
+        mw:SetScroll({0,1000000})
+    end
+
     ltnCombo = parent:AddCombo("", "")
 
     -- Initialize LTN combo _ai
@@ -1174,7 +1182,7 @@ function AnLWindowTab(parent)
 
 
     
-    local appliesSunMoon = parent:AddSeparatorText("Circles in the sky")
+    local appliesSunMoon = parent:AddSeparatorText("Atmosphere and lighting")
 
 
 
@@ -1720,11 +1728,11 @@ function AnLWindowTab(parent)
         UpdateValue("CloudIntensity", "value1", value)
     end
 
-    cloudAmbientLightFactorSlider = collapsingHeaderVolumetricCloud:AddSlider("Ambient light factor", 0, 0, 10, 0.01)
-    cloudAmbientLightFactorSlider.IDContext = "cloudAmbientLightFactor"
-    cloudAmbientLightFactorSlider.SameLine = false
-    cloudAmbientLightFactorSlider.OnChange = function(value)
-        UpdateValue("CloudAmbientLightFactor", "value1", value)
+    cloudStartHeightSlider = collapsingHeaderVolumetricCloud:AddSlider("Start height", 0, 0, 10000, 1)
+    cloudStartHeightSlider.IDContext = "cloudStartHeight"
+    cloudStartHeightSlider.SameLine = false
+    cloudStartHeightSlider.OnChange = function(value)
+        UpdateValue("CloudStartHeight", "value1", value)
     end
 
     cloudEndHeightSlider = collapsingHeaderVolumetricCloud:AddSlider("End height", 0, 0, 20000, 1)
@@ -1741,12 +1749,6 @@ function AnLWindowTab(parent)
         UpdateValue("CloudHorizonDistance", "value1", value)
     end
 
-    cloudStartHeightSlider = collapsingHeaderVolumetricCloud:AddSlider("Start height", 0, 0, 10000, 1)
-    cloudStartHeightSlider.IDContext = "cloudStartHeight"
-    cloudStartHeightSlider.SameLine = false
-    cloudStartHeightSlider.OnChange = function(value)
-        UpdateValue("CloudStartHeight", "value1", value)
-    end
 
     cloudCoverageStartDistanceSlider = collapsingHeaderVolumetricCloud:AddSlider("Coverage start distance", 0, 0, 100000, 1)
     cloudCoverageStartDistanceSlider.IDContext = "cloudCoverageStartDistance"
@@ -1783,6 +1785,14 @@ function AnLWindowTab(parent)
     cloudSunLightFactorSlider.OnChange = function(value)
         UpdateValue("CloudSunLightFactor", "value1", value)
     end
+
+    cloudAmbientLightFactorSlider = collapsingHeaderVolumetricCloud:AddSlider("Ambient light factor", 0, 0, 10, 0.01)
+    cloudAmbientLightFactorSlider.IDContext = "cloudAmbientLightFactor"
+    cloudAmbientLightFactorSlider.SameLine = false
+    cloudAmbientLightFactorSlider.OnChange = function(value)
+        UpdateValue("CloudAmbientLightFactor", "value1", value)
+    end
+
 
     cloudSunRayLengthSlider = collapsingHeaderVolumetricCloud:AddSlider("Sun ray length", 0, 0, 1, 0.01)
     cloudSunRayLengthSlider.IDContext = "cloudSunRayLength"
@@ -1838,6 +1848,19 @@ function AnLWindowTab(parent)
     valuesApplyButton.SameLine = false
     valuesApplyButton.OnClick = function()
         Ext.Net.PostMessageToServer("valuesApplyDay", "")
+    end
+
+
+    local dummyUP = parent:AddDummy(238 , 0)
+    dummyUP.IDContext = "dummyUP"
+    dummyUP.SameLine = true
+    
+
+    local createButton = parent:AddButton("U")
+    createButton.IDContext = "CreateLightButton"
+    createButton.SameLine = true
+    createButton.OnClick = function()
+        mw:SetScroll({0,0})
     end
 
 
@@ -1950,7 +1973,75 @@ function GoboWindowTab(parent)
 
 end
 
+--===============-------------------------------------------------------------------------------------------------------------------------------
+-----PM TAB------
+--===============-------------------------------------------------------------------------------------------------------------------------------
 
+function BetterPMTab(parent)
+
+dofCollapse = parent:AddCollapsingHeader("DoF")
+
+local dofStrength = dofCollapse:AddSlider("DoF Strength", 0, 1, 22, 0.001) --default, min, max, step
+dofStrength.IDContext = "DofStr"
+dofStrength.SameLine = false
+dofStrength.Logarithmic = true
+dofStrength.Components = 1
+dofStrength.Value = {1, 0, 0, 0}
+dofStrength.OnChange = function()
+    local success, result = pcall(function()
+        return Ext.UI.GetRoot():Find("ContentRoot"):Child(21).DataContext.DOFStrength
+    end)
+
+    if success and result then
+        local preciseDofStr = (dofStrength.Value[1])
+        Ext.UI.GetRoot():Find("ContentRoot"):Child(21).DataContext.DOFStrength = preciseDofStr
+    end
+    
+end
+
+local getDofStrengthSub = Ext.Events.Tick:Subscribe(function()
+    local success, result = pcall(function()
+        return Ext.UI.GetRoot():Find("ContentRoot"):Child(21).DataContext.DOFStrength
+    end)
+    
+    if success and result then
+        getDofStrength = result
+        dofStrength.Value = {getDofStrength, 0, 0, 0}
+    end
+end)
+    
+
+local dofDistance = dofCollapse:AddSlider("DoF Distance", 0, 0, 30, 0.001) --default, min, max, step
+dofDistance.IDContext = "DofDist"
+dofDistance.SameLine = false
+dofDistance.Logarithmic = true
+dofDistance.Components = 1
+dofDistance.Value = {1, 0, 0, 0}
+dofDistance.OnChange = function()
+    local success, result = pcall(function()
+        return Ext.UI.GetRoot():Find("ContentRoot"):Child(21).DataContext.DOFDistance
+    end)
+
+    if success and result then
+        local preciseDofDist = (dofDistance.Value[1])
+        Ext.UI.GetRoot():Find("ContentRoot"):Child(21).DataContext.DOFDistance = preciseDofDist
+    end
+
+end
+
+
+local getDofDistanceSub = Ext.Events.Tick:Subscribe(function()
+    local success, result = pcall(function()
+        return Ext.UI.GetRoot():Find("ContentRoot"):Child(21).DataContext.DOFDistance
+    end)
+    
+    if success and result then
+        getDofDistance = result
+        dofDistance.Value = {getDofDistance, 0, 0, 0}
+    end
+end)
+
+end
 --===============-------------------------------------------------------------------------------------------------------------------------------
 -----SETTINGS TAB------
 --===============-------------------------------------------------------------------------------------------------------------------------------

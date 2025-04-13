@@ -18,3 +18,6 @@ end
 Ext.RegisterConsoleCommand("cacheltn", CacheLTNServer)
 
 
+Ext.Osiris.RegisterListener("LevelGameplayStarted", 2, "after", function(levelName, isEditorMode)
+    Ext.Net.BroadcastMessage("LLL_LevelStarted","")
+end)
