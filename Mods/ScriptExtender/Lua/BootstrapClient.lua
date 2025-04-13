@@ -1,7 +1,7 @@
 Ext.Require("Shared/_init.lua")
 Ext.Require("Client/_init.lua")
 
-
+currentCacheVersion = "1.1.5_crab"
 
 Settings = {}
 
@@ -94,11 +94,16 @@ end
 -- end)
 
 local function CacheSavedValues()
+    savedValuesTable.Version = currentCacheVersion
+
     local json = Ext.Json.Stringify(savedValuesTable)
     Ext.IO.SaveFile("LightyLights/LTN_Cache.json", json)
-        if Ext.IO.LoadFile("LightyLights/LTN_Cache.json") then
-            DFPrint(" LTN cached successfully")
-        end
+
+    if Ext.IO.LoadFile("LightyLights/LTN_Cache.json") then
+        DFPrint(" LTN cached successfully with verison " .. Ext.Json.Parse(Ext.IO.LoadFile("LightyLights/LTN_Cache.json")).Version)
+        CacheCheck()
+    end
+
 end
 
 
@@ -266,6 +271,7 @@ function SavedValuesTable()
         }
     end
     -- DDump(savedValuesTable[ltn_templates[1].uuid])
+
     CacheSavedValues()
 end
 
@@ -277,16 +283,28 @@ end)
 
 Ext.RegisterNetListener("LLL_LevelStarted", function()
     if Ext.IO.LoadFile("LightyLights/LTN_Cache.json") == nil then
-    DFPrint("Caching LTN values . . . ")
+    DFPrint(" Caching LTN values . . . ")
     SavedValuesTable()
     end
 end)
 
-if Ext.IO.LoadFile("LightyLights/LTN_Cache.json") then
-    DFPrint(" LTN cache loaded")
-else
-    DPrint(" LTN cache file not found. The file will be created after loading a save or by manually using !cacheltn console command while a save is loaded")
+
+function CacheCheck()
+    if Ext.IO.LoadFile("LightyLights/LTN_Cache.json") then
+        versionCheck = Ext.Json.Parse(Ext.IO.LoadFile("LightyLights/LTN_Cache.json")).Version
+        if versionCheck ~= currentCacheVersion then
+            DWarn("LTN cache version check not passed")
+            SavedValuesTable()
+        else
+            DFPrint(" LTN cache loaded with verison " .. Ext.Json.Parse(Ext.IO.LoadFile("LightyLights/LTN_Cache.json")).Version)
+        end
+
+    else
+        DPrint("LTN cache file not found. The file will be created after loading a save or by manually using !cacheltn console command while a save is loaded")
+    end
 end
+
+CacheCheck()
 
 print("")
 DPrint("files location: AppData\\Local\\Larian Studios\\Baldur's Gate 3\\Script Extender\\LightyLights")

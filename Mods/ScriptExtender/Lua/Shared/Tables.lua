@@ -41,6 +41,9 @@ Styles = {}
 LightTemperatureValues = {}
 
 
+VeRsIoNs = {
+    ["1.1.5.10"] = "1.1.5_crab"
+}
 
 -- Hotkey settings storage _ai
 HotkeySettings = {

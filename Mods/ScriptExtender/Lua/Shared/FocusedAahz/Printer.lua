@@ -120,7 +120,7 @@ function SimplePrinter:PrintTest(...)
 end
 
 function SimplePrinter:PrintWarning(...)
-    local s = string.format("[%s] %s[%s]: ", self.Machine, self.Prefix, "WARN")
+    local s = string.format("[%s] %s: ", self.Machine, self.Prefix, "")
     if self.ApplyColor then
         s = self:Colorize(s)
     end

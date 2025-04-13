@@ -1193,7 +1193,6 @@ Ext.RegisterNetListener("sunValuesResetAll", function (channel, payload)
         local uuid = ltn_templates[i].uuid
         local parameters = values[uuid][2]
 
-
             local lighting = Ext.Resource.Get(uuid, "Lighting").Lighting
             
             --Sun
