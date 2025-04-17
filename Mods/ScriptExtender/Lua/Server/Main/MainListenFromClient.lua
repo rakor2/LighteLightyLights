@@ -357,7 +357,7 @@ Ext.RegisterNetListener("ToggleMarker", function(channel, payload)
     if markerVisible[lightUUID] then
         -- Hide marker by moving it down, preserving rotation _ai
         -- Osi.ToTransform(lightMarker, x, y - 5, z, rx, ry, rz)
-        markerEntity.GameObjectVisual.Scale = 0
+        markerEntity.GameObjectVisual.Scale = 0.001
         markerEntity:Replicate("GameObjectVisual")
         markerVisible[lightUUID] = false
     else
@@ -931,9 +931,9 @@ Ext.RegisterNetListener("LTNValueCahnged", function(channel, payload)
         elseif data.name == "CastLight" then lighting.Moon.CastLightEnabled = data.value
         elseif data.name == "MoonYaw" then lighting.Moon.Yaw = data.value
         elseif data.name == "MoonPitch" then lighting.Moon.Pitch = data.value
-        elseif data.name == "MoonInt" then lighting.Sun.Moon.Intensity = data.value
-        elseif data.name == "MoonRadius" then lighting.Sun.Moon.Radius = data.value
-        elseif data.name == "MoonColor" then lighting.Sun.Moon.Color = {data.value1,data.value2,data.value3}
+        elseif data.name == "MoonInt" then lighting.Moon.Intensity = data.value
+        elseif data.name == "MoonRadius" then lighting.Moon.Radius = data.value
+        elseif data.name == "MoonColor" then lighting.Moon.Color = {data.value1,data.value2,data.value3}
         elseif data.name == "StarsState" then lighting.SkyLight.ProcStarsEnabled = data.value
         elseif data.name == "StarsAmount" then lighting.SkyLight.ProcStarsAmount = data.value
         elseif data.name == "StarsInt" then lighting.SkyLight.ProcStarsIntensity = data.value
@@ -969,6 +969,7 @@ Ext.RegisterNetListener("LTNValueCahnged", function(channel, payload)
         elseif data.name == "MoonDistance" then lighting.Moon.Distance = data.value
         elseif data.name == "MoonEarthshine" then lighting.Moon.Earthshine = data.value
         elseif data.name == "MoonEnabled" then lighting.Moon.Enabled = data.value
+        elseif data.name == "CastLightEnabled" then lighting.Moon.CastLightEnabled = data.value
         elseif data.name == "MoonGlare" then lighting.Moon.MoonGlare = data.value
         elseif data.name == "TearsRotate" then lighting.Moon.TearsRotate = data.value
         elseif data.name == "TearsScale" then lighting.Moon.TearsScale = data.value
@@ -1216,12 +1217,22 @@ Ext.RegisterNetListener("sunValuesResetAll", function (channel, payload)
             lighting.Sun.ScatteringIntensityScale = parameters.ScatteringIntensityScale
 
             --Moon
+            lighting.Moon.Yaw = parameters.MoonYaw
+            lighting.Moon.Pitch = parameters.MoonPitch
+            lighting.Moon.Intensity = parameters.MoonInt
+            lighting.Moon.Radius = parameters.MoonRadius
+            lighting.Moon.CastLightEnabled = parameters.CastLightEnabled
             lighting.Moon.Enabled = parameters.MoonEnabled
             lighting.Moon.Distance = parameters.MoonDistance
             lighting.Moon.Earthshine = parameters.MoonEarthshine
             lighting.Moon.MoonGlare = parameters.MoonGlare
             lighting.Moon.TearsRotate = parameters.TearsRotate
             lighting.Moon.TearsScale = parameters.TearsScale
+            lighting.Moon.Color = { 
+                parameters.MoonColor[1],
+                parameters.MoonColor[2],
+                parameters.MoonColor[3]
+            }
 
             --Fog Layer 0
             lighting.Fog.FogLayer0.Albedo = {
@@ -1333,6 +1344,7 @@ Ext.RegisterNetListener("sunValuesResetAll", function (channel, payload)
             }
     end
 
+    Ext.Net.BroadcastMessage("ChangeLTNValuesToClient", "")
     valuesApply()
     
 end)
@@ -1553,6 +1565,12 @@ Ext.RegisterNetListener("ApplyTranformToServerXd", function(channel, payload)
         }
     UpdateMarkerPosition(data.lightUUID)
     UpdateGoboPosition(data.lightUUID)
+end)
+
+
+
+Ext.RegisterNetListener("LarianWhyTheSecond", function(channel, value)
+    Ext.Stats.GetStatsManager().ExtraData["PhotoModeCameraMovementSpeed"] = value
 end)
 
 

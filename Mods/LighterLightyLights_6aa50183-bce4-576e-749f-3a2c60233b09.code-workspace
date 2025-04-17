@@ -14,7 +14,7 @@
 		}
 	],
 	"settings": {
-		"bg3ModHelper.rootModPath": "i:\\SteamLibrary\\steamapps\\common\\Baldur's Gate 3 Playtest\\Data\\Mods\\LighterLightyLights_6aa50183-bce4-576e-749f-3a2c60233b09",
+		"bg3ModHelper.rootModPath": "i:\\SteamLibrary\\steamapps\\common\\Baldurs Gate 3\\Data\\Mods\\LighterLightyLights_6aa50183-bce4-576e-749f-3a2c60233b09",
 		"bg3ModHelper.packingPriority": 0,
 		"workbench.colorCustomizations": {
 			"editorGutter.addedBackground": "#00000000"

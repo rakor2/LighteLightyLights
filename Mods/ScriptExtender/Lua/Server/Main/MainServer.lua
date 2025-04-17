@@ -132,3 +132,9 @@ function UpdateLightOrbitPosition(lightUUID)
     end
 end
 
+function LarianWhy()
+    Ext.Stats.GetStatsManager().ExtraData["PhotoModeCameraFloorDistance"] = -99887766
+    Ext.Stats.GetStatsManager().ExtraData["PhotoModeCameraRange"] = 11223344
+end
+
+LarianWhy()

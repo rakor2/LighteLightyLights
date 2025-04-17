@@ -287,3 +287,7 @@ Ext.RegisterNetListener("SyncSpawnedLights", function(channel, payload)
         goboLightDropdown.SelectedIndex = LightDropdown.SelectedIndex
     end
 end)
+
+Ext.RegisterNetListener("ChangeLTNValuesToClient", function(channel, payload)
+    ChangeLTNValues()
+end)

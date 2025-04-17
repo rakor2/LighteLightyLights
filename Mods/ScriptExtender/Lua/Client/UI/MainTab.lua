@@ -36,64 +36,62 @@ function ApplyStyle(window, styleNum)
 end
 
 
-function EnableMCMHotkeys()
     
-    MCM.SetKeybindingCallback('ll_toggle_window', function()
-        mw.Open = not mw.Open
-    end)
+MCM.SetKeybindingCallback('ll_toggle_window', function()
+    mw.Open = not mw.Open
+end)
+
+MCM.SetKeybindingCallback('ll_toggle_light', function()
+    ToggleLight()
+end)
+
+MCM.SetKeybindingCallback('ll_toggle_all_lights', function()
+    ToggleLights()
+end)
+
+MCM.SetKeybindingCallback('ll_toggle_marker', function()
+    ToggleMarker()
+end)
+
+MCM.SetKeybindingCallback('ll_toggle_all_markers', function()
+    ToggleAllMarkers()
+end)
+
+MCM.SetKeybindingCallback('ll_duplicate', function()
+    DuplicateLight()
+end)
+
+MCM.SetKeybindingCallback('ll_stick', function()
+    if CheckBoxCF.Checked == false then
+        CheckBoxCF.Checked = true
+        CameraStick()
+    else
+        CheckBoxCF.Checked = false
+        CameraStick()
+    end
+end)
+
     
-    MCM.SetKeybindingCallback('ll_toggle_light', function()
-        ToggleLight()
-    end)
-    
-    MCM.SetKeybindingCallback('ll_toggle_all_lights', function()
-        ToggleLights()
-    end)
-    
-    MCM.SetKeybindingCallback('ll_toggle_marker', function()
-        ToggleMarker()
-    end)
-    
-    MCM.SetKeybindingCallback('ll_toggle_all_markers', function()
-        ToggleAllMarkers()
-    end)
-    
-    MCM.SetKeybindingCallback('ll_duplicate', function()
-        DuplicateLight()
-    end)
+MCM.SetKeybindingCallback('ll_window_scroll_down', function()
+    mw:SetScroll({0,100000000})
+end)
 
-    MCM.SetKeybindingCallback('ll_stick', function()
-        if CheckBoxCF.Checked == false then
-            CheckBoxCF.Checked = true
-            CameraStick()
-        else
-            CheckBoxCF.Checked = false
-            CameraStick()
-        end
-    end)
-
-        
-    MCM.SetKeybindingCallback('ll_window_scroll_down', function()
-        mw:SetScroll({0,100000000})
-    end)
-
-    MCM.SetKeybindingCallback('ll_window_scroll_up', function()
-        mw:SetScroll({0,0})
-    end)
+MCM.SetKeybindingCallback('ll_window_scroll_up', function()
+    mw:SetScroll({0,0})
+end)
 
 
-    MCM.SetKeybindingCallback('ll_apply_anl', function()
-        Ext.Net.PostMessageToServer("valuesApply", "")
-    end)
+MCM.SetKeybindingCallback('ll_apply_anl', function()
+    Ext.Net.PostMessageToServer("valuesApply", "")
+end)
 
 
-    MCM.SetKeybindingCallback('ll_reset_anl', function()
-        Ext.Net.PostMessageToServer("sunValuesResetAll", "")
-        starsCheckbox.Checked = false
-        castLightCheckbox.Checked = false
-    end)
+MCM.SetKeybindingCallback('ll_reset_anl', function()
+    Ext.Net.PostMessageToServer("sunValuesResetAll", "")
+    starsCheckbox.Checked = false
+    castLightCheckbox.Checked = false
+end)
 
-end
 
 
 function MainTab2(mt2)
@@ -108,9 +106,9 @@ function MainTab2(mt2)
     mw.Closeable = true
     MainWindow(mw)
 
-    if mw then
-        EnableMCMHotkeys()
-    end
+    -- if mw then
+    --     EnableMCMHotkeys()
+    -- end
 
     -- xdText = mt2:AddText("")
 
@@ -1709,7 +1707,7 @@ function AnLWindowTab(parent)
 
 
 
-    local collapsingHeaderVolumetricCloud = parent:AddCollapsingHeader("Volumetric cloud")
+    local collapsingHeaderVolumetricCloud = parent:AddCollapsingHeader("Volumetric clouds")
 
 
 
@@ -1979,9 +1977,25 @@ end
 
 function BetterPMTab(parent)
 
-dofCollapse = parent:AddCollapsingHeader("DoF")
+camCollapse = parent:AddCollapsingHeader("Camera")
+camCollapse.DefaultOpen = true
 
-local dofStrength = dofCollapse:AddSlider("DoF Strength", 0, 1, 22, 0.001) --default, min, max, step
+
+local camSpeed = camCollapse:AddSlider("Speed", 0, 0.01, 100, 0.1) --default, min, max, step
+camSpeed.IDContext = "UniqueSliderID"
+camSpeed.SameLine = false
+camSpeed.Components = 1
+camSpeed.Value = {6, 0, 0, 0}
+camSpeed.OnChange = function()
+    Ext.Net.PostMessageToServer("LarianWhyTheSecond", camSpeed.Value[1])
+end
+
+
+
+dofCollapse = parent:AddCollapsingHeader("DoF")
+dofCollapse.DefaultOpen = true
+
+local dofStrength = dofCollapse:AddSlider("Strength", 0, 1, 22, 0.001) --default, min, max, step
 dofStrength.IDContext = "DofStr"
 dofStrength.SameLine = false
 dofStrength.Logarithmic = true
@@ -2011,7 +2025,7 @@ local getDofStrengthSub = Ext.Events.Tick:Subscribe(function()
 end)
     
 
-local dofDistance = dofCollapse:AddSlider("DoF Distance", 0, 0, 30, 0.001) --default, min, max, step
+local dofDistance = dofCollapse:AddSlider("Distance", 0, 0, 30, 0.001) --default, min, max, step
 dofDistance.IDContext = "DofDist"
 dofDistance.SameLine = false
 dofDistance.Logarithmic = true
@@ -2040,6 +2054,8 @@ local getDofDistanceSub = Ext.Events.Tick:Subscribe(function()
         dofDistance.Value = {getDofDistance, 0, 0, 0}
     end
 end)
+
+
 
 end
 --===============-------------------------------------------------------------------------------------------------------------------------------

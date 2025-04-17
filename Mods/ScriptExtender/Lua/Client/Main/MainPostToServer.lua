@@ -652,6 +652,7 @@ function UpdateMoonEnabled(value)
     Ext.Net.PostMessageToServer("MoonEnabled", value)
 end
 
+
 function UpdateMoonGlare(value)
     Ext.Net.PostMessageToServer("MoonGlare", value.Value[1])
 end

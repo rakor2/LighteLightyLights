@@ -1,7 +1,7 @@
 Ext.Require("Shared/_init.lua")
 Ext.Require("Client/_init.lua")
 
-currentCacheVersion = "1.1.5_crab"
+currentCacheVersion = "1.4.Elk"
 
 Settings = {}
 
@@ -28,6 +28,7 @@ function SettingsLoad()
 end
 
 SettingsLoad()
+DPrint('xd')
 
 if Ext.IO.LoadFile("LightyLights/settings.json") then
     print("")
@@ -102,6 +103,8 @@ local function CacheSavedValues()
     if Ext.IO.LoadFile("LightyLights/LTN_Cache.json") then
         DFPrint(" LTN cached successfully with verison " .. Ext.Json.Parse(Ext.IO.LoadFile("LightyLights/LTN_Cache.json")).Version)
         CacheCheck()
+    else
+        return
     end
 
 end
@@ -185,12 +188,23 @@ function SavedValuesTable()
                 FogRenderDistance = lightingValue.Fog.RenderDistance,
                 
                 --Moon
+                MoonYaw = lightingValue.Moon.Yaw,
+                MoonPitch = lightingValue.Moon.Pitch,
+                MoonInt = lightingValue.Moon.Intensity,
+                MoonRadius = lightingValue.Moon.Radius,
                 MoonDistance = lightingValue.Moon.Distance,
                 MoonEarthshine = lightingValue.Moon.Earthshine,
                 MoonEnabled = lightingValue.Moon.Enabled,
+                CastLightEnabled = lightingValue.Moon.CastLightEnabled,
                 MoonGlare = lightingValue.Moon.MoonGlare,
                 TearsRotate = lightingValue.Moon.TearsRotate,
                 TearsScale = lightingValue.Moon.TearsScale,
+                MoonColor = {
+                    lightingValue.Moon.Color[1],
+                    lightingValue.Moon.Color[2],
+                    lightingValue.Moon.Color[3]
+                },
+
                 
                 --SkyLight
                 CirrusCloudsAmount = lightingValue.SkyLight.CirrusCloudsAmount,
@@ -270,8 +284,9 @@ function SavedValuesTable()
             }
         }
     end
+    DFPrint(" Caching LTN values . . . ")
     -- DDump(savedValuesTable[ltn_templates[1].uuid])
-
+    -- print("")
     CacheSavedValues()
 end
 
