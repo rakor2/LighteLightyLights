@@ -1,0 +1,1306 @@
+{
+        "Active" : {},
+        "AttributeFlags" :
+        {
+                "AttributeFlags" : 0
+        },
+        "BoostsContainer" :
+        {
+                "Boosts" : []
+        },
+        "CanBeDisarmed" :
+        {
+                "Flags" : 65535
+        },
+        "CanSeeThrough" : {},
+        "Data" :
+        {
+                "StatsId" : "",
+                "StepsType" : 0,
+                "Weight" : 0
+        },
+        "DisplayName" :
+        {
+                "Name" :
+                {
+                        "ArgumentString" :
+                        {
+                                "Handle" : "ls::TranslatedStringRepository::s_HandleUnknown",
+                                "Version" : 0
+                        },
+                        "Get" : "function: 00007FF9CC0B01D0",
+                        "Handle" :
+                        {
+                                "Handle" : "ls::TranslatedStringRepository::s_HandleUnknown",
+                                "Version" : 0
+                        }
+                },
+                "Title" :
+                {
+                        "ArgumentString" :
+                        {
+                                "Handle" : "ls::TranslatedStringRepository::s_HandleUnknown",
+                                "Version" : 0
+                        },
+                        "Get" : "function: 00007FF9CC0B01D0",
+                        "Handle" :
+                        {
+                                "Handle" : "ls::TranslatedStringRepository::s_HandleUnknown",
+                                "Version" : 0
+                        }
+                }
+        },
+        "Effect" :
+        {
+                "AnimationName" : "",
+                "ConstructFlags" : 24576,
+                "EffectName" : "LLL_Point_VFX",
+                "EffectResource" :
+                {
+                        "BoundsMax" :
+                        [
+                                1000.0,
+                                1000.0,
+                                1000.0
+                        ],
+                        "BoundsMin" :
+                        [
+                                -1000.0,
+                                -1000.0,
+                                -1000.0
+                        ],
+                        "Constructor" :
+                        {
+                                "EffectComponents" :
+                                [
+                                        {
+                                                "AnimateManually" : false,
+                                                "CalculatedPosition" :
+                                                [
+                                                        0.0,
+                                                        0.0,
+                                                        0.0
+                                                ],
+                                                "ColorProperty" : null,
+                                                "CoordinateSpace" : 1,
+                                                "EndTime" : 0.24690370261669159,
+                                                "Entity" : null,
+                                                "FlickerAmountProperty" : null,
+                                                "FlickerSpeedProperty" : null,
+                                                "FxType" : 22,
+                                                "ID" : "ec00864c-073a-464a-8e3c-4dd9aa29af30",
+                                                "IgnoreParentRotation" : true,
+                                                "InitialRotationProperty" : null,
+                                                "IntensityProperty" : null,
+                                                "IsActive" : false,
+                                                "KeyframedPosition" :
+                                                [
+                                                        0.0,
+                                                        0.0,
+                                                        0.0
+                                                ],
+                                                "LastPosition" :
+                                                [
+                                                        10000000.0,
+                                                        0.0,
+                                                        0.0
+                                                ],
+                                                "LastUpdate" : 0.0,
+                                                "LastUpdateTimeStep" : 0.0,
+                                                "LightEntity" : null,
+                                                "ModulateLightTemplateRadius" : false,
+                                                "Modules" : [],
+                                                "Offset" :
+                                                [
+                                                        0.0,
+                                                        0.0,
+                                                        0.0
+                                                ],
+                                                "OverrideLightTemplateColor" : false,
+                                                "OverrideLightTemplateFlickerSpeed" : false,
+                                                "Position" :
+                                                [
+                                                        0.0,
+                                                        0.0,
+                                                        0.0
+                                                ],
+                                                "PositionProperty" : null,
+                                                "Properties" :
+                                                {
+                                                        "Appearance.Color" :
+                                                        {
+                                                                "AttributeName" : "Color",
+                                                                "Frames" :
+                                                                [
+                                                                        {
+                                                                                "Color" :
+                                                                                [
+                                                                                        1.0,
+                                                                                        1.0,
+                                                                                        1.0,
+                                                                                        1.0
+                                                                                ],
+                                                                                "Time" : 0.0
+                                                                        },
+                                                                        {
+                                                                                "Color" :
+                                                                                [
+                                                                                        1.0,
+                                                                                        1.0,
+                                                                                        1.0,
+                                                                                        1.0
+                                                                                ],
+                                                                                "Time" : 1.0
+                                                                        }
+                                                                ],
+                                                                "FullName" : "Appearance.Color",
+                                                                "Input" : "",
+                                                                "Parameters" : []
+                                                        },
+                                                        "Appearance.Flicker Amount" :
+                                                        {
+                                                                "AttributeName" : "Flicker Amount",
+                                                                "FullName" : "Appearance.Flicker Amount",
+                                                                "Input" : "",
+                                                                "KeyFrames" :
+                                                                [
+                                                                        {
+                                                                                "Frames" :
+                                                                                [
+                                                                                        {
+                                                                                                "Time" : 0.0,
+                                                                                                "Value" : 1.0
+                                                                                        },
+                                                                                        {
+                                                                                                "Time" : 1.0,
+                                                                                                "Value" : 1.0
+                                                                                        }
+                                                                                ]
+                                                                        }
+                                                                ],
+                                                                "Parameters" : []
+                                                        },
+                                                        "Appearance.Intensity" :
+                                                        {
+                                                                "AttributeName" : "Intensity",
+                                                                "FullName" : "Appearance.Intensity",
+                                                                "Input" : "",
+                                                                "KeyFrames" :
+                                                                [
+                                                                        {
+                                                                                "Frames" :
+                                                                                [
+                                                                                        {
+                                                                                                "Time" : 0.0,
+                                                                                                "Value" : 1.0
+                                                                                        },
+                                                                                        {
+                                                                                                "Time" : 1.0,
+                                                                                                "Value" : 1.0
+                                                                                        }
+                                                                                ]
+                                                                        }
+                                                                ],
+                                                                "Parameters" : []
+                                                        },
+                                                        "Appearance.Light UUID" :
+                                                        {
+                                                                "AttributeName" : "Light GUID",
+                                                                "FullName" : "Appearance.Light UUID",
+                                                                "Input" : "",
+                                                                "Parameters" : [],
+                                                                "Value" : "aca228c3-f0c5-41e0-bc00-d11ddee12ed0"
+                                                        },
+                                                        "Appearance.Modulate Light Template Radius" :
+                                                        {
+                                                                "AttributeName" : "Modulate Light Template Radius",
+                                                                "FullName" : "Appearance.Modulate Light Template Radius",
+                                                                "Input" : "",
+                                                                "Parameters" : [],
+                                                                "Value" : true
+                                                        },
+                                                        "Appearance.Override Light Template Color" :
+                                                        {
+                                                                "AttributeName" : "Override Light Template Color",
+                                                                "FullName" : "Appearance.Override Light Template Color",
+                                                                "Input" : "",
+                                                                "Parameters" : [],
+                                                                "Value" : true
+                                                        },
+                                                        "Appearance.Radius" :
+                                                        {
+                                                                "AttributeName" : "Radius",
+                                                                "FullName" : "Appearance.Radius",
+                                                                "Input" : "",
+                                                                "KeyFrames" :
+                                                                [
+                                                                        {
+                                                                                "Frames" :
+                                                                                [
+                                                                                        {
+                                                                                                "Time" : 0.0,
+                                                                                                "Value" : 1.0
+                                                                                        },
+                                                                                        {
+                                                                                                "Time" : 1.0,
+                                                                                                "Value" : 1.0
+                                                                                        }
+                                                                                ]
+                                                                        }
+                                                                ],
+                                                                "Parameters" : []
+                                                        },
+                                                        "Behavior.Animate Manually" :
+                                                        {
+                                                                "AttributeName" : "Animate Manually",
+                                                                "FullName" : "Behavior.Animate Manually",
+                                                                "Input" : "",
+                                                                "Parameters" : [],
+                                                                "Value" : false
+                                                        },
+                                                        "Behavior.Bottom" :
+                                                        {
+                                                                "AttributeName" : "Bottom",
+                                                                "FullName" : "Behavior.Bottom",
+                                                                "Input" : "",
+                                                                "Parameters" : [],
+                                                                "Value" : -5.0
+                                                        },
+                                                        "Behavior.Flicker Speed" :
+                                                        {
+                                                                "AttributeName" : "Flicker Speed",
+                                                                "FullName" : "Behavior.Flicker Speed",
+                                                                "Input" : "",
+                                                                "KeyFrames" :
+                                                                [
+                                                                        {
+                                                                                "Frames" :
+                                                                                [
+                                                                                        {
+                                                                                                "Time" : 0.0,
+                                                                                                "Value" : 0.0
+                                                                                        },
+                                                                                        {
+                                                                                                "Time" : 1.0,
+                                                                                                "Value" : 0.0
+                                                                                        }
+                                                                                ]
+                                                                        }
+                                                                ],
+                                                                "Parameters" : []
+                                                        },
+                                                        "Behavior.Initial Rotation" :
+                                                        {
+                                                                "AttributeName" : "Initial Rotation",
+                                                                "FullName" : "Behavior.Initial Rotation",
+                                                                "Input" : "",
+                                                                "KeyFrames" :
+                                                                [
+                                                                        {
+                                                                                "Frames" :
+                                                                                [
+                                                                                        {
+                                                                                                "Time" : 0.0,
+                                                                                                "Value" : 0.0
+                                                                                        },
+                                                                                        {
+                                                                                                "Time" : 1.0,
+                                                                                                "Value" : 0.0
+                                                                                        }
+                                                                                ]
+                                                                        },
+                                                                        {
+                                                                                "Frames" :
+                                                                                [
+                                                                                        {
+                                                                                                "Time" : 0.0,
+                                                                                                "Value" : 0.0
+                                                                                        },
+                                                                                        {
+                                                                                                "Time" : 1.0,
+                                                                                                "Value" : 0.0
+                                                                                        }
+                                                                                ]
+                                                                        },
+                                                                        {
+                                                                                "Frames" :
+                                                                                [
+                                                                                        {
+                                                                                                "Time" : 0.0,
+                                                                                                "Value" : 0.0
+                                                                                        },
+                                                                                        {
+                                                                                                "Time" : 1.0,
+                                                                                                "Value" : 0.0
+                                                                                        }
+                                                                                ]
+                                                                        }
+                                                                ],
+                                                                "Parameters" : []
+                                                        },
+                                                        "Behavior.Override Light Template Flicker Speed" :
+                                                        {
+                                                                "AttributeName" : "Override Light Template Flicker Speed",
+                                                                "FullName" : "Behavior.Override Light Template Flicker Speed",
+                                                                "Input" : "",
+                                                                "Parameters" : [],
+                                                                "Value" : false
+                                                        },
+                                                        "Behavior.Position" :
+                                                        {
+                                                                "AttributeName" : "Keyframed Position",
+                                                                "FullName" : "Behavior.Position",
+                                                                "Input" : "",
+                                                                "KeyFrames" :
+                                                                [
+                                                                        {
+                                                                                "Frames" :
+                                                                                [
+                                                                                        {
+                                                                                                "Time" : 0.0,
+                                                                                                "Value" : 0.0
+                                                                                        },
+                                                                                        {
+                                                                                                "Time" : 1.0,
+                                                                                                "Value" : 0.0
+                                                                                        }
+                                                                                ]
+                                                                        },
+                                                                        {
+                                                                                "Frames" :
+                                                                                [
+                                                                                        {
+                                                                                                "Time" : 0.0,
+                                                                                                "Value" : 0.0
+                                                                                        },
+                                                                                        {
+                                                                                                "Time" : 1.0,
+                                                                                                "Value" : 0.0
+                                                                                        }
+                                                                                ]
+                                                                        },
+                                                                        {
+                                                                                "Frames" :
+                                                                                [
+                                                                                        {
+                                                                                                "Time" : 0.0,
+                                                                                                "Value" : 0.0
+                                                                                        },
+                                                                                        {
+                                                                                                "Time" : 1.0,
+                                                                                                "Value" : 0.0
+                                                                                        }
+                                                                                ]
+                                                                        }
+                                                                ],
+                                                                "Parameters" : []
+                                                        },
+                                                        "Behavior.Rotation" :
+                                                        {
+                                                                "AttributeName" : "RPM",
+                                                                "FullName" : "Behavior.Rotation",
+                                                                "Input" : "",
+                                                                "KeyFrames" :
+                                                                [
+                                                                        {
+                                                                                "Frames" :
+                                                                                [
+                                                                                        {
+                                                                                                "Time" : 0.0,
+                                                                                                "Value" : 0.0
+                                                                                        },
+                                                                                        {
+                                                                                                "Time" : 1.0,
+                                                                                                "Value" : 0.0
+                                                                                        }
+                                                                                ]
+                                                                        },
+                                                                        {
+                                                                                "Frames" :
+                                                                                [
+                                                                                        {
+                                                                                                "Time" : 0.0,
+                                                                                                "Value" : 0.0
+                                                                                        },
+                                                                                        {
+                                                                                                "Time" : 1.0,
+                                                                                                "Value" : 0.0
+                                                                                        }
+                                                                                ]
+                                                                        },
+                                                                        {
+                                                                                "Frames" :
+                                                                                [
+                                                                                        {
+                                                                                                "Time" : 0.0,
+                                                                                                "Value" : 0.0
+                                                                                        },
+                                                                                        {
+                                                                                                "Time" : 1.0,
+                                                                                                "Value" : 0.0
+                                                                                        }
+                                                                                ]
+                                                                        }
+                                                                ],
+                                                                "Parameters" : []
+                                                        },
+                                                        "Behavior.Rotation / Life" :
+                                                        {
+                                                                "AttributeName" : "Rotation/Life",
+                                                                "FullName" : "Behavior.Rotation / Life",
+                                                                "Input" : "",
+                                                                "KeyFrames" :
+                                                                [
+                                                                        {
+                                                                                "Frames" :
+                                                                                [
+                                                                                        {
+                                                                                                "Time" : 0.0,
+                                                                                                "Value" : 0.0
+                                                                                        },
+                                                                                        {
+                                                                                                "Time" : 1.0,
+                                                                                                "Value" : 0.0
+                                                                                        }
+                                                                                ]
+                                                                        },
+                                                                        {
+                                                                                "Frames" :
+                                                                                [
+                                                                                        {
+                                                                                                "Time" : 0.0,
+                                                                                                "Value" : 0.0
+                                                                                        },
+                                                                                        {
+                                                                                                "Time" : 1.0,
+                                                                                                "Value" : 0.0
+                                                                                        }
+                                                                                ]
+                                                                        },
+                                                                        {
+                                                                                "Frames" :
+                                                                                [
+                                                                                        {
+                                                                                                "Time" : 0.0,
+                                                                                                "Value" : 0.0
+                                                                                        },
+                                                                                        {
+                                                                                                "Time" : 1.0,
+                                                                                                "Value" : 0.0
+                                                                                        }
+                                                                                ]
+                                                                        }
+                                                                ],
+                                                                "Parameters" : []
+                                                        },
+                                                        "Behavior.Snap To Ground" :
+                                                        {
+                                                                "AttributeName" : "Snap To Ground",
+                                                                "FullName" : "Behavior.Snap To Ground",
+                                                                "Input" : "",
+                                                                "Parameters" : [],
+                                                                "Value" : false
+                                                        },
+                                                        "Behavior.Top" :
+                                                        {
+                                                                "AttributeName" : "Top",
+                                                                "FullName" : "Behavior.Top",
+                                                                "Input" : "",
+                                                                "Parameters" : [],
+                                                                "Value" : 5.0
+                                                        },
+                                                        "BoundingBox" :
+                                                        {
+                                                                "AttributeName" : "",
+                                                                "FullName" : "BoundingBox",
+                                                                "Input" : "",
+                                                                "Parameters" : [],
+                                                                "Value" : true
+                                                        },
+                                                        "BoundingSphere" :
+                                                        {
+                                                                "AttributeName" : "Bounding Volume",
+                                                                "FullName" : "BoundingSphere",
+                                                                "Input" : "",
+                                                                "Parameters" : [],
+                                                                "Value" : true
+                                                        },
+                                                        "Coordinate Space" :
+                                                        {
+                                                                "AttributeName" : "Coordinate Space",
+                                                                "FullName" : "Coordinate Space",
+                                                                "Input" : "",
+                                                                "Parameters" : [],
+                                                                "Value" : 1
+                                                        },
+                                                        "Ignore Parent Rotation" :
+                                                        {
+                                                                "AttributeName" : "Ignore Parent Rotation",
+                                                                "FullName" : "Ignore Parent Rotation",
+                                                                "Input" : "",
+                                                                "Parameters" : [],
+                                                                "Value" : false
+                                                        },
+                                                        "Name" :
+                                                        {
+                                                                "AttributeName" : "Name",
+                                                                "FullName" : "Name",
+                                                                "Input" : "",
+                                                                "Parameters" : [],
+                                                                "Value" : "Light"
+                                                        },
+                                                        "Offset" :
+                                                        {
+                                                                "AttributeName" : "Position",
+                                                                "FullName" : "Offset",
+                                                                "Input" : "",
+                                                                "Parameters" : [],
+                                                                "Value" :
+                                                                [
+                                                                        0.0,
+                                                                        0.0,
+                                                                        0.0
+                                                                ]
+                                                        }
+                                                },
+                                                "RadiusProperty" : null,
+                                                "Rotation" :
+                                                [
+                                                        0.0,
+                                                        0.0,
+                                                        0.0,
+                                                        1.0
+                                                ],
+                                                "RotationLifeProperty" : null,
+                                                "RotationProperty" : null,
+                                                "SnapToBottom" : 0.0,
+                                                "SnapToGround" : false,
+                                                "SnapToTop" : 0.0,
+                                                "StartTime" : 0.0,
+                                                "StayAlive" : false,
+                                                "TimeStep" : 0.0,
+                                                "TimeStepEdge0" : 0.0,
+                                                "TimeStepEdge1" : 0.0,
+                                                "TrackGroupIndex" : 0,
+                                                "TypeName" : "Light",
+                                                "WasActive" : false,
+                                                "field_120" :
+                                                [
+                                                        0.0,
+                                                        0.0,
+                                                        0.0
+                                                ],
+                                                "field_15C" :
+                                                [
+                                                        0.0,
+                                                        0.0,
+                                                        0.0
+                                                ],
+                                                "field_168" :
+                                                [
+                                                        10000000.0,
+                                                        0.0,
+                                                        0.0
+                                                ],
+                                                "field_18A" : true
+                                        },
+                                        {
+                                                "Center" :
+                                                [
+                                                        0.0,
+                                                        0.0,
+                                                        0.0
+                                                ],
+                                                "EndTime" : 0.24690370261669159,
+                                                "Entity" : null,
+                                                "FxType" : 10,
+                                                "ID" : "8618af87-25f3-43ae-b5da-7564f9943cdf",
+                                                "IsActive" : false,
+                                                "LastUpdate" : 0.0,
+                                                "LastUpdateTimeStep" : 0.0,
+                                                "Modules" :
+                                                [
+                                                        {
+                                                                "FullName" :
+                                                                [
+                                                                        "Radius"
+                                                                ],
+                                                                "Name" : "Required",
+                                                                "Properties" :
+                                                                [
+                                                                        "*RECURSION*"
+                                                                ]
+                                                        }
+                                                ],
+                                                "Position" :
+                                                [
+                                                        0.0,
+                                                        0.0,
+                                                        0.0
+                                                ],
+                                                "Properties" :
+                                                {
+                                                        "Center" :
+                                                        {
+                                                                "AttributeName" : "Position",
+                                                                "FullName" : "Center",
+                                                                "Input" : "",
+                                                                "Parameters" : [],
+                                                                "Value" :
+                                                                [
+                                                                        0.0,
+                                                                        0.0,
+                                                                        0.0
+                                                                ]
+                                                        },
+                                                        "Name" :
+                                                        {
+                                                                "AttributeName" : "Name",
+                                                                "FullName" : "Name",
+                                                                "Input" : "",
+                                                                "Parameters" : [],
+                                                                "Value" : "BoundingSphere"
+                                                        },
+                                                        "Radius" :
+                                                        {
+                                                                "AttributeName" : "Radius",
+                                                                "FullName" : "Radius",
+                                                                "Input" : "",
+                                                                "Parameters" :
+                                                                [
+                                                                        {
+                                                                                "Name" : "default",
+                                                                                "Value" : 1.0
+                                                                        }
+                                                                ],
+                                                                "Value" : 1000.0
+                                                        },
+                                                        "Visible" :
+                                                        {
+                                                                "AttributeName" : "Visible",
+                                                                "FullName" : "Visible",
+                                                                "Input" : "",
+                                                                "Parameters" : [],
+                                                                "Value" : true
+                                                        }
+                                                },
+                                                "Radius" : 0.0,
+                                                "RequiredRadius" : 1.0,
+                                                "StartTime" : 0.0,
+                                                "StayAlive" : false,
+                                                "TimeStep" : 0.0,
+                                                "TimeStepEdge0" : 0.0,
+                                                "TimeStepEdge1" : 0.0,
+                                                "TrackGroupIndex" : 0,
+                                                "TypeName" : "BoundingSphere"
+                                        }
+                                ],
+                                "EffectName" : "LLL_Point_VFX",
+                                "Header" :
+                                {
+                                        "Duration" : 0.24690370261669159,
+                                        "Phases" :
+                                        [
+                                                {
+                                                        "DialogNodeId" : "00000000-0000-0000-0000-000000000000",
+                                                        "Duration" : 0.079999998211860657,
+                                                        "EndTime" : 0.079999998211860657,
+                                                        "IsOverridingTimelineQuestionHoldAutomationSettings" : false,
+                                                        "PlayCount" : 1,
+                                                        "QuestionHoldAutomation" :
+                                                        {
+                                                                "CycleSpeed" : 5.0,
+                                                                "CycleSpeedDeviation" : 1.0,
+                                                                "IsEnabled" : true,
+                                                                "StartOffset" : 0.0,
+                                                                "StartOffsetDeviation" : 0.0
+                                                        },
+                                                        "field_14" : 310
+                                                },
+                                                {
+                                                        "DialogNodeId" : "00000000-0000-0000-0000-000000000000",
+                                                        "Duration" : 0.079999998211860657,
+                                                        "EndTime" : 0.15999999642372131,
+                                                        "IsOverridingTimelineQuestionHoldAutomationSettings" : false,
+                                                        "PlayCount" : -1,
+                                                        "QuestionHoldAutomation" :
+                                                        {
+                                                                "CycleSpeed" : 5.0,
+                                                                "CycleSpeedDeviation" : 1.0,
+                                                                "IsEnabled" : true,
+                                                                "StartOffset" : 0.0,
+                                                                "StartOffsetDeviation" : 0.0
+                                                        },
+                                                        "field_14" : 310
+                                                },
+                                                {
+                                                        "DialogNodeId" : "00000000-0000-0000-0000-000000000000",
+                                                        "Duration" : 0.079999998211860657,
+                                                        "EndTime" : 0.23999999463558197,
+                                                        "IsOverridingTimelineQuestionHoldAutomationSettings" : false,
+                                                        "PlayCount" : 1,
+                                                        "QuestionHoldAutomation" :
+                                                        {
+                                                                "CycleSpeed" : 5.0,
+                                                                "CycleSpeedDeviation" : 1.0,
+                                                                "IsEnabled" : true,
+                                                                "StartOffset" : 0.0,
+                                                                "StartOffsetDeviation" : 0.0
+                                                        },
+                                                        "field_14" : 310
+                                                }
+                                        ]
+                                },
+                                "Inputs" : [],
+                                "Loaded" : true
+                        },
+                        "CullingDistance" : 0.0,
+                        "Dependencies" :
+                        [
+                                "aca228c3-f0c5-41e0-bc00-d11ddee12ed0"
+                        ],
+                        "Duration" : 0.24690370261669159,
+                        "EffectComponents" : [],
+                        "EffectName" : "LLL_Point_VFX",
+                        "Guid" : "9e4e90de-ea4a-6e8e-13f4-8bf29448807b",
+                        "InterruptionMode" : 2,
+                        "IsModded" : true,
+                        "Looping" : true,
+                        "SourceFile" : "I:/SteamLibrary/steamapps/common/Baldurs Gate 3/Data/Public/LighterLightyLights_6aa50183-bce4-576e-749f-3a2c60233b09/Assets/Effects/Effects_Banks/lsfx/LLL_Point_VFX.lsfx",
+                        "UseSoundOcclusion" : true,
+                        "field_30" : 7094664950785900546
+                },
+                "Entity" : "Entity (01c00001000032d2)",
+                "Flags" :
+                [
+                        "FullyInitialized2",
+                        "Playing",
+                        "FullyInitialized"
+                ],
+                "Initialized" : true,
+                "OverrideFadeCapacity" :
+                [
+                        1.0,
+                        1.0
+                ],
+                "OverrideFadeShadowEnabled" :
+                [
+                        true,
+                        true
+                ],
+                "OverridingFadeOpacity" : false,
+                "Parent" : null,
+                "SoundEntity" : null,
+                "Timeline" :
+                {
+                        "Components" :
+                        [
+                                {
+                                        "Center" :
+                                        [
+                                                0.0,
+                                                0.0,
+                                                0.0
+                                        ],
+                                        "EndTime" : 0.24690370261669159,
+                                        "Entity" : "Entity (01c00001000032d2)",
+                                        "FxType" : 10,
+                                        "ID" : "8618af87-25f3-43ae-b5da-7564f9943cdf",
+                                        "IsActive" : true,
+                                        "LastUpdate" : 0.0,
+                                        "LastUpdateTimeStep" : 0.0,
+                                        "Modules" :
+                                        [
+                                                {
+                                                        "FullName" :
+                                                        [
+                                                                "Radius"
+                                                        ],
+                                                        "Name" : "Required",
+                                                        "Properties" : []
+                                                }
+                                        ],
+                                        "Position" :
+                                        [
+                                                0.0,
+                                                0.0,
+                                                0.0
+                                        ],
+                                        "Properties" :
+                                        {
+                                                "Center" : "*RECURSION*",
+                                                "Name" : "*RECURSION*",
+                                                "Radius" : "*RECURSION*",
+                                                "Visible" : "*RECURSION*"
+                                        },
+                                        "Radius" : 1000.0,
+                                        "RequiredRadius" : 1.0,
+                                        "StartTime" : 0.0,
+                                        "StayAlive" : false,
+                                        "TimeStep" : 0.0,
+                                        "TimeStepEdge0" : 0.0,
+                                        "TimeStepEdge1" : 0.0,
+                                        "TrackGroupIndex" : 0,
+                                        "TypeName" : "BoundingSphere"
+                                },
+                                {
+                                        "AnimateManually" : false,
+                                        "CalculatedPosition" :
+                                        [
+                                                0.0,
+                                                0.0,
+                                                0.0
+                                        ],
+                                        "ColorProperty" : "*RECURSION*",
+                                        "CoordinateSpace" : 1,
+                                        "EndTime" : 0.24690370261669159,
+                                        "Entity" : "Entity (01c00001000032d2)",
+                                        "FlickerAmountProperty" : "*RECURSION*",
+                                        "FlickerSpeedProperty" : "*RECURSION*",
+                                        "FxType" : 22,
+                                        "ID" : "ec00864c-073a-464a-8e3c-4dd9aa29af30",
+                                        "IgnoreParentRotation" : false,
+                                        "InitialRotationProperty" : "*RECURSION*",
+                                        "IntensityProperty" : "*RECURSION*",
+                                        "IsActive" : true,
+                                        "KeyframedPosition" :
+                                        [
+                                                0.0,
+                                                0.0,
+                                                0.0
+                                        ],
+                                        "LastPosition" :
+                                        [
+                                                10000000.0,
+                                                0.0,
+                                                0.0
+                                        ],
+                                        "LastUpdate" : 0.0,
+                                        "LastUpdateTimeStep" : 0.0,
+                                        "LightEntity" : "Entity (01c00001000032d4)",
+                                        "ModulateLightTemplateRadius" : true,
+                                        "Modules" : [],
+                                        "Offset" :
+                                        [
+                                                0.0,
+                                                0.0,
+                                                0.0
+                                        ],
+                                        "OverrideLightTemplateColor" : true,
+                                        "OverrideLightTemplateFlickerSpeed" : false,
+                                        "Position" :
+                                        [
+                                                0.0,
+                                                0.0,
+                                                0.0
+                                        ],
+                                        "PositionProperty" : "*RECURSION*",
+                                        "Properties" :
+                                        {
+                                                "Appearance.Color" : "*RECURSION*",
+                                                "Appearance.Flicker Amount" : "*RECURSION*",
+                                                "Appearance.Intensity" : "*RECURSION*",
+                                                "Appearance.Light UUID" : "*RECURSION*",
+                                                "Appearance.Modulate Light Template Radius" : "*RECURSION*",
+                                                "Appearance.Override Light Template Color" : "*RECURSION*",
+                                                "Appearance.Radius" : "*RECURSION*",
+                                                "Behavior.Animate Manually" : "*RECURSION*",
+                                                "Behavior.Bottom" : "*RECURSION*",
+                                                "Behavior.Flicker Speed" : "*RECURSION*",
+                                                "Behavior.Initial Rotation" : "*RECURSION*",
+                                                "Behavior.Override Light Template Flicker Speed" : "*RECURSION*",
+                                                "Behavior.Position" : "*RECURSION*",
+                                                "Behavior.Rotation" : "*RECURSION*",
+                                                "Behavior.Rotation / Life" : "*RECURSION*",
+                                                "Behavior.Snap To Ground" : "*RECURSION*",
+                                                "Behavior.Top" : "*RECURSION*",
+                                                "BoundingBox" : "*RECURSION*",
+                                                "BoundingSphere" : "*RECURSION*",
+                                                "Coordinate Space" : "*RECURSION*",
+                                                "Ignore Parent Rotation" : "*RECURSION*",
+                                                "Name" : "*RECURSION*",
+                                                "Offset" : "*RECURSION*"
+                                        },
+                                        "RadiusProperty" : "*RECURSION*",
+                                        "Rotation" :
+                                        [
+                                                0.0,
+                                                0.0,
+                                                0.0,
+                                                1.0
+                                        ],
+                                        "RotationLifeProperty" : "*RECURSION*",
+                                        "RotationProperty" : "*RECURSION*",
+                                        "SnapToBottom" : -5.0,
+                                        "SnapToGround" : false,
+                                        "SnapToTop" : 5.0,
+                                        "StartTime" : 0.0,
+                                        "StayAlive" : false,
+                                        "TimeStep" : 0.0,
+                                        "TimeStepEdge0" : 0.0,
+                                        "TimeStepEdge1" : 0.0,
+                                        "TrackGroupIndex" : 0,
+                                        "TypeName" : "Light",
+                                        "WasActive" : true,
+                                        "field_120" :
+                                        [
+                                                0.0,
+                                                0.0,
+                                                0.0
+                                        ],
+                                        "field_15C" :
+                                        [
+                                                0.0,
+                                                0.0,
+                                                0.0
+                                        ],
+                                        "field_168" :
+                                        [
+                                                10000000.0,
+                                                0.0,
+                                                0.0
+                                        ],
+                                        "field_18A" : true
+                                }
+                        ],
+                        "CurrentPlayCount" : 2530,
+                        "Duration" : 0.15999999642372131,
+                        "Header" :
+                        {
+                                "Duration" : 0.24690370261669159,
+                                "Phases" :
+                                [
+                                        {
+                                                "DialogNodeId" : "00000000-0000-0000-0000-000000000000",
+                                                "Duration" : 0.079999998211860657,
+                                                "EndTime" : 0.079999998211860657,
+                                                "IsOverridingTimelineQuestionHoldAutomationSettings" : false,
+                                                "PlayCount" : 1,
+                                                "QuestionHoldAutomation" :
+                                                {
+                                                        "CycleSpeed" : 5.0,
+                                                        "CycleSpeedDeviation" : 1.0,
+                                                        "IsEnabled" : true,
+                                                        "StartOffset" : 0.0,
+                                                        "StartOffsetDeviation" : 0.0
+                                                },
+                                                "field_14" : 310
+                                        },
+                                        {
+                                                "DialogNodeId" : "00000000-0000-0000-0000-000000000000",
+                                                "Duration" : 0.079999998211860657,
+                                                "EndTime" : 0.15999999642372131,
+                                                "IsOverridingTimelineQuestionHoldAutomationSettings" : false,
+                                                "PlayCount" : -1,
+                                                "QuestionHoldAutomation" :
+                                                {
+                                                        "CycleSpeed" : 5.0,
+                                                        "CycleSpeedDeviation" : 1.0,
+                                                        "IsEnabled" : true,
+                                                        "StartOffset" : 0.0,
+                                                        "StartOffsetDeviation" : 0.0
+                                                },
+                                                "field_14" : 310
+                                        },
+                                        {
+                                                "DialogNodeId" : "00000000-0000-0000-0000-000000000000",
+                                                "Duration" : 0.079999998211860657,
+                                                "EndTime" : 0.23999999463558197,
+                                                "IsOverridingTimelineQuestionHoldAutomationSettings" : false,
+                                                "PlayCount" : 1,
+                                                "QuestionHoldAutomation" :
+                                                {
+                                                        "CycleSpeed" : 5.0,
+                                                        "CycleSpeedDeviation" : 1.0,
+                                                        "IsEnabled" : true,
+                                                        "StartOffset" : 0.0,
+                                                        "StartOffsetDeviation" : 0.0
+                                                },
+                                                "field_14" : 268435200
+                                        }
+                                ]
+                        },
+                        "Inputs" : [],
+                        "IsPaused" : false,
+                        "JumpToPhase" : -1,
+                        "JumpToTime" : 0.0,
+                        "NeedsPostUpdate_M" : false,
+                        "PhaseIndex" : 1,
+                        "PlayToEnd" : false,
+                        "PlayingSpeed" : 1.0,
+                        "RemainingPhaseTime" : 0.079999998211860657,
+                        "State" : 0,
+                        "TimePlayed" : 0.13627678155899048,
+                        "field_23" : false,
+                        "field_24" : false
+                },
+                "UpdateQueued" : true
+        },
+        "FTBParticipant" :
+        {
+                "field_18" : null
+        },
+        "Faction" :
+        {
+                "SummonOwner" : null,
+                "field_0" : "Entity (01c00001000032d2)",
+                "field_18" : "00000000-0000-0000-0000-000000000000",
+                "field_8" : "00000000-0000-0000-0000-000000000000"
+        },
+        "GameObjectVisual" :
+        {
+                "Icon" : "",
+                "RootTemplateId" : "8b02ea30-6dcc-4b45-b6b4-d174f07bb2a1",
+                "RootTemplateType" : 0,
+                "Scale" : 1.0,
+                "Type" : 0
+        },
+        "Icon" :
+        {
+                "Icon" : ""
+        },
+        "IsItem" : {},
+        "Level" :
+        {
+                "LevelName" : "WLD_Campfire_E",
+                "field_0" : "Entity (01c00001000028d4)"
+        },
+        "ObjectSize" :
+        {
+                "Size" : 2,
+                "SoundSize" : 2
+        },
+        "OriginalTemplate" :
+        {
+                "OriginalTemplate" : "8b02ea30-6dcc-4b45-b6b4-d174f07bb2a1",
+                "TemplateType" : 0
+        },
+        "OwneeCurrent" :
+        {
+                "Ownee" : null
+        },
+        "PassiveContainer" :
+        {
+                "Passives" : []
+        },
+        "Physics" :
+        {
+                "CollidesWith" : 0,
+                "ExtraFlags" : 0,
+                "Physics" : null,
+                "PhysicsGroup" : 0,
+                "field_14" : 0,
+                "field_15" : 1,
+                "field_16" : 0
+        },
+        "ShootThroughType" :
+        {
+                "Type" : 6
+        },
+        "Sight" :
+        {
+                "field_0" : 0.0,
+                "field_4" : 0.0,
+                "field_8" : 0.0,
+                "field_C" : 0.0
+        },
+        "SightData" :
+        {
+                "field_0" : "dfa6fd4a-0d6e-c03e-4bfa-5c2d19973841",
+                "field_10" : 0.0,
+                "field_14" : 0.0,
+                "field_18" : 0.0,
+                "field_1C" : 0.0,
+                "field_20" : 0,
+                "field_24" : 0
+        },
+        "SightEntityViewshed" :
+        {
+                "field_0" : []
+        },
+        "Sound" :
+        {
+                "Entity" : "Entity (01c00001000032d2)",
+                "Flags" : 192,
+                "SoundObjectId" : 1325630025216,
+                "field_14" : -1.0,
+                "field_18" : "",
+                "field_1C" : -1082130432
+        },
+        "Speaker" :
+        {
+                "field_0" :
+                [
+                        "830db795-ec3e-ec89-859d-5680113f90ff"
+                ]
+        },
+        "SpellCastCanBeTargeted" :
+        {
+                "Dummy" : 255
+        },
+        "StatusImmunities" :
+        {
+                "PersonalStatusImmunities" : {}
+        },
+        "Tag" :
+        {
+                "Tags" :
+                [
+                        "653cb906-38d1-4b80-b598-00b064efff3d"
+                ]
+        },
+        "Transform" :
+        {
+                "Transform" :
+                {
+                        "RotationQuat" :
+                        [
+                                0.0,
+                                0.0,
+                                0.0,
+                                1.0
+                        ],
+                        "Scale" :
+                        [
+                                1.0,
+                                1.0,
+                                1.0
+                        ],
+                        "Translate" :
+                        [
+                                0.0,
+                                0.0,
+                                0.0
+                        ]
+                }
+        },
+        "TurnBased" :
+        {
+                "ActedThisRoundInCombat" : false,
+                "CanActInCombat" : false,
+                "CombatTeam" : "00000000-0000-0000-0000-000000000000",
+                "HadTurnInCombat" : false,
+                "IsActiveCombatTurn" : false,
+                "Removed" : false,
+                "RequestedEndTurn" : false,
+                "Timeout" : null,
+                "TurnActionsCompleted" : false,
+                "field_20" : null,
+                "field_28" : null
+        },
+        "Uuid" :
+        {
+                "EntityUuid" : "830db795-ec3e-ec89-859d-5680113f90ff"
+        },
+        "Value" :
+        {
+                "Rarity" : 0,
+                "Unique" : false,
+                "Value" : 0
+        },
+        "Visual" :
+        {
+                "NotClustered" : true,
+                "Visual" :
+                {
+                        "Attachments" : [],
+                        "BaseBound" :
+                        {
+                                "Max" :
+                                [
+                                        577.35028076171875,
+                                        577.35028076171875,
+                                        577.35028076171875
+                                ],
+                                "Min" :
+                                [
+                                        -577.35028076171875,
+                                        -577.35028076171875,
+                                        -577.35028076171875
+                                ]
+                        },
+                        "BlendShapeBase" : 0,
+                        "CullDataHandleIndex" : 22,
+                        "CullFlags" :
+                        [
+                                "CullShadow2",
+                                "CullRenderView2",
+                                "CullShadow",
+                                "CullRenderView1",
+                                "CullShadow4",
+                                "CullNonProxy",
+                                "CullDecal",
+                                "CullShadow3"
+                        ],
+                        "HasAnimatedObjects" : false,
+                        "HasValidPose" : true,
+                        "LODDistances" : [],
+                        "LightChannel" : 0,
+                        "LocalTransform" : null,
+                        "MaxLODDistance" : 3.4028234663852886e+38,
+                        "MinLODDistance" : 0.0,
+                        "ObjectDescs" : [],
+                        "Parent" : null,
+                        "PhysicsFlags" : 0,
+                        "SetWorldRotate" : "function: 00007FF9CC0AF930",
+                        "SetWorldScale" : "function: 00007FF9CC0AF9A0",
+                        "SetWorldTranslate" : "function: 00007FF9CC0AF8B0",
+                        "VisualEntity" : "Entity (01c00001000032d2)",
+                        "VisualFlags" :
+                        [
+                                "CastShadow",
+                                "ShowMesh",
+                                "ReceiveColorFromParent",
+                                "ReceiveDecal",
+                                "PlayingAttachedEffects",
+                                "Unknown200",
+                                "AllowTPose",
+                                "IsEffect"
+                        ],
+                        "VisualResource" : null,
+                        "WorldBound" :
+                        {
+                                "Max" :
+                                [
+                                        577.35028076171875,
+                                        577.35028076171875,
+                                        577.35028076171875
+                                ],
+                                "Min" :
+                                [
+                                        -577.35028076171875,
+                                        -577.35028076171875,
+                                        -577.35028076171875
+                                ]
+                        },
+                        "WorldTransform" :
+                        {
+                                "RotationQuat" :
+                                [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        1.0
+                                ],
+                                "Scale" :
+                                [
+                                        1.0,
+                                        1.0,
+                                        1.0
+                                ],
+                                "Translate" :
+                                [
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                ]
+                        },
+                        "Wrinkle01BoneIndex" : -1,
+                        "Wrinkle02BoneIndex" : -1,
+                        "Wrinkle03BoneIndex" : -1,
+                        "WrinkleBaseBoneIndex" : -1
+                },
+                "field_8" : 0,
+                "field_9" : 0
+        }
+}

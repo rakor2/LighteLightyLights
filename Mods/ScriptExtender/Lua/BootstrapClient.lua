@@ -1,15 +1,13 @@
 Ext.Require("Shared/_init.lua")
 Ext.Require("Client/_init.lua")
 
-currentCacheVersion = "1.4.Elk"
+currentCacheVersion = "1.6.Elk"
 
 Settings = {}
 
 function SettingsSave()
     local settings = {
-        key = HotkeySettings.selectedKey,
-        modifier = HotkeySettings.selectedModifier,
-        style = StyleSettings.selectedStyle
+        style = StyleSettings.selectedStyle,
     }
     local json = Ext.Json.Stringify(settings)
     Ext.IO.SaveFile("LightyLights/settings.json", json)
@@ -20,15 +18,12 @@ function SettingsLoad()
     if json then
         local settings = Ext.Json.Parse(json)
         
-        -- Update settings _ai
-        HotkeySettings.selectedKey = settings.key or "None"
-        HotkeySettings.selectedModifier = settings.modifier or "None"
         StyleSettings.selectedStyle = settings.style or 1
+
     end
 end
 
 SettingsLoad()
-DPrint('xd')
 
 if Ext.IO.LoadFile("LightyLights/settings.json") then
     print("")

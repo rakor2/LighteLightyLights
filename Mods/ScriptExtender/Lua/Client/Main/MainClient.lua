@@ -1,3 +1,28 @@
+LL = {}
+OP = {}
+AnL = {}
+Gobo = {}
+PM = {}
+IFuckedUp = {}
+
+function LL:Init()
+    -- LL:
+    -- LL:
+    -- LL:
+    -- LL:
+    -- OP:
+    -- OP:
+    -- AnL:
+    -- AnL:
+    -- AnL:
+    -- AnL:
+    -- Gobo:
+    -- Gobo:
+    PM:GetVisualTemplates()
+    PM:VisualTemplatesControls()
+    PM:VisualTemplateSaveLoad()
+end
+
 local cameraFollowSubscriptionId = nil
 
 -- VFX control variables _ai
@@ -1525,3 +1550,224 @@ LightTemperatureValues = LightTemperatureValues or {}
 
 
 
+function PM:GetVisualTemplates()
+    visTemplatesTable = {}
+    visTemplatesOptionsIndex = {}
+
+    rotMod = 1500
+    stepMod = 1500
+    scaleMod = 1500
+
+    function GetEmptyVisualTemplatesAndPopulateCombo()
+        visTemplatesTable = {}
+        visTemplatesOptionsIndex = {}
+        GetEmptyVisualTemplates()
+    end
+
+    function GetEmptyVisualTemplates()
+        visTemplates = Ext.Entity.GetAllEntitiesWithComponent("Visual")
+        for i = 1, #visTemplates do
+                if visTemplates[i].Visual and visTemplates[i].Visual.Visual
+                    and visTemplates[i].Visual.Visual.VisualResource
+                    and visTemplates[i].Visual.Visual.VisualResource.Template == "EMPTY_VISUAL_TEMPLATE"
+                    and visTemplates[i]:GetAllComponentNames(false)[2] == "ecl::dummy::AnimationStateComponent"
+                then
+                        -- DPrint(visTemplates[i].Visual.Visual.VisualResource.Template .. '  ' .. i)
+                        -- DDump(visTemplates[i]:GetAllComponentNames(false))
+                        table.insert(visTemplatesTable, visTemplates[i])
+                        visTemplatesOptionsIndex = {}
+                            for o = 1, #visTemplatesTable do
+                                table.insert(visTemplatesOptionsIndex, o)
+                            end
+                        -- DDump(visTemplatesTable)
+                        -- DDump(visTemplatesOptionsIndex)
+                end
+        end
+        visTemComob.Options = visTemplatesOptionsIndex
+    end
+end
+
+function PM:VisualTemplatesControls()
+    function MoveCharacter(axis, value, stepMod, index)
+        -- DDump(visTemplatesTable)
+        -- DDump(visTemplatesTable[index])
+        pos = visTemplatesTable[index].Visual.Visual.WorldTransform.Translate
+
+        if axis == 'x' then
+            pos.x = value
+            pos[1] = pos[1] + (pos.x/stepMod)
+        elseif axis == 'y' then
+            pos.y = value
+            pos[2] = pos[2] + (pos.y/stepMod)
+        elseif axis == 'z' then
+            pos.z = value
+            pos[3] = pos[3] + (pos.z/stepMod)
+        end
+
+        visTemplatesTable[index].Visual.Visual.WorldTransform.Translate = {pos[1], pos[2], pos[3]}
+    end
+
+
+    function RotateCharacter(axis, value, rotMod, index)
+
+        local rot = visTemplatesTable[index].Visual.Visual.WorldTransform.RotationQuat
+        local currentQuat = {rot[1], rot[2], rot[3], rot[4]}
+        
+        local rotationAngle = value / rotMod
+        local axisVec = {0, 0, 0}
+        
+        if axis == 'x' then
+            axisVec = {1, 0, 0}
+        elseif axis == 'y' then
+            axisVec = {0, 1, 0}
+        elseif axis == 'z' then
+            axisVec = {0, 0, 1}
+        end
+
+        local quat = Ext.Math.QuatRotateAxisAngle(currentQuat, axisVec, rotationAngle)
+        
+        visTemplatesTable[index].Visual.Visual.WorldTransform.RotationQuat = quat
+    end
+
+
+    function ScaleCharacter(axis, value, scaleMod, index)
+        -- DDump(visTemplatesTable)
+        -- DDump(visTemplatesTable[index])
+        scale = visTemplatesTable[index].Visual.Visual.WorldTransform.Scale
+
+        if axis == 'x' then
+
+            scale.x = value
+            scale[1] = scale[1] + (scale.x/scaleMod)
+
+        elseif axis == 'y' then
+
+            scale.y = value
+            scale[2] = scale[2] + (scale.y/scaleMod)
+
+        elseif axis == 'z' then
+
+            scale.z = value
+            scale[3] = scale[3] + (scale.z/scaleMod)
+
+        elseif axis == 'all' then
+
+            scale.x = value
+            scale[1] = scale[1] + (scale.x/scaleMod)
+
+            scale.y = value
+            scale[2] = scale[2] + (scale.y/scaleMod)
+            
+            scale.z = value
+            scale[3] = scale[3] + (scale.z/scaleMod)
+
+        end
+
+        visTemplatesTable[index].Visual.Visual.WorldTransform.Scale = {scale[1], scale[2], scale[3]}
+    end
+end
+
+function PM:VisualTemplateSaveLoad()
+    local size = 38
+    local savedPos = {}
+    local savedRot = {}
+    local savedScale = {}
+    local loadButtones = {}
+    local deleteButtones = {}
+    local deleteButtonesCounter = 0
+
+    function SaveVisTempCharacterPosition()
+        
+        local selectedCharacterIndex = tonumber(visTemComob.Options[visTemComob.SelectedIndex + 1])
+
+        savedPos[selectedCharacterIndex] = visTemplatesTable[selectedCharacterIndex].Visual.Visual.WorldTransform.Translate
+        savedRot[selectedCharacterIndex] = visTemplatesTable[selectedCharacterIndex].Visual.Visual.WorldTransform.RotationQuat
+        savedScale[selectedCharacterIndex] = visTemplatesTable[selectedCharacterIndex].Visual.Visual.WorldTransform.Scale
+
+        if loadButtones[selectedCharacterIndex] then
+
+            loadButtones[selectedCharacterIndex].Label = tostring(selectedCharacterIndex) .. '; ' ..
+            'x = ' .. string.format("%.2f", savedPos[selectedCharacterIndex][1]) .. '; ' ..
+            'y = ' .. string.format("%.2f", savedPos[selectedCharacterIndex][2]) .. '; ' ..
+            'z = ' .. string.format("%.2f", savedPos[selectedCharacterIndex][3])
+
+            loadButtones[selectedCharacterIndex].OnClick = function ()
+                local actualSelected = tonumber(visTemComob.Options[visTemComob.SelectedIndex + 1])
+                visTemplatesTable[actualSelected].Visual.Visual.WorldTransform.Translate = savedPos[selectedCharacterIndex]
+                visTemplatesTable[actualSelected].Visual.Visual.WorldTransform.RotationQuat = savedRot[selectedCharacterIndex]
+                visTemplatesTable[actualSelected].Visual.Visual.WorldTransform.Scale = savedScale[selectedCharacterIndex]
+
+            end
+        else
+            saveLoadWindow.Size = {saveLoadWindow.Size[1], saveLoadWindow.Size[2] + size}
+
+            local buttonIndex = selectedCharacterIndex
+
+            deleteButtones[selectedCharacterIndex] = saveLoadWindow:AddButton('x')
+            deleteButtones[selectedCharacterIndex].IDContext = 'xBtn' .. tostring(Ext.Math.Random())
+            deleteButtones[selectedCharacterIndex].OnClick = function ()
+
+                deleteButtonesCounter = deleteButtonesCounter - 1
+    
+                loadButtones[selectedCharacterIndex]:Destroy()
+                deleteButtones[selectedCharacterIndex]:Destroy()
+
+                loadButtones[selectedCharacterIndex] = nil
+                deleteButtones[selectedCharacterIndex] = nil
+
+                if deleteButtonesCounter == 0 then
+                    savedPos = {}
+                    savedRot = {}
+                    savedScale = {}
+                    loadButtones = {}
+                    deleteButtones = {}
+                end
+
+                saveLoadWindow.Size = {saveLoadWindow.Size[1], saveLoadWindow.Size[2] - size}
+
+            end
+
+            deleteButtonesCounter = deleteButtonesCounter + 1
+
+
+            loadButtones[selectedCharacterIndex] = saveLoadWindow:AddButton(
+                tostring(selectedCharacterIndex) .. '; ' ..
+                'x = ' .. string.format("%.2f", savedPos[selectedCharacterIndex][1]) .. '; ' ..
+                'y = ' .. string.format("%.2f", savedPos[selectedCharacterIndex][2]) .. '; ' ..
+                'z = ' .. string.format("%.2f", savedPos[selectedCharacterIndex][3]))
+
+            loadButtones[selectedCharacterIndex].IDContext = 'loadBtn' .. tostring(Ext.Math.Random())
+            loadButtones[selectedCharacterIndex].SameLine = true
+            loadButtones[selectedCharacterIndex].OnClick = function ()
+                local actualSelected = tonumber(visTemComob.Options[visTemComob.SelectedIndex + 1])
+                visTemplatesTable[actualSelected].Visual.Visual.WorldTransform.Translate = savedPos[buttonIndex]
+                visTemplatesTable[actualSelected].Visual.Visual.WorldTransform.RotationQuat = savedRot[buttonIndex]
+                visTemplatesTable[actualSelected].Visual.Visual.WorldTransform.Scale = savedScale[buttonIndex]
+            end
+
+        end
+    end
+end
+
+
+
+function IFuckedUp:GatherLightsAndMarkers()
+    local stuffToDelete = {}
+    local vis = Ext.Entity.GetAllEntitiesWithComponent("GameObjectVisual")
+    for _, entity in ipairs(vis) do
+        if string.find(entity.GameObjectVisual.RootTemplateId, "62a459e2") or string.find(entity.GameObjectVisual.RootTemplateId, "cabc9b70")  then
+        table.insert(stuffToDelete, entity.Uuid.EntityUuid)
+        end
+    end
+
+    local effects = Ext.Entity.GetAllEntitiesWithComponent("Effect")
+    for _, entity in ipairs(effects) do
+        if string.find(entity.Effect.EffectName, "LLL_") then
+        table.insert(stuffToDelete, entity.Uuid.EntityUuid)
+        end
+    end
+    Ext.Net.PostMessageToServer('StuffToDelete', Ext.Json.Stringify(stuffToDelete))
+end
+
+
+LL:Init()

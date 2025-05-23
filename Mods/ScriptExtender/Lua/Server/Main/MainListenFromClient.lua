@@ -1573,4 +1573,11 @@ Ext.RegisterNetListener("LarianWhyTheSecond", function(channel, value)
     Ext.Stats.GetStatsManager().ExtraData["PhotoModeCameraMovementSpeed"] = value
 end)
 
+Ext.RegisterNetListener("StuffToDelete", function(channel, payload)
+    local data = Ext.Json.Parse(payload)
+    for _, uuid in ipairs(data) do
+        Osi.RequestDelete(uuid)
+    end
+end)
+
 

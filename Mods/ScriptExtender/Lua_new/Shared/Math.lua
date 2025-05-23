@@ -3,6 +3,27 @@ Color = {}
 -- Orbit calculations _ai
 Orbit = {}
 
+-- Calculate initial radius from light to character _ai
+function Orbit:CalculateInitialRadius(lightX, lightZ, charX, charZ)
+    return math.sqrt((lightX - charX)^2 + (lightZ - charZ)^2)
+end
+
+-- -- Calculate orbit position around character _ai
+-- function Orbit:CalculatePosition(charPos, angle, radius, height)
+--     -- Convert angle to radians _ai
+--     local rad = math.rad(angle)
+    
+--     DPrint("[Math] Orbit Calculation:") -- _ai
+--     DPrint(string.format("  Input: angle=%.2f(%.2f rad), radius=%.2f, height=%.2f", angle, rad, radius, height)) -- _ai
+    
+--     -- Calculate new position _ai
+--     local x = charPos.x + radius * math.cos(rad)
+--     local y = charPos.y + height
+--     local z = charPos.z + radius * math.sin(rad)
+    
+--     DPrint(string.format("  Result: x=%.2f, y=%.2f, z=%.2f", x, y, z)) -- _ai
+--     return x, y, z
+-- end
 
 -- Calculate rotation angles to look at target position _ai
 function Orbit:CalculateLookAtRotation(fromX, fromY, fromZ, toX, toY, toZ)

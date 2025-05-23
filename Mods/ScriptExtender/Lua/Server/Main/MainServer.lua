@@ -1,3 +1,5 @@
+
+
 GoboDistances = {}
 GoboAngles = {} -- Таблица для хранения углов вращения гобо масок _ai
 
@@ -136,5 +138,6 @@ function LarianWhy()
     Ext.Stats.GetStatsManager().ExtraData["PhotoModeCameraFloorDistance"] = -99887766
     Ext.Stats.GetStatsManager().ExtraData["PhotoModeCameraRange"] = 11223344
 end
+
 
 LarianWhy()

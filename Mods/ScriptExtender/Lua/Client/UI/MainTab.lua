@@ -6,6 +6,8 @@ ltnCombo = nil
 currentIntensityTextWidget = nil
 currentDistanceTextWidget = nil
 
+local openlol = false
+
 -- Function to get list of created lights _ai
 function GetLightOptions()
     local options = {}
@@ -101,7 +103,7 @@ function MainTab2(mt2)
 
     -- Create window first _ai
     mw = Ext.IMGUI.NewWindow("Lighty Lights")
-    mw.Open = false
+    mw.Open = openlol
 
     mw.Closeable = true
     MainWindow(mw)
@@ -138,6 +140,10 @@ function MainTab2(mt2)
         SettingsSave()
     end
     
+    local ifuckedupbtn = mt2:AddButton('Delete stuck lights and markers')
+    ifuckedupbtn.OnClick = function ()
+        IFuckedUp:GatherLightsAndMarkers()
+    end
     -- ApplyStyle(mw, StyleSettings.selectedStyle)
     
 end
@@ -149,7 +155,9 @@ function MainWindow(mw)
     mw:SetPos({ViewportSize[1]/6, ViewportSize[2]/10})
     -- mw:SetSize({622, 1000})
     mw:SetSize({700, 1000})
-    -- mw.AlwaysAutoResize = true
+    mw.AlwaysAutoResize = false
+
+
 
     mw.Visible = true
     mw.Closeable = true
@@ -173,20 +181,16 @@ function MainWindow(mw)
     GoboWindowTab(goboTab)
 
 
-    StyleV2:RegisterWindow(mw)
+    betterPM = mainTabBar:AddTabItem("PM")
+    BetterPMTab(betterPM)
 
-    -- -- Add Scene Saver tab to the same TabBar _ai
-    -- sceneSaverTab = mainTabBar:AddTabItem("Scene Saver")
-    -- SceneSaverWindowTab(sceneSaverTab)
-    -- -- Add Settings tab to the same TabBar _ai
     -- settingsTab = mainTabBar:AddTabItem("Settings")
     -- SettingsTab(settingsTab)
 
 
+    StyleV2:RegisterWindow(mw)
 
-    betterPM = mainTabBar:AddTabItem("PM")
-    BetterPMTab(betterPM)
-
+    SettingsLoad()
 
 end
 
@@ -836,13 +840,13 @@ function MainWindowTab(parent)
     end
 
     -- Add step control sliders _ai
-    local movementStepSlider = parent:AddSlider("Position step", buttonStep, 0.001, 2, 0.001)
+    local movementStepSlider = parent:AddSlider("Position mod", buttonStep, 0.001, 2, 0.001)
     movementStepSlider.IDContext = "MovementStepSlider"
     movementStepSlider.OnChange = function(widget)
         buttonStep = widget.Value[1]
     end
 
-    local rotationStepSlider = parent:AddSlider("Rotation step", rotationStep, 0.001, 2, 0.001)
+    local rotationStepSlider = parent:AddSlider("Rotation mod", rotationStep, 0.001, 2, 0.001)
     rotationStepSlider.IDContext = "RotationStepSlider"
     rotationStepSlider.OnChange = function(widget)
         rotationStep = widget.Value[1]
@@ -1977,8 +1981,10 @@ end
 
 function BetterPMTab(parent)
 
+local camSepa = parent:AddSeparatorText('Camera settings')
+
 camCollapse = parent:AddCollapsingHeader("Camera")
-camCollapse.DefaultOpen = true
+camCollapse.DefaultOpen = false
 
 
 local camSpeed = camCollapse:AddSlider("Speed", 0, 0.01, 100, 0.1) --default, min, max, step
@@ -1993,7 +1999,7 @@ end
 
 
 dofCollapse = parent:AddCollapsingHeader("DoF")
-dofCollapse.DefaultOpen = true
+dofCollapse.DefaultOpen = false
 
 local dofStrength = dofCollapse:AddSlider("Strength", 0, 1, 22, 0.001) --default, min, max, step
 dofStrength.IDContext = "DofStr"
@@ -2055,6 +2061,213 @@ local getDofDistanceSub = Ext.Events.Tick:Subscribe(function()
     end
 end)
 
+local sepa2 = parent:AddSeparatorText('Character position')
+
+
+
+visTemComob = parent:AddCombo("")
+visTemComob.IDContext = "visTemComob123"
+visTemComob.SelectedIndex = 0
+visTemComob.HeightLargest = true
+visTemComob.SameLine = false
+visTemComob.OnChange = function()
+
+end
+
+local populateOptions = parent:AddButton("Fill options")
+populateOptions.IDContext = "populateOptions123"
+populateOptions.SameLine = true
+populateOptions.OnClick = function()
+    GetEmptyVisualTemplatesAndPopulateCombo()
+end
+
+local charPosCollapse = parent:AddCollapsingHeader("Position")
+charPosCollapse.DefaultOpen = false
+
+
+
+local stemModSlider = charPosCollapse:AddSliderInt("Mod", 0, 1, 3000, 1) --default, min, max, step
+stemModSlider.IDContext = "modSlider"
+stemModSlider.SameLine = false
+stemModSlider.Components = 1
+stemModSlider.Value = {1500, 0, 0, 0}
+stemModSlider.OnChange = function()
+    stepMod = stemModSlider.Value[1]
+end
+
+local posX = charPosCollapse:AddSlider("W/E", 0, -100, 100, 1)
+posX.IDContext = "sliderX"
+posX.SameLine = false
+posX.Components = 1
+posX.Value = {0, 0, 0, 0}
+posX.OnChange = function()
+    local value = posX.Value[1]
+    -- DPrint(visTemComob.Options[visTemComob.SelectedIndex + 1])
+    MoveCharacter("x", value, stepMod, tonumber(visTemComob.Options[visTemComob.SelectedIndex + 1]))
+    posX.Value = {0, 0, 0, 0}
+end
+
+local posY = charPosCollapse:AddSlider("D/U", 0, -100, 100, 1)
+posY.IDContext = "sliderY"
+posY.SameLine = false
+posY.Components = 1
+posY.Value = {0, 0, 0, 0}
+posY.OnChange = function()
+    local value = posY.Value[1]
+    MoveCharacter("y", value, stepMod, tonumber(visTemComob.Options[visTemComob.SelectedIndex + 1]))
+    posY.Value = {0, 0, 0, 0}
+end
+
+local posZ = charPosCollapse:AddSlider("S/N", 0, -100, 100, 1)
+posZ.IDContext = "sliderZ"
+posZ.SameLine = false
+posZ.Components = 1
+posZ.Value = {0, 0, 0, 0}
+posZ.OnChange = function()
+    local value = posZ.Value[1]
+    MoveCharacter("z", value, stepMod, tonumber(visTemComob.Options[visTemComob.SelectedIndex + 1]))
+    posZ.Value = {0, 0, 0, 0}
+end
+
+
+
+local charRotCollapse = parent:AddCollapsingHeader("Rotation")
+charRotCollapse.DefaultOpen = false
+
+
+local rotationModSlider = charRotCollapse:AddSliderInt("Mod", 0, 1, 3000, 1)
+rotationModSlider.IDContext = "rotModSlider"
+rotationModSlider.SameLine = false
+rotationModSlider.Components = 1
+rotationModSlider.Value = {1500, 0, 0, 0}
+rotationModSlider.OnChange = function()
+    rotMod = rotationModSlider.Value[1]
+end
+
+local rotX = charRotCollapse:AddSlider("Pitch", 0, -100, 100, 1)
+rotX.IDContext = "rotX"
+rotX.SameLine = false
+rotX.Components = 1
+rotX.Value = {0, 0, 0, 0}
+rotX.OnChange = function()
+    local value = rotX.Value[1]
+    RotateCharacter("x", value, rotMod, tonumber(visTemComob.Options[visTemComob.SelectedIndex + 1]))
+    rotX.Value = {0, 0, 0, 0}
+end
+
+local rotY = charRotCollapse:AddSlider("Yaw", 0, -100, 100, 1)
+rotY.IDContext = "rotY"
+rotY.SameLine = false
+rotY.Components = 1
+rotY.Value = {0, 0, 0, 0}
+rotY.OnChange = function()
+    local value = rotY.Value[1]
+    RotateCharacter("y", value, rotMod, tonumber(visTemComob.Options[visTemComob.SelectedIndex + 1]))
+    rotY.Value = {0, 0, 0, 0}
+end
+
+local rotZ = charRotCollapse:AddSlider("Roll", 0, -100, 100, 1)
+rotZ.IDContext = "rotZ"
+rotZ.SameLine = false
+rotZ.Components = 1
+rotZ.Value = {0, 0, 0, 0}
+rotZ.OnChange = function()
+    local value = rotZ.Value[1]
+    RotateCharacter("z", value, rotMod, tonumber(visTemComob.Options[visTemComob.SelectedIndex + 1]))
+    rotZ.Value = {0, 0, 0, 0}
+end
+
+local resetRot = charRotCollapse:AddButton("Reset")
+resetRot.IDContext = "resetrot"
+resetRot.SameLine = false
+resetRot.OnClick = function()
+    visTemplatesTable[tonumber(visTemComob.Options[visTemComob.SelectedIndex + 1])].Visual.Visual.WorldTransform.RotationQuat = {0.0, 0.5, 0.0, 0.8}
+end
+
+local charScaleCollapse = parent:AddCollapsingHeader("Scale")
+charScaleCollapse.DefaultOpen = false
+
+
+local scaleModSlider = charScaleCollapse:AddSliderInt("Mod", 0, 1, 3000, 1)
+scaleModSlider.IDContext = "sacleModSlider"
+scaleModSlider.SameLine = false
+scaleModSlider.Components = 1
+scaleModSlider.Value = {1500, 0, 0, 0}
+scaleModSlider.OnChange = function()
+    scaleMod = scaleModSlider.Value[1]
+end
+
+local scaleLenght = charScaleCollapse:AddSlider("Length", 0, -100, 100, 1)
+scaleLenght.IDContext = "scaleLenght123"
+scaleLenght.SameLine = false
+scaleLenght.Components = 1
+scaleLenght.Value = {0, 0, 0, 0}
+scaleLenght.OnChange = function()
+    local value = scaleLenght.Value[1]
+    ScaleCharacter("x", value, scaleMod, tonumber(visTemComob.Options[visTemComob.SelectedIndex + 1]))
+    scaleLenght.Value = {0, 0, 0, 0}
+end
+
+local scaleWidth = charScaleCollapse:AddSlider("Height", 0, -100, 100, 1)
+scaleWidth.IDContext = "scaleWidth232"
+scaleWidth.SameLine = false
+scaleWidth.Components = 1
+scaleWidth.Value = {0, 0, 0, 0}
+scaleWidth.OnChange = function()
+    local value = scaleWidth.Value[1]
+    ScaleCharacter("y", value, scaleMod, tonumber(visTemComob.Options[visTemComob.SelectedIndex + 1]))
+    scaleWidth.Value = {0, 0, 0, 0}
+end
+
+local scaleHeight = charScaleCollapse:AddSlider("Width", 0, -100, 100, 1)
+scaleHeight.IDContext = "scaleHeight323"
+scaleHeight.SameLine = false
+scaleHeight.Components = 1
+scaleHeight.Value = {0, 0, 0, 0}
+scaleHeight.OnChange = function()
+    local value = scaleHeight.Value[1]
+    ScaleCharacter("z", value, scaleMod, tonumber(visTemComob.Options[visTemComob.SelectedIndex + 1]))
+    scaleHeight.Value = {0, 0, 0, 0}
+end
+
+local scaleAll = charScaleCollapse:AddSlider("All", 0, -100, 100, 1)
+scaleAll.IDContext = "scalescaleAll323"
+scaleAll.SameLine = false
+scaleAll.Components = 1
+scaleAll.Value = {0, 0, 0, 0}
+scaleAll.OnChange = function()
+    local value = scaleAll.Value[1]
+    ScaleCharacter("all", value, scaleMod, tonumber(visTemComob.Options[visTemComob.SelectedIndex + 1]))
+    scaleAll.Value = {0, 0, 0, 0}
+end
+
+local resetScale = charScaleCollapse:AddButton("Reset")
+resetScale.IDContext = "resetscale"
+resetScale.SameLine = false
+resetScale.OnClick = function()
+    visTemplatesTable[tonumber(visTemComob.Options[visTemComob.SelectedIndex + 1])].Visual.Visual.WorldTransform.Scale = {1, 1, 1}
+end
+
+local sepa3 = parent:AddSeparatorText('Utilities')
+
+local saveLoadCollapse = parent:AddCollapsingHeader('Save/Load postition')
+
+
+saveLoadWindow = saveLoadCollapse:AddChildWindow('')
+saveLoadWindow.AlwaysAutoResize = false
+saveLoadWindow.Size = {0, 1}
+
+
+local saveButton = saveLoadCollapse:AddButton("Save")
+saveButton.IDContext = "saveIdddasdasda"
+saveButton.SameLine = false
+saveButton.OnClick = function()
+
+    if visTemplatesOptionsIndex[1] ~= nil then
+        SaveVisTempCharacterPosition()
+    end
+    
+end
 
 
 end
@@ -2063,18 +2276,8 @@ end
 --===============-------------------------------------------------------------------------------------------------------------------------------
 
 -- function SettingsTab(parent)
---     parent:AddSeparatorText("Settings")
-    
---     -- -- Add orbit height offset slider _ai
---     -- local orbitHeightSlider = parent:AddSlider("Orbit height offset", orbitHeightOffset, 0.0, 5.0, 0.1)
---     -- orbitHeightSlider.IDContext = "OrbitHeightOffsetSlider"
---     -- orbitHeightSlider:Tooltip():AddText("Controls the vertical offset of the light when using character-relative mode")
---     -- orbitHeightSlider.OnChange = function(widget)
---     --     orbitHeightOffset = widget.Value[1]
---     --     Settings.Save() -- Save settings when value changes _ai
---     -- end
--- end
 
+-- end
 
 --===============-------------------------------------------------------------------------------------------------------------------------------    
 --SCENE SAVER TAB--

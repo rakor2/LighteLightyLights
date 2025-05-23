@@ -2,19 +2,10 @@
 --     Ext.Net.PostMessageToServer("TestButtonClicked", "")
 -- end
 
--- Request spawn light _ai
 function RequestSpawnLight(lightType)
-    -- Debug DPrint available slots _ai
-    -- DPrint("[Client] RequestSpawnLight for type:", lightType)
-    -- DPrint("[Client] Current UsedLightSlots state:")
+
     local slots = Light_Actual_Templates_Slots[lightType]
-    for i, slot in ipairs(slots) do
-        -- DPrint(string.format("  Slot %d: %s (GUID: %s) - Used: %s", 
-        --     i, slot[1], slot[2], 
-        --     UsedLightSlots[lightType][i] and "Yes" or "No"))
-    end
-    
-    -- Find first unused slot _ai
+
     local slotIndex = nil
     local slotGUID = nil
     
@@ -22,7 +13,6 @@ function RequestSpawnLight(lightType)
         if slot[2] ~= "nil" and not UsedLightSlots[lightType][i] then
             slotIndex = i
             slotGUID = slot[2]
-            -- DPrint(string.format("[LLL][C] Selected slot %d with GUID: %s", i, slotGUID))
             break
         end
     end
@@ -32,7 +22,6 @@ function RequestSpawnLight(lightType)
         return
     end
     
-    -- Send request to server _ai
     local payload = Ext.Json.Stringify({
         name = string.format("Light #%d %s", #ClientSpawnedLights + 1, lightType),
         template = slotGUID,
@@ -40,7 +29,6 @@ function RequestSpawnLight(lightType)
         slotIndex = slotIndex
     })
     
-    -- DPrint("[Client] Sending SpawnLight request with payload:", payload)
     Ext.Net.PostMessageToServer("SpawnLight", payload)
 end
 
